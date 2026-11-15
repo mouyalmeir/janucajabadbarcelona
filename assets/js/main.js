@@ -168,7 +168,7 @@
   function openSponsor() {
     openDialog({
       kicker: 'Patrocinio', title: 'Patrocina Janucá en honor o memoria',
-      text: 'Dedica una noche, una menorá pública o las sufganiot en honor o en memoria de un ser querido.',
+      text: 'Dedica una noche, una janukiá pública o las sufganiot en honor o en memoria de un ser querido.',
       fields: F.name + F.phone + '<div class="field full"><label for="f-ded">Dedicatoria</label><input id="f-ded" name="ded" placeholder="En memoria de… / En honor de…"></div>' + F.note,
       submit: 'Quiero patrocinar',
       onSubmit: function (form, msg) {
@@ -246,7 +246,7 @@
     track.innerHTML = D.nights.map(function (nd) {
       var ev = D.eventForNight(nd.n), p = D.parse(nd.date);
       var today = (st0.phase === 'during' || st0.phase === 'last') && st0.night === nd.n;
-      return '<button type="button" class="nt reveal' + (ev ? ' has-event' : '') + (today ? ' is-today' : '') + '" data-night="' + nd.n + '" aria-label="Ver la ' + D.ord[nd.n] + ' noche en la januquiá">' +
+      return '<button type="button" class="nt reveal' + (ev ? ' has-event' : '') + (today ? ' is-today' : '') + '" data-night="' + nd.n + '" aria-label="Ver la ' + D.ord[nd.n] + ' noche en la janukiá">' +
         '<span class="nt-n">' + nd.n + '</span><span class="nt-date">' + D.weekday(nd.date) + ' ' + p.d + '</span>' +
         '<small>' + nd.hebrew + '</small>' + dots(nd.n) + '<small>' + nd.time + '</small>' +
         (ev ? '<span class="nt-ev">' + esc(ev.place) + '</span>' : '') + '</button>';
@@ -268,6 +268,7 @@
     if (k === 'email') el.innerHTML = '<a href="mailto:' + esc(v) + '">' + esc(v) + '</a>';
     else if (k === 'whatsapp') el.innerHTML = '<a href="https://wa.me/' + esc(v.replace(/\D/g, '')) + '" target="_blank" rel="noopener">WhatsApp</a>';
     else if (k === 'instagram') el.innerHTML = '<a href="' + esc(v) + '" target="_blank" rel="noopener">Instagram</a>';
+    else if (k === 'phone') el.innerHTML = '<a href="tel:' + esc(v.replace(/[^\d+]/g, '')) + '">' + esc(v) + '</a>';
     else el.textContent = v;
   });
 
@@ -371,6 +372,23 @@
   }
   // Si se llega con #ancla a un evento, mostrarlo ya
   if (location.hash) { var tgt = document.getElementById(location.hash.slice(1)); if (tgt) { tgt.classList.add('in'); setTimeout(function () { tgt.scrollIntoView(); }, 50); } }
+
+  /* ---------- Cursor de llama: una luz suave sigue al ratón ---------- */
+  if (window.matchMedia && matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    var glow = document.createElement('div');
+    glow.className = 'cursor-light';
+    glow.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(glow);
+    var mx = 0, my = 0, queued = false;
+    var paintGlow = function () { queued = false; glow.style.transform = 'translate3d(' + mx + 'px,' + my + 'px,0)'; };
+    document.addEventListener('pointermove', function (e) {
+      if (e.pointerType !== 'mouse') return;
+      mx = e.clientX; my = e.clientY;
+      glow.classList.add('on');
+      if (!queued) { queued = true; requestAnimationFrame(paintGlow); }
+    }, { passive: true });
+    document.documentElement.addEventListener('mouseleave', function () { glow.classList.remove('on'); });
+  }
 
   var y = $('#year');
   if (y) y.textContent = new Date().getFullYear();

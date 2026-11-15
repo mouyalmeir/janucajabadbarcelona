@@ -20,9 +20,9 @@ window.JANUCA = (function () {
   // Noches de Janucá 5787 (Barcelona)
   var nights = [
     { n: 1, date: '2026-12-04', hebrew: '25 de Kislev', time: 'Antes de las 17:03 h', note: 'Antes de las velas de Shabat', blessings: [1, 2, 3],
-      alert: 'Viernes: enciende la menorá antes que las velas de Shabat, con velas grandes que duren al menos hasta las 18:30 h.',
+      alert: 'Viernes: enciende la janukiá antes que las velas de Shabat, con velas grandes que duren al menos hasta las 18:30 h.',
       thought: 'Basta una sola llama fiel para empezar a disipar la oscuridad.',
-      idea: 'Regala una menorá o un kit de Janucá a alguien que este año no tenga.' },
+      idea: 'Regala una janukiá o un kit de Janucá a alguien que este año no tenga.' },
     { n: 2, date: '2026-12-05', hebrew: '26 de Kislev', time: 'A partir de las 18:10 h', note: 'Tras finalizar Shabat y recitar Havdalá', blessings: [1, 2],
       alert: 'Sábado: espera a que termine Shabat (18:10 h) y recita la Havdalá antes de encender.',
       thought: 'Despedimos el Shabat y llevamos su luz a toda la semana.',
@@ -32,7 +32,7 @@ window.JANUCA = (function () {
       idea: 'Ven con tu familia al Gran Encendido en Plaça Sant Jaume.' },
     { n: 4, date: '2026-12-07', hebrew: '28 de Kislev', time: 'A partir de las 17:30 h', note: 'Anochecer: 17:54 h', blessings: [1, 2],
       thought: 'La luz de tu ventana ilumina también a quien pasa por la calle.',
-      idea: 'Coloca tu menorá donde se vea desde la calle y difunde el milagro.' },
+      idea: 'Coloca tu janukiá donde se vea desde la calle y difunde el milagro.' },
     { n: 5, date: '2026-12-08', hebrew: '29 de Kislev', time: 'A partir de las 17:30 h', note: 'Anochecer: 17:54 h', blessings: [1, 2],
       thought: 'Esta noche ya brillan más velas encendidas que apagadas.',
       idea: 'Juega al dréidel con los niños y cuéntales la historia del milagro.' },
@@ -43,8 +43,8 @@ window.JANUCA = (function () {
       thought: 'Ninguna luz es demasiado pequeña: cada buena acción suma.',
       idea: 'Reparte Janucá guelt y anima a los niños a dar una parte en Tzedaká.' },
     { n: 8, date: '2026-12-11', hebrew: '2 de Tevet', time: 'Antes de las 17:03 h', note: 'Antes de las velas de Shabat', blessings: [1, 2],
-      alert: 'Viernes: enciende la menorá antes que las velas de Shabat, con velas grandes que duren al menos hasta las 18:30 h.',
-      thought: 'La menorá completa: una luz que nos acompaña todo el año.',
+      alert: 'Viernes: enciende la janukiá antes que las velas de Shabat, con velas grandes que duren al menos hasta las 18:30 h.',
+      thought: 'La janukiá completa: una luz que nos acompaña todo el año.',
       idea: 'Enciende las ocho velas y recibe el Shabat en familia.' }
   ];
 
@@ -69,9 +69,9 @@ window.JANUCA = (function () {
       title: 'Gran Encendido en Plaça Sant Jaume',
       place: 'Plaça de Sant Jaume', address: 'Plaça de Sant Jaume, Ciutat Vella, 08002 Barcelona',
       metro: 'L4 Jaume I · L3 Liceu',
-      image: 'placa-sant-jaume', imageAlt: 'Menorá gigante encendida en la Plaça de Sant Jaume',
-      description: 'El gran acto de Janucá en Barcelona: encendemos la menorá gigante en plena plaza con música en directo, sufganiot para todos y animación para toda la familia.',
-      program: ['Encendido de la menorá gigante', 'Música jasídica en directo', 'Sufganiot y Janucá guelt', 'Animación para niños'],
+      image: 'placa-sant-jaume', imageAlt: 'Janukiá gigante encendida en la Plaça de Sant Jaume',
+      description: 'El gran acto de Janucá en Barcelona: encendemos la janukiá gigante en plena plaza con música en directo, sufganiot para todos y animación para toda la familia.',
+      program: ['Encendido de la janukiá gigante', 'Música jasídica en directo', 'Sufganiot y Janucá guelt', 'Animación para niños'],
       cta: 'Inscribirme gratis'
     },
     {
@@ -81,8 +81,8 @@ window.JANUCA = (function () {
       place: 'Rambla de Catalunya', address: 'Rambla de Catalunya, Eixample, 08007 Barcelona',
       metro: 'L2 · L3 · L4 Passeig de Gràcia',
       image: 'rambla-catalunya', imageAlt: 'Familias celebrando Janucá en la Rambla de Catalunya',
-      description: 'Una noche pensada para los más pequeños: torneo de dréidel, latkes calientes, lluvia de Janucá guelt y talleres para crear tu propia menorá.',
-      program: ['Encendido de la quinta vela', 'Torneo de dréidel', 'Latkes y sufganiot', 'Taller infantil de menorás'],
+      description: 'Una noche pensada para los más pequeños: torneo de dréidel, latkes calientes, lluvia de Janucá guelt y talleres para crear tu propia janukiá.',
+      program: ['Encendido de la quinta vela', 'Torneo de dréidel', 'Latkes y sufganiot', 'Taller infantil de janukiás'],
       notice: 'Los talleres infantiles son gratuitos; se agradece inscribirse para preparar material.',
       cta: 'Inscribir a los niños'
     },
@@ -92,7 +92,7 @@ window.JANUCA = (function () {
       title: 'Las 8 luces frente al Mediterráneo',
       place: 'Moll de la Fusta', address: 'Passeig de Colom, Moll de la Fusta, 08002 Barcelona',
       metro: 'L4 Barceloneta · L3 Drassanes',
-      image: 'moll-de-la-fusta', imageAlt: 'Menorá encendida junto al puerto de Barcelona al anochecer',
+      image: 'moll-de-la-fusta', imageAlt: 'Janukiá encendida junto al puerto de Barcelona al anochecer',
       description: 'Cerramos Janucá encendiendo las ocho velas frente al mar, cantando Hanerot Halalu y Maoz Tzur antes de recibir el Shabat.',
       program: ['Encendido de las 8 velas', 'Hanerot Halalu y Maoz Tzur', 'Brindis de Janucá', 'Despedida antes de Shabat'],
       notice: 'Viernes: terminamos con antelación para que todos lleguen a casa antes de las 17:03 h.',
@@ -100,11 +100,27 @@ window.JANUCA = (function () {
     }
   ];
 
+  // Bendiciones del encendido (se abren en un diálogo desde la janukiá)
+  var blessings = [
+    { n: 1, name: 'Lehadlik ner Janucá', when: 'Todas las noches',
+      he: 'בָּרוּךְ אַתָּה ה\' אֱ-לֹהֵינוּ מֶלֶךְ הָעוֹלָם, אֲשֶׁר קִדְּשָׁנוּ בְּמִצְוֹתָיו וְצִוָּנוּ לְהַדְלִיק נֵר חֲנֻכָּה.',
+      tr: 'Baruj atá A-do-nai, E-lo-heinu Mélej haolam, asher kideshanu bemitzvotav vetzivanu lehadlik ner Janucá.',
+      es: 'Bendito eres Tú, Eterno nuestro Dios, Rey del universo, que nos has santificado con Tus mandamientos y nos has ordenado encender la vela de Janucá.' },
+    { n: 2, name: 'Sheasá nisim', when: 'Todas las noches',
+      he: 'בָּרוּךְ אַתָּה ה\' אֱ-לֹהֵינוּ מֶלֶךְ הָעוֹלָם, שֶׁעָשָׂה נִסִּים לַאֲבוֹתֵינוּ בַּיָּמִים הָהֵם בַּזְּמַן הַזֶּה.',
+      tr: 'Baruj atá A-do-nai, E-lo-heinu Mélej haolam, sheasá nisim laavoteinu baiamim hahem bizmán hazé.',
+      es: 'Bendito eres Tú, Eterno nuestro Dios, Rey del universo, que hiciste milagros para nuestros antepasados en aquellos días, en esta época.' },
+    { n: 3, name: 'Shehejeianu', when: 'Solo la primera noche',
+      he: 'בָּרוּךְ אַתָּה ה\' אֱ-לֹהֵינוּ מֶלֶךְ הָעוֹלָם, שֶׁהֶחֱיָנוּ וְקִיְּמָנוּ וְהִגִּיעָנוּ לַזְּמַן הַזֶּה.',
+      tr: 'Baruj atá A-do-nai, E-lo-heinu Mélej haolam, shehejeianu vekimanu vehiguianu lizman hazé.',
+      es: 'Bendito eres Tú, Eterno nuestro Dios, Rey del universo, que nos has dado la vida, nos has sostenido y nos has permitido llegar hasta este momento.' }
+  ];
+
   var faqs = [
     { q: '¿Hay que pagar o reservar entrada?', a: 'No. Todos los encendidos son abiertos y gratuitos. Confirmar asistencia nos ayuda a calcular cuántas sufganiot y kits preparar.' },
     { q: '¿Son actividades para niños?', a: 'Sí. Hay música, Janucá guelt y actividades para los más pequeños. La fiesta del martes 8 en Rambla de Catalunya está pensada especialmente para familias.' },
-    { q: '¿Por qué los encendidos del viernes son tan pronto?', a: 'Los viernes 4 y 11 la menorá debe encenderse antes de que empiece Shabat, que en Barcelona es a las 17:03 h. Por eso quedamos a las 16:15–16:30 h: así hay tiempo de celebrar y llegar a casa.' },
-    { q: 'No tengo menorá ni velas, ¿qué hago?', a: 'Pide tu kit gratuito con menorá, 44 velas e instrucciones. Puedes recogerlo en cualquiera de los encendidos.' },
+    { q: '¿Por qué los encendidos del viernes son tan pronto?', a: 'Los viernes 4 y 11 la janukiá debe encenderse antes de que empiece Shabat, que en Barcelona es a las 17:03 h. Por eso quedamos a las 16:15–16:30 h: así hay tiempo de celebrar y llegar a casa.' },
+    { q: 'No tengo janukiá ni velas, ¿qué hago?', a: 'Pide tu kit gratuito con janukiá, 44 velas e instrucciones. Puedes recogerlo en cualquiera de los encendidos.' },
     { q: '¿Puedo venir aunque no sea judío?', a: 'Claro. Janucá celebra que la luz vence a la oscuridad: todo el mundo es bienvenido a compartir la fiesta en la calle.' }
   ];
 
@@ -165,6 +181,7 @@ window.JANUCA = (function () {
     nights: nights,
     events: events,
     faqs: faqs,
+    blessings: blessings,
     weekdays: WEEKDAYS,
     months: MONTHS,
     ord: ORD,

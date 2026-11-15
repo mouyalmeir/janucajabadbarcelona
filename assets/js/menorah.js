@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Januquiá interactiva
+   Janukiá interactiva
    - Cada noche muestra las velas que tocan (se colocan de derecha a izquierda).
    - Primero se enciende el shamash; después las velas de IZQUIERDA a DERECHA,
      empezando por la vela nueva de esa noche.
@@ -31,7 +31,7 @@
   }
 
   /* ---------- Build SVG ---------- */
-  var svg = el('svg', { viewBox: '0 0 800 500', role: 'group', 'aria-label': 'Januquiá interactiva: toca las velas para encenderlas' });
+  var svg = el('svg', { viewBox: '0 0 800 500', role: 'group', 'aria-label': 'Janukiá interactiva: toca las velas para encenderlas' });
   var defs = el('defs', {}, svg);
   defs.innerHTML =
     '<linearGradient id="goldU" gradientUnits="userSpaceOnUse" x1="0" y1="120" x2="800" y2="500">' +
@@ -101,6 +101,7 @@
   }
   stage.appendChild(svg);
 
+
   /* ---------- UI refs ---------- */
   var statusEl = document.getElementById('menorah-status');
   var pickerEl = document.getElementById('night-picker');
@@ -111,22 +112,26 @@
   var btnReset = document.getElementById('m-reset');
 
   var today = D.status();
-  var state = { night: 1, order: [], step: 0, busy: false, token: 0 };
+  var state = { night: 1, order: [], step: 0, busy: false, token: 0, auto: false };
 
   function blessingsText(arr) { return arr.length === 3 ? '1, 2 y 3' : arr.join(' y '); }
   function nightData(n) { return D.nights[n - 1]; }
   function dateLabel(nd) { var p = D.parse(nd.date); return D.weekday(nd.date) + ' ' + p.d + ' de ' + D.months[p.m - 1]; }
   function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
-  /* ---------- Night picker ---------- */
+  /* ---------- Selector de noches (con fecha hebrea y eventos) ---------- */
   D.nights.forEach(function (nd) {
     var b = document.createElement('button');
-    b.type = 'button';
-    b.className = 'night-btn';
-    b.setAttribute('aria-pressed', 'false');
+    var ev = D.eventForNight(nd.n);
     var p = D.parse(nd.date);
-    b.innerHTML = '<b>' + nd.n + '</b>' + D.weekday(nd.date).slice(0, 3) + ' ' + p.d;
-    b.setAttribute('aria-label', D.ord[nd.n] + ' noche, ' + dateLabel(nd));
+    b.type = 'button';
+    b.className = 'night-btn' + (ev ? ' has-event' : '');
+    b.setAttribute('aria-pressed', 'false');
+    b.innerHTML = '<b>' + nd.n + '</b><span class="nb-d">' + D.weekday(nd.date).slice(0, 3) + ' ' + p.d + '</span>' +
+      '<span class="nb-h">' + nd.hebrew.replace(' de ', ' ') + '</span>' +
+      (ev ? '<i class="ev-dot" aria-hidden="true"></i>' : '');
+    b.setAttribute('aria-label', D.ord[nd.n] + ' noche, ' + dateLabel(nd) + ', ' + nd.hebrew + (ev ? '. Encendido público: ' + ev.place : ''));
+    if (ev) b.title = 'Encendido con Jabad: ' + ev.place + ', ' + ev.start + ' h';
     if ((today.phase === 'during' || today.phase === 'last') && today.night === nd.n) {
       b.insertAdjacentHTML('afterbegin', '<span class="tag">' + (today.phase === 'last' ? 'Última' : 'Hoy') + '</span>');
     }
@@ -134,13 +139,14 @@
     pickerEl.appendChild(b);
   });
 
-  /* ---------- Core ---------- */
+  /* ---------- Núcleo ---------- */
   function setNight(n) {
     state.token++;
     state.busy = false;
+    state.auto = false;
     state.night = n;
     state.order = [];
-    for (var p = 9 - n; p <= 8; p++) state.order.push(p); // la nueva es la de la izquierda
+    for (var p = 9 - n; p <= 8; p++) state.order.push(p); // la nueva (la de hoy) es la de la izquierda
     state.step = 0;
     shamash.g.classList.remove('lit');
     for (var i = 1; i <= 8; i++) {
@@ -163,13 +169,14 @@
     book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5zM4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg>',
     spark: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c1.5 3 5 5.2 5 10a5 5 0 0 1-10 0c0-2.4 1.1-3.9 2.4-5.2.2 1.6.9 2.7 2 3.2C11 7.6 11 4.6 12 2z"/></svg>'
   };
-  var BLESS = ['Lehadlik ner Janucá', 'Sheasá nisim', 'Shehejeianu'];
 
   function renderPanel(nd) {
     if (!panelEl) return;
     var n = nd.n, ev = D.eventForNight(n);
-    var bl = BLESS.map(function (name, i) {
-      return '<li' + (nd.blessings.indexOf(i + 1) < 0 ? ' class="off"' : '') + '><b>' + (i + 1) + '</b>' + name + '</li>';
+    var bl = D.blessings.map(function (b) {
+      var off = nd.blessings.indexOf(b.n) < 0;
+      return '<li' + (off ? ' class="off"' : '') + '><button type="button" data-bless="' + b.n + '"><b>' + b.n + '</b>' + b.name +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></li>';
     }).join('');
     panelEl.innerHTML =
       '<div class="np-card"><h4>' + ICO.cal + D.ord[n] + ' noche</h4>' +
@@ -180,10 +187,10 @@
       '<div class="np-card"><h4>' + ICO.candle + 'Cómo colocarlas</h4>' +
         '<p class="np-big">' + (n === 1 ? '1 vela' : n + ' velas') + ' + shamash</p>' +
         '<p>' + (n === 1
-          ? 'La vela va en el extremo derecho de la menorá. Enciende el shamash y, con él, la vela.'
-          : 'Se colocan de derecha a izquierda. Con el shamash, enciende primero la nueva (la de más a la izquierda) y sigue hacia la derecha.') + '</p></div>' +
+          ? 'La vela de hoy va en el extremo derecho de la janukiá. Enciende el shamash y, con él, la vela.'
+          : 'Cada noche se añade una vela a la izquierda. Con el shamash, enciende primero <strong>la vela nueva, la de hoy</strong> (la que acabas de añadir) y sigue hacia la derecha.') + '</p></div>' +
       '<div class="np-card"><h4>' + ICO.book + 'Bendiciones</h4><ul class="blessing-list">' + bl + '</ul>' +
-        '<a class="more" href="bendiciones.html">Ver el texto completo →</a></div>' +
+        '<p class="np-small">Toca una para leerla.</p></div>' +
       '<div class="np-card np-light"><h4>' + ICO.spark + 'Suma tu luz</h4>' +
         '<p class="np-quote">«' + nd.thought + '»</p><p>' + nd.idea + '</p>' +
         (ev ? '<a class="np-event" href="eventos.html#' + ev.id + '"><img src="assets/img/' + ev.image + '-sm.webp" alt="" width="48" height="48" loading="lazy"><span><small>Esta noche con Jabad · ' + ev.start + ' h</small>' + ev.place + '</span></a>' : '') +
@@ -194,10 +201,10 @@
   function done() { return state.step > state.order.length; }
 
   function refresh() {
-    shamash.g.classList.toggle('next', state.step === 0);
+    shamash.g.classList.toggle('next', state.step === 0 && !state.auto);
     shamash.g.setAttribute('tabindex', state.step === 0 ? '0' : '-1');
     for (var i = 1; i <= 8; i++) {
-      var isNext = !done() && expected() === i;
+      var isNext = !done() && expected() === i && !state.auto;
       candles[i].g.classList.toggle('next', isNext);
       candles[i].g.setAttribute('tabindex', isNext ? '0' : '-1');
       orderMarks[i].g.classList.toggle('is-next', isNext);
@@ -208,20 +215,24 @@
 
     var n = state.night, nd = nightData(n);
     var html;
-    if (state.step === 0) {
+    if (state.auto && !done()) {
+      html = '<strong>Encendiendo la ' + D.ord[n] + ' noche…</strong><span>Primero el shamash y después, de izquierda a derecha, empezando por la vela de hoy.</span>';
+    } else if (state.step === 0) {
       html = '<strong>Paso 1 · Enciende el shamash</strong><span>Toca la vela central: con ella se encienden las demás.</span>';
     } else if (!done()) {
       var k = state.step;
       html = k === 1
-        ? '<strong>Recita las bendiciones ' + blessingsText(nd.blessings) + '</strong><span>Después enciende la vela <b>nueva</b> de esta noche: la de la izquierda.</span>'
+        ? '<strong>Recita las bendiciones ' + blessingsText(nd.blessings) + '</strong><span>' + (n === 1
+            ? 'Después enciende <b>la vela de hoy</b>, en el extremo derecho.'
+            : 'Después enciende primero <b>la vela nueva, la de hoy</b>: la que has añadido esta noche, la de más a la izquierda.') + '</span>'
         : '<strong>Vela ' + k + ' de ' + n + '</strong><span>Sigue de izquierda a derecha.</span>';
     } else {
       html = '<strong>¡Jag Janucá Saméaj! ✦</strong><span>' + (n === 1 ? 'La primera vela brilla' : 'Las ' + n + ' velas de la ' + D.ord[n] + ' noche brillan') +
-        '. Ahora se canta <a href="bendiciones.html#hanerot">Hanerot Halalu</a> y <a href="bendiciones.html#maoz-tzur">Maoz Tzur</a>.</span>';
+        '. Ahora se canta <a href="bendiciones.html#hanerot">Hanerot Halalu</a> y <a href="bendiciones.html#maoz-tzur">Maoz Tzur</a>.' +
+        (state.auto ? ' Pulsa <b>«Encenderla yo»</b> para hacerlo tú, vela a vela.' : '') + '</span>';
     }
     statusEl.innerHTML = html;
-    btnNext.disabled = done();
-    btnAll.disabled = done();
+    btnNext.disabled = done() || state.auto;
     btnNext.querySelector('span').textContent = state.step === 0 ? 'Encender el shamash' : 'Encender la siguiente';
   }
 
@@ -232,26 +243,26 @@
   }
 
   function spark(to, cb) {
-    if (reduce) { cb(); return; }
+    if (reduce || !svg.animate) { cb(); return; }
     var s = el('g', {}, gFx);
     el('circle', { r: 16, fill: 'url(#haloG)' }, s);
     el('circle', { r: 3.5, fill: '#fffbe6' }, s);
     var x0 = shamash.x, y0 = shamash.top - 20, x1 = to.x, y1 = to.top - 10;
-    var midY = Math.min(y0, y1) - 34;
-    if (!s.animate) { gFx.removeChild(s); cb(); return; }
-    var a = s.animate([
+    var midY = Math.min(y0, y1) - 34, dur = 320 + Math.abs(x1 - x0) * .55, fired = false;
+    function end() { if (fired) return; fired = true; if (s.parentNode) gFx.removeChild(s); cb(); }
+    s.animate([
       { transform: 'translate(' + x0 + 'px,' + y0 + 'px)' },
       { transform: 'translate(' + (x0 + x1) / 2 + 'px,' + midY + 'px)' },
       { transform: 'translate(' + x1 + 'px,' + y1 + 'px)' }
-    ], { duration: 320 + Math.abs(x1 - x0) * .55, easing: 'cubic-bezier(.4,0,.2,1)' });
-    a.onfinish = function () { if (s.parentNode) gFx.removeChild(s); cb(); };
+    ], { duration: dur, easing: 'cubic-bezier(.4,0,.2,1)', fill: 'forwards' }).onfinish = end;
+    setTimeout(end, dur + 80); // por si la animación se pausa
   }
 
   function lightNext(cb) {
     if (state.busy || done()) return;
     var id = expected();
     if (id === 'sh') {
-      ignite(shamash); state.step++; refresh(); if (cb) setTimeout(cb, 500); return;
+      ignite(shamash); state.step++; refresh(); if (cb) setTimeout(cb, 520); return;
     }
     state.busy = true;
     var tok = state.token;
@@ -273,24 +284,33 @@
     setTimeout(function () { c.g.classList.remove('shake'); }, 500);
     statusEl.innerHTML = '<strong>Todavía no</strong><span>' + msg + '</span>';
     clearTimeout(hint.t);
-    hint.t = setTimeout(refresh, 2600);
+    hint.t = setTimeout(refresh, 2800);
   }
 
   function onPick(id) {
-    if (state.busy || done()) return;
+    if (state.busy || done() || state.auto) return;
     var c = id === 'sh' ? shamash : candles[id];
     if (c.g.classList.contains('lit')) return;
     if (id === expected()) { clearTimeout(hint.t); lightNext(); return; }
     if (state.step === 0) hint(c, 'Primero se enciende el <b>shamash</b>, la vela central más alta: con él se encienden las demás.');
-    else hint(c, 'Se enciende de <b>izquierda a derecha</b>, empezando por la vela nueva de esta noche. Toca la vela marcada.');
+    else hint(c, 'Se enciende de <b>izquierda a derecha</b>, empezando por <b>la vela nueva de hoy</b>, la que has añadido esta noche. Toca la vela marcada.');
   }
 
-  function lightAll() {
+  function lightAll(auto) {
     var tok = state.token;
+    if (auto) { state.auto = true; refresh(); }
     (function loop() {
       if (tok !== state.token || done()) return;
-      lightNext(function () { setTimeout(loop, 260); });
+      lightNext(function () { setTimeout(loop, 280); });
     })();
+  }
+
+  // Reproducir: vuelve a empezar la noche y la enciende sola
+  function play() {
+    clearTimeout(hint.t);
+    setNight(state.night);
+    state.auto = true; refresh();
+    setTimeout(function () { lightAll(true); }, reduce ? 0 : 450);
   }
 
   function celebrate() {
@@ -307,7 +327,41 @@
     }
   }
 
-  /* ---------- Events ---------- */
+  /* ---------- Bendiciones en diálogo ---------- */
+  var bdlg;
+  function blessingHTML(k) {
+    var b = D.blessings[k - 1], last = D.blessings.length;
+    return '<div class="modal-in"><button class="modal-close" type="button" aria-label="Cerrar">×</button>' +
+      '<p class="eyebrow">' + D.ord[k] + ' bendición · ' + b.when + '</p><h3>' + b.name + '</h3>' +
+      '<p class="bless-he" lang="he" dir="rtl">' + b.he + '</p>' +
+      '<p class="bless-tr">' + b.tr + '</p><p class="bless-es">' + b.es + '</p>' +
+      '<div class="bless-nav">' +
+        (k > 1 ? '<button class="btn btn-ghost btn-sm" type="button" data-bgo="' + (k - 1) + '">← ' + D.blessings[k - 2].name + '</button>' : '<span></span>') +
+        (k < last ? '<button class="btn btn-gold btn-sm" type="button" data-bgo="' + (k + 1) + '">' + D.blessings[k].name + ' →</button>'
+                  : '<a class="btn btn-ghost btn-sm" href="bendiciones.html#hanerot">Hanerot Halalu y Maoz Tzur →</a>') +
+      '</div></div>';
+  }
+  function openBlessing(k) {
+    if (!bdlg) {
+      bdlg = document.createElement('dialog');
+      bdlg.className = 'modal bless-modal';
+      bdlg.setAttribute('aria-label', 'Bendición');
+      document.body.appendChild(bdlg);
+      bdlg.addEventListener('click', function (e) {
+        if (e.target === bdlg || e.target.closest('.modal-close')) { bdlg.close(); return; }
+        var go = e.target.closest('[data-bgo]');
+        if (go) bdlg.innerHTML = blessingHTML(+go.getAttribute('data-bgo'));
+      });
+    }
+    bdlg.innerHTML = blessingHTML(k);
+    if (bdlg.showModal) { if (!bdlg.open) bdlg.showModal(); } else bdlg.setAttribute('open', '');
+  }
+  if (panelEl) panelEl.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-bless]');
+    if (b) openBlessing(+b.getAttribute('data-bless'));
+  });
+
+  /* ---------- Eventos ---------- */
   svg.addEventListener('click', function (e) {
     var g = e.target.closest && e.target.closest('.candle');
     if (!g) return;
@@ -323,10 +377,10 @@
     onPick(id === 'sh' ? 'sh' : +id);
   });
   btnNext.addEventListener('click', function () { clearTimeout(hint.t); lightNext(); });
-  btnAll.addEventListener('click', function () { clearTimeout(hint.t); lightAll(); });
+  btnAll.addEventListener('click', play);
   btnReset.addEventListener('click', function () { clearTimeout(hint.t); setNight(state.night); });
 
-  /* ---------- Start on today's night ---------- */
+  /* ---------- Noche de hoy ---------- */
   var start = today.night;
   try {
     var q = +new URLSearchParams(location.search).get('noche');
@@ -334,12 +388,36 @@
   } catch (e) {}
   setNight(start);
 
-  // API para otras secciones (p. ej. la línea de las 8 noches)
-  window.JanucaMenorah = {
-    setNight: function (n) {
-      setNight(n);
-      var top = stage.getBoundingClientRect().top + window.scrollY - 90;
-      window.scrollTo({ top: top, behavior: reduce ? 'auto' : 'smooth' });
-    }
-  };
+  /* ---------- Entrada al deslizar (estilo Apple) + encendido automático ---------- */
+  var hero = document.querySelector('.hero-scroll');
+  var copy = document.getElementById('hero-copy');
+  var sky = scene.querySelector('.skyline');
+  var hintEl = document.querySelector('.scroll-hint');
+  var autoDone = false;
+  function autoStart() { if (autoDone) return; autoDone = true; play(); }
+
+  if (hero && !reduce) {
+    var ticking = false;
+    var update = function () {
+      ticking = false;
+      var range = hero.offsetHeight - window.innerHeight;
+      var p = range > 0 ? Math.min(1, Math.max(0, -hero.getBoundingClientRect().top / range)) : 1;
+      var e = 1 - Math.pow(1 - p, 3);
+      var s0 = window.innerWidth < 700 ? .84 : .72;
+      stage.style.transform = 'translate3d(0,' + ((1 - e) * 7).toFixed(2) + '%,0) scale(' + (s0 + (1 - s0) * e).toFixed(4) + ')';
+      if (copy) {
+        copy.style.transform = 'translate3d(0,' + (-e * 28).toFixed(1) + 'px,0)';
+        copy.style.opacity = (1 - Math.max(0, e - .35) * 1.25).toFixed(3);
+      }
+      if (sky) sky.style.transform = 'translate3d(0,' + ((1 - e) * 24).toFixed(1) + 'px,0)';
+      if (hintEl) hintEl.style.opacity = Math.max(0, 1 - p * 5).toFixed(2);
+      if (p > .12) autoStart();
+    };
+    window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+    setTimeout(autoStart, 2400); // si no se desliza, se enciende igualmente
+  } else {
+    setTimeout(autoStart, 300);
+  }
 })();
