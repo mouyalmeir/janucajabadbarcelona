@@ -1,0 +1,304 @@
+/* ==========================================================================
+   Januquiá interactiva
+   - Cada noche muestra las velas que tocan (se colocan de derecha a izquierda).
+   - Primero se enciende el shamash; después las velas de IZQUIERDA a DERECHA,
+     empezando por la vela nueva de esa noche.
+   - Por defecto abre la noche que corresponde a hoy (hora de Barcelona).
+     Para probar: ?noche=5  o  ?fecha=2026-12-08T19:00
+   ========================================================================== */
+(function () {
+  'use strict';
+  var D = window.JANUCA;
+  var stage = document.getElementById('menorah');
+  if (!stage || !D) return;
+
+  var NS = 'http://www.w3.org/2000/svg';
+  var CX = 400, CUP = 250, GAP = 86, SLOPE = 0.55, SH_CUP = 166, CH = 78;
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function el(tag, attrs, parent) {
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function posX(i) { return i <= 4 ? CX - (5 - i) * GAP : CX + (i - 4) * GAP; }
+  function armK(i) { return i <= 4 ? 5 - i : i - 4; }
+  function flamePath(x, y, w, h) {
+    return 'M' + x + ',' + y +
+      'C' + (x - w) + ',' + y + ' ' + (x - w * .95) + ',' + (y - h * .42) + ' ' + x + ',' + (y - h) +
+      'C' + (x + w * .95) + ',' + (y - h * .42) + ' ' + (x + w) + ',' + y + ' ' + x + ',' + y + 'Z';
+  }
+
+  /* ---------- Build SVG ---------- */
+  var svg = el('svg', { viewBox: '0 0 800 500', role: 'group', 'aria-label': 'Januquiá interactiva: toca las velas para encenderlas' });
+  var defs = el('defs', {}, svg);
+  defs.innerHTML =
+    '<linearGradient id="goldU" gradientUnits="userSpaceOnUse" x1="0" y1="120" x2="800" y2="500">' +
+      '<stop offset="0" stop-color="#8a5a18"/><stop offset=".22" stop-color="#f2c46d"/><stop offset=".38" stop-color="#fff1c1"/>' +
+      '<stop offset=".5" stop-color="#d9a24a"/><stop offset=".64" stop-color="#ffe6a6"/><stop offset=".82" stop-color="#c98a2e"/><stop offset="1" stop-color="#7a4d12"/></linearGradient>' +
+    '<linearGradient id="wax" x1="0" x2="1"><stop offset="0" stop-color="#cbbd9e"/><stop offset=".38" stop-color="#fffaf0"/><stop offset="1" stop-color="#bfae8a"/></linearGradient>' +
+    '<linearGradient id="waxSh" x1="0" x2="1"><stop offset="0" stop-color="#9fb4e8"/><stop offset=".38" stop-color="#f1f5ff"/><stop offset="1" stop-color="#8da1d6"/></linearGradient>' +
+    '<radialGradient id="flameO" cx=".5" cy=".86" r=".78" fx=".5" fy=".92"><stop offset="0" stop-color="#fffbe6"/><stop offset=".28" stop-color="#ffe08a"/>' +
+      '<stop offset=".6" stop-color="#ffab2e"/><stop offset=".86" stop-color="#ff6a00" stop-opacity=".85"/><stop offset="1" stop-color="#ff4d00" stop-opacity="0"/></radialGradient>' +
+    '<radialGradient id="flameI" cx=".5" cy=".8" r=".7"><stop offset="0" stop-color="#fff"/><stop offset=".6" stop-color="#fff6c8"/><stop offset="1" stop-color="#fff0b4" stop-opacity="0"/></radialGradient>' +
+    '<radialGradient id="haloG"><stop offset="0" stop-color="#ffd678" stop-opacity=".55"/><stop offset=".4" stop-color="#ffaa3c" stop-opacity=".18"/><stop offset="1" stop-color="#ff9632" stop-opacity="0"/></radialGradient>' +
+    '<radialGradient id="floorG"><stop offset="0" stop-color="#ffb347" stop-opacity=".28"/><stop offset="1" stop-color="#ffb347" stop-opacity="0"/></radialGradient>';
+
+  var gFloor = el('ellipse', { cx: CX, cy: 482, rx: 330, ry: 26, fill: 'url(#floorG)' }, svg);
+  gFloor.style.transition = 'opacity .9s';
+  var gMetal = el('g', {}, svg);
+  // brazos diagonales rectos (estilo Jabad)
+  for (var i = 1; i <= 8; i++) {
+    var k = armK(i);
+    el('path', { class: 'arm', d: 'M' + posX(i) + ',' + (CUP + 6) + 'L' + CX + ',' + (CUP + k * GAP * SLOPE) }, gMetal);
+  }
+  el('rect', { class: 'metal', x: CX - 7, y: SH_CUP + 4, width: 14, height: 462 - SH_CUP, rx: 5 }, gMetal);
+  for (k = 1; k <= 4; k++) el('circle', { class: 'metal', cx: CX, cy: CUP + k * GAP * SLOPE, r: 9 }, gMetal);
+  el('path', { class: 'metal', d: 'M340,482 Q400,436 460,482 Z' }, gMetal);
+  el('rect', { class: 'metal', x: 318, y: 478, width: 164, height: 9, rx: 4.5 }, gMetal);
+
+  var gCandles = el('g', {}, svg);
+  var gCups = el('g', {}, svg);
+  var gOrder = el('g', {}, svg);
+  var gFx = el('g', {}, svg);
+
+  function makeCandle(id, x, cupY, isSh) {
+    var top = cupY - CH;
+    var g = el('g', { class: 'candle absent', 'data-id': id, tabindex: '-1', role: 'button' }, gCandles);
+    g.style.transformOrigin = x + 'px ' + cupY + 'px';
+    el('circle', { class: 'halo', cx: x, cy: top - 26, r: 62, fill: 'url(#haloG)' }, g);
+    el('rect', { class: 'ring', x: x - 31, y: top - 56, width: 62, height: CH + 66, rx: 26 }, g);
+    el('rect', { x: x - 11, y: top, width: 22, height: CH + 4, rx: 3, fill: isSh ? 'url(#waxSh)' : 'url(#wax)' }, g);
+    el('path', { d: 'M' + (x - 11) + ',' + (top + 3) + 'q4,10 7,0', fill: isSh ? '#f1f5ff' : '#fffaf0', opacity: '.9' }, g);
+    el('line', { class: 'wick', x1: x, y1: top, x2: x, y2: top - 8 }, g);
+    var fg = el('g', { class: 'flame-g' }, g);
+    fg.style.transformOrigin = x + 'px ' + (top - 3) + 'px';
+    var fl = el('g', { class: 'flame' }, fg);
+    fl.style.transformOrigin = x + 'px ' + (top - 3) + 'px';
+    fl.style.animationDelay = (-Math.random() * 1.2).toFixed(2) + 's';
+    fl.style.animationDuration = (1.05 + Math.random() * .5).toFixed(2) + 's';
+    el('path', { d: flamePath(x, top - 2, 13, 46), fill: 'url(#flameO)' }, fl);
+    el('path', { d: flamePath(x, top - 4, 6, 24), fill: 'url(#flameI)' }, fl);
+    el('ellipse', { cx: x, cy: top - 5, rx: 4, ry: 3, fill: '#7fb2ff', opacity: '.7' }, fl);
+    // copa
+    el('path', { class: 'metal', d: 'M' + (x - 18) + ',' + (cupY - 2) + 'L' + (x + 18) + ',' + (cupY - 2) + 'L' + (x + 11) + ',' + (cupY + 11) + 'L' + (x - 11) + ',' + (cupY + 11) + 'Z' }, gCups);
+    el('rect', { class: 'metal', x: x - 20, y: cupY - 5, width: 40, height: 5, rx: 2.5 }, gCups);
+    return { id: id, x: x, top: top, g: g };
+  }
+
+  var shamash = makeCandle('sh', CX, SH_CUP, true);
+  shamash.g.classList.remove('absent');
+  shamash.g.setAttribute('aria-label', 'Shamash (vela auxiliar)');
+  var candles = {};
+  var orderMarks = {};
+  for (i = 1; i <= 8; i++) {
+    candles[i] = makeCandle(i, posX(i), CUP, false);
+    var om = el('g', { class: 'order' }, gOrder);
+    el('circle', { cx: posX(i), cy: CUP + 32, r: 12 }, om);
+    var t = el('text', { x: posX(i), y: CUP + 32.5 }, om);
+    orderMarks[i] = { g: om, t: t };
+  }
+  stage.appendChild(svg);
+
+  /* ---------- UI refs ---------- */
+  var statusEl = document.getElementById('menorah-status');
+  var pickerEl = document.getElementById('night-picker');
+  var infoEl = document.getElementById('night-info');
+  var btnNext = document.getElementById('m-next');
+  var btnAll = document.getElementById('m-all');
+  var btnReset = document.getElementById('m-reset');
+
+  var today = D.status();
+  var state = { night: 1, order: [], step: 0, busy: false, token: 0 };
+
+  function blessingsText(arr) { return arr.length === 3 ? '1, 2 y 3' : arr.join(' y '); }
+  function nightData(n) { return D.nights[n - 1]; }
+  function dateLabel(nd) { var p = D.parse(nd.date); return D.weekday(nd.date) + ' ' + p.d + ' de ' + D.months[p.m - 1]; }
+  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  /* ---------- Night picker ---------- */
+  D.nights.forEach(function (nd) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'night-btn';
+    b.setAttribute('aria-pressed', 'false');
+    var p = D.parse(nd.date);
+    b.innerHTML = '<b>' + nd.n + '</b>' + D.weekday(nd.date).slice(0, 3) + ' ' + p.d;
+    b.setAttribute('aria-label', D.ord[nd.n] + ' noche, ' + dateLabel(nd));
+    if ((today.phase === 'during' || today.phase === 'last') && today.night === nd.n) {
+      b.insertAdjacentHTML('afterbegin', '<span class="tag">' + (today.phase === 'last' ? 'Última' : 'Hoy') + '</span>');
+    }
+    b.addEventListener('click', function () { setNight(nd.n); });
+    pickerEl.appendChild(b);
+  });
+
+  /* ---------- Core ---------- */
+  function setNight(n) {
+    state.token++;
+    state.busy = false;
+    state.night = n;
+    state.order = [];
+    for (var p = 9 - n; p <= 8; p++) state.order.push(p); // la nueva es la de la izquierda
+    state.step = 0;
+    shamash.g.classList.remove('lit');
+    for (var i = 1; i <= 8; i++) {
+      var on = i >= 9 - n;
+      candles[i].g.classList.toggle('absent', !on);
+      candles[i].g.classList.remove('lit');
+      candles[i].g.setAttribute('aria-label', on ? 'Vela ' + (i - (9 - n) + 1) + ' de ' + n : '');
+      orderMarks[i].g.classList.toggle('show', on);
+      orderMarks[i].g.classList.remove('done', 'is-next');
+      orderMarks[i].t.textContent = on ? (i - (9 - n) + 1) : '';
+    }
+    [].forEach.call(pickerEl.children, function (b, idx) { b.setAttribute('aria-pressed', String(idx + 1 === n)); });
+    var nd = nightData(n);
+    infoEl.innerHTML = '<b>' + D.ord[n] + ' noche · ' + cap(dateLabel(nd)) + '</b> · ' + nd.time + ' <span>(' + nd.note.charAt(0).toLowerCase() + nd.note.slice(1) + ')</span> · Bendiciones ' + blessingsText(nd.blessings) +
+      (nd.alert ? '<span class="night-alert">' + nd.alert + '</span>' : '');
+    refresh();
+  }
+
+  function expected() { return state.step === 0 ? 'sh' : state.order[state.step - 1]; }
+  function done() { return state.step > state.order.length; }
+
+  function refresh() {
+    shamash.g.classList.toggle('next', state.step === 0);
+    shamash.g.setAttribute('tabindex', state.step === 0 ? '0' : '-1');
+    for (var i = 1; i <= 8; i++) {
+      var isNext = !done() && expected() === i;
+      candles[i].g.classList.toggle('next', isNext);
+      candles[i].g.setAttribute('tabindex', isNext ? '0' : '-1');
+      orderMarks[i].g.classList.toggle('is-next', isNext);
+    }
+    var lit = state.step;
+    stage.style.setProperty('--lit', (lit / 9).toFixed(3));
+    gFloor.style.opacity = .3 + .7 * (lit / 9);
+
+    var n = state.night, nd = nightData(n);
+    var html;
+    if (state.step === 0) {
+      html = '<strong>Paso 1 · Enciende el shamash</strong><span>Toca la vela central: con ella se encienden las demás.</span>';
+    } else if (!done()) {
+      var k = state.step;
+      html = k === 1
+        ? '<strong>Recita las bendiciones ' + blessingsText(nd.blessings) + '</strong><span>Después enciende la vela <b>nueva</b> de esta noche: la de la izquierda.</span>'
+        : '<strong>Vela ' + k + ' de ' + n + '</strong><span>Sigue de izquierda a derecha.</span>';
+    } else {
+      html = '<strong>¡Jag Janucá Saméaj! ✦</strong><span>' + (n === 1 ? 'La primera vela brilla' : 'Las ' + n + ' velas de la ' + D.ord[n] + ' noche brillan') +
+        '. Ahora se canta <a href="bendiciones.html#hanerot">Hanerot Halalu</a> y <a href="bendiciones.html#maoz-tzur">Maoz Tzur</a>.</span>';
+    }
+    statusEl.innerHTML = html;
+    btnNext.disabled = done();
+    btnAll.disabled = done();
+    btnNext.querySelector('span').textContent = state.step === 0 ? 'Encender el shamash' : 'Encender la siguiente';
+  }
+
+  function ignite(c) {
+    c.g.classList.add('lit');
+    c.g.classList.remove('next');
+    if (c.id !== 'sh') orderMarks[c.id].g.classList.add('done');
+  }
+
+  function spark(to, cb) {
+    if (reduce) { cb(); return; }
+    var s = el('g', {}, gFx);
+    el('circle', { r: 16, fill: 'url(#haloG)' }, s);
+    el('circle', { r: 3.5, fill: '#fffbe6' }, s);
+    var x0 = shamash.x, y0 = shamash.top - 20, x1 = to.x, y1 = to.top - 10;
+    var midY = Math.min(y0, y1) - 34;
+    if (!s.animate) { gFx.removeChild(s); cb(); return; }
+    var a = s.animate([
+      { transform: 'translate(' + x0 + 'px,' + y0 + 'px)' },
+      { transform: 'translate(' + (x0 + x1) / 2 + 'px,' + midY + 'px)' },
+      { transform: 'translate(' + x1 + 'px,' + y1 + 'px)' }
+    ], { duration: 320 + Math.abs(x1 - x0) * .55, easing: 'cubic-bezier(.4,0,.2,1)' });
+    a.onfinish = function () { if (s.parentNode) gFx.removeChild(s); cb(); };
+  }
+
+  function lightNext(cb) {
+    if (state.busy || done()) return;
+    var id = expected();
+    if (id === 'sh') {
+      ignite(shamash); state.step++; refresh(); if (cb) setTimeout(cb, 500); return;
+    }
+    state.busy = true;
+    var tok = state.token;
+    spark(candles[id], function () {
+      if (tok !== state.token) return;
+      ignite(candles[id]);
+      state.step++;
+      state.busy = false;
+      refresh();
+      if (done()) celebrate();
+      if (cb) cb();
+    });
+  }
+
+  function hint(c, msg) {
+    c.g.classList.remove('shake');
+    void c.g.getBBox();
+    c.g.classList.add('shake');
+    setTimeout(function () { c.g.classList.remove('shake'); }, 500);
+    statusEl.innerHTML = '<strong>Todavía no</strong><span>' + msg + '</span>';
+    clearTimeout(hint.t);
+    hint.t = setTimeout(refresh, 2600);
+  }
+
+  function onPick(id) {
+    if (state.busy || done()) return;
+    var c = id === 'sh' ? shamash : candles[id];
+    if (c.g.classList.contains('lit')) return;
+    if (id === expected()) { clearTimeout(hint.t); lightNext(); return; }
+    if (state.step === 0) hint(c, 'Primero se enciende el <b>shamash</b>, la vela central más alta: con él se encienden las demás.');
+    else hint(c, 'Se enciende de <b>izquierda a derecha</b>, empezando por la vela nueva de esta noche. Toca la vela marcada.');
+  }
+
+  function lightAll() {
+    var tok = state.token;
+    (function loop() {
+      if (tok !== state.token || done()) return;
+      lightNext(function () { setTimeout(loop, 260); });
+    })();
+  }
+
+  function celebrate() {
+    if (reduce) return;
+    for (var i = 0; i < 18; i++) {
+      var e = document.createElement('span');
+      e.className = 'ember';
+      e.style.left = (8 + Math.random() * 84) + '%';
+      e.style.top = (22 + Math.random() * 18) + '%';
+      e.style.setProperty('--dx', (Math.random() * 60 - 30) + 'px');
+      e.style.animationDelay = (Math.random() * .8) + 's';
+      stage.appendChild(e);
+      setTimeout(function (x) { return function () { x.remove(); }; }(e), 3600);
+    }
+  }
+
+  /* ---------- Events ---------- */
+  svg.addEventListener('click', function (e) {
+    var g = e.target.closest && e.target.closest('.candle');
+    if (!g) return;
+    var id = g.getAttribute('data-id');
+    onPick(id === 'sh' ? 'sh' : +id);
+  });
+  svg.addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    var g = e.target.closest && e.target.closest('.candle');
+    if (!g) return;
+    e.preventDefault();
+    var id = g.getAttribute('data-id');
+    onPick(id === 'sh' ? 'sh' : +id);
+  });
+  btnNext.addEventListener('click', function () { clearTimeout(hint.t); lightNext(); });
+  btnAll.addEventListener('click', function () { clearTimeout(hint.t); lightAll(); });
+  btnReset.addEventListener('click', function () { clearTimeout(hint.t); setNight(state.night); });
+
+  /* ---------- Start on today's night ---------- */
+  var start = today.night;
+  try {
+    var q = +new URLSearchParams(location.search).get('noche');
+    if (q >= 1 && q <= 8) start = q;
+  } catch (e) {}
+  setNight(start);
+})();

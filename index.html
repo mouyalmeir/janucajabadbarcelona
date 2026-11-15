@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Janucá 5787 en Barcelona · Suma tu luz · Jabad Barcelona</title>
+  <meta name="description" content="Janucá 2026 con Jabad Barcelona: del 4 al 12 de diciembre. Enciende tu januquiá, consulta los horarios de Barcelona y ven a los 4 grandes encendidos.">
+  <meta name="theme-color" content="#060a1b">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:title" content="Janucá 5787 en Barcelona · Suma tu luz · Jabad Barcelona">
+  <meta property="og:description" content="Janucá 2026 con Jabad Barcelona: del 4 al 12 de diciembre. Enciende tu januquiá, consulta los horarios de Barcelona y ven a los 4 grandes encendidos.">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&display=swap">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <script>document.documentElement.className = 'js';</script>
+  <script src="assets/js/data.js" defer></script>
+  <script src="assets/js/main.js" defer></script>
+  <script src="assets/js/menorah.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#contenido">Saltar al contenido</a>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="Janucá 5787 con Jabad Barcelona: inicio">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke="#f2c46d" stroke-width="1.7" stroke-linecap="round"><path d="M4 19 20 28M8 19 20 25.6M12 19 20 23.3M16 19 20 21M36 19 20 28M32 19 20 25.6M28 19 20 23.3M24 19 20 21M20 13v21M14.5 35h11"/></g><g fill="#ffab2e"><ellipse cx="20" cy="9.2" rx="1.5" ry="2.5"/><ellipse cx="4" cy="15.4" rx="1.4" ry="2.3"/><ellipse cx="8" cy="15.4" rx="1.4" ry="2.3"/><ellipse cx="12" cy="15.4" rx="1.4" ry="2.3"/><ellipse cx="16" cy="15.4" rx="1.4" ry="2.3"/><ellipse cx="24" cy="15.4" rx="1.4" ry="2.3"/><ellipse cx="28" cy="15.4" rx="1.4" ry="2.3"/><ellipse cx="32" cy="15.4" rx="1.4" ry="2.3"/><ellipse cx="36" cy="15.4" rx="1.4" ry="2.3"/></g></svg>
+        <span><small>Jabad Barcelona</small><b>Janucá 5787</b></span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav" aria-label="Abrir menú">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <nav id="nav" class="nav" aria-label="Principal">
+        <a href="historia.html">Historia</a>
+        <a href="como-encender.html">Cómo encender</a>
+        <a href="horarios.html">Horarios</a>
+        <a href="bendiciones.html">Bendiciones</a>
+        <a href="tradiciones.html">Tradiciones</a>
+        <a href="receta.html">Receta</a>
+        <a href="eventos.html" class="nav-cta">Eventos</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido">
+<section class="hero">
+      <div class="wrap">
+        <p class="eyebrow rise">Janucá 5787 · Barcelona</p>
+        <h1 class="display rise">Suma tu <em>luz</em></h1>
+        <p class="lede rise">Del viernes 4 al sábado 12 de diciembre de 2026. Ocho noches para encender, compartir y celebrar con Jabad Barcelona.</p>
+        <div class="rise" data-countdown>
+          <div class="countdown" aria-label="Cuenta atrás para la primera vela">
+            <div><b data-cd="d">–</b><span>días</span></div>
+            <div><b data-cd="h">–</b><span>horas</span></div>
+            <div><b data-cd="m">–</b><span>min</span></div>
+            <div><b data-cd="s">–</b><span>seg</span></div>
+          </div>
+          <p class="countdown-label">para la primera vela · viernes 4 de diciembre, antes de las 17:03 h</p>
+        </div>
+      </div>
+
+      <div class="menorah-stage" id="menorah"></div>
+
+      <div class="wrap menorah-ui">
+        <div class="menorah-status" id="menorah-status" aria-live="polite"></div>
+        <div class="menorah-actions">
+          <button class="btn btn-gold" id="m-next" type="button"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c1.5 3 5 5.2 5 10a5 5 0 0 1-10 0c0-2.4 1.1-3.9 2.4-5.2.2 1.6.9 2.7 2 3.2C11 7.6 11 4.6 12 2z"/></svg><span>Encender el shamash</span></button>
+          <button class="btn btn-ghost" id="m-all" type="button">Encender todas</button>
+          <button class="btn btn-ghost" id="m-reset" type="button">Reiniciar</button>
+        </div>
+        <div class="nights" id="night-picker" role="group" aria-label="Elige la noche de Janucá"></div>
+        <p class="night-info" id="night-info"></p>
+      </div>
+    </section>
+
+    <section class="section" id="encendidos">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <p class="eyebrow">Con Jabad Barcelona</p>
+          <h2>4 noches, 4 encendidos</h2>
+          <p>Te esperamos para encender juntos en Barcelona. Trae a tu familia y amigos: cuanta más gente, más luz.</p>
+        </div>
+        <div class="events-grid" data-events="compact"></div>
+        <p style="text-align:center;margin-top:28px" class="reveal"><a class="btn btn-ghost" href="eventos.html">Todos los detalles y contacto <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></p>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:0">
+      <div class="wrap quote reveal">
+        <svg class="mini-flame" viewBox="0 0 30 44" aria-hidden="true"><defs><radialGradient id="qf" cx=".5" cy=".85" r=".8"><stop offset="0" stop-color="#fffbe6"/><stop offset=".35" stop-color="#ffe08a"/><stop offset=".75" stop-color="#ffab2e"/><stop offset="1" stop-color="#ff6a00" stop-opacity="0"/></radialGradient></defs><path d="M15 44C3 44 2 26 15 2c13 24 12 42 0 42z" fill="url(#qf)"/></svg>
+        <blockquote>«Una pequeña luz disipa mucha oscuridad»</blockquote>
+        <p>Los macabeos combatieron la oscuridad espiritual con valentía; hoy nosotros lo hacemos sumando luz. Cualquier buena acción, por pequeña que parezca, tiene un impacto inmenso.</p>
+      </div>
+    </section>
+
+    <section class="section" id="descubre" style="padding-top:0">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <p class="eyebrow">Descubre Janucá</p>
+          <h2>Todo lo que necesitas para estas ocho noches</h2>
+        </div>
+        <div class="topics">
+          <a class="topic reveal" href="historia.html">
+            <span class="topic-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c1.2 2.4 4 4.2 4 8a4 4 0 0 1-8 0c0-1.9.9-3.1 1.9-4.2.2 1.3.7 2.2 1.6 2.6C11.2 7.3 11.2 5 12 3z"/><path d="M6 21h12"/></svg></span>
+            <h3>Historia y milagros</h3>
+            <p>Qué es Janucá, los macabeos y los dos milagros que celebramos.</p>
+            <span class="go">Leer <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a class="topic reveal" href="como-encender.html">
+            <span class="topic-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 7v13M3 9l9 6M6 9l6 4M21 9l-9 6M18 9l-6 4M8 21h8M12 3v1.5"/></svg></span>
+            <h3>Cómo encender</h3>
+            <p>Qué necesitas, dónde colocar la menorá y el paso a paso.</p>
+            <span class="go">Ver guía <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a class="topic reveal" href="horarios.html">
+            <span class="topic-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+            <h3>Horarios en Barcelona</h3>
+            <p>Calendario de encendido 2026, con atención especial a Shabat.</p>
+            <span class="go">Consultar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a class="topic reveal" href="bendiciones.html">
+            <span class="topic-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg></span>
+            <h3>Bendiciones y canciones</h3>
+            <p>Las tres bendiciones, Hanerot Halalu y Maoz Tzur.</p>
+            <span class="go">Recitar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a class="topic reveal" href="tradiciones.html">
+            <span class="topic-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v4M7 6h10v8l-5 8-5-8z"/></svg></span>
+            <h3>Dréidel y Janucá guelt</h3>
+            <p>Juega al dréidel online y descubre el sentido de las monedas.</p>
+            <span class="go">Jugar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a class="topic reveal" href="receta.html">
+            <span class="topic-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><ellipse cx="12" cy="13" rx="9" ry="7"/><path d="M5 11c2 1.5 4 .5 5 1.5s3 1 4 0 3-.5 5-1.5"/><circle cx="12" cy="7.5" r="1.3" fill="currentColor"/></svg></span>
+            <h3>Receta de sufganiot</h3>
+            <p>Berlinas esponjosas fritas en aceite, para recordar el milagro.</p>
+            <span class="go">Cocinar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:0">
+      <div class="wrap">
+        <div class="band reveal">
+          <div>
+            <p class="eyebrow">Kit gratuito</p>
+            <h2>¿Necesitas una menorá o velas?</h2>
+            <p>Contáctanos y te preparamos tu kit de Janucá gratuito para que nadie en Barcelona se quede sin encender.</p>
+          </div>
+          <div class="band-actions">
+            <a class="btn btn-gold" href="eventos.html#contacto">Pedir mi kit</a>
+            <a class="btn btn-ghost" href="como-encender.html">Cómo se enciende</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div>
+        <a class="brand" href="index.html"><svg viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke="#f2c46d" stroke-width="1.7" stroke-linecap="round"><path d="M4 19 20 28M8 19 20 25.6M12 19 20 23.3M16 19 20 21M36 19 20 28M32 19 20 25.6M28 19 20 23.3M24 19 20 21M20 13v21M14.5 35h11"/></g><g fill="#ffab2e"><ellipse cx="20" cy="9.2" rx="1.5" ry="2.5"/><ellipse cx="4" cy="15.4" rx="1.4" ry="2.3"/><ellipse cx="8" cy="15.4" rx="1.4" ry="2.3"/><ellipse cx="12" cy="15.4" rx="1.4" ry="2.3"/><ellipse cx="16" cy="15.4" rx="1.4" ry="2.3"/><ellipse cx="24" cy="15.4" rx="1.4" ry="2.3"/><ellipse cx="28" cy="15.4" rx="1.4" ry="2.3"/><ellipse cx="32" cy="15.4" rx="1.4" ry="2.3"/><ellipse cx="36" cy="15.4" rx="1.4" ry="2.3"/></g></svg><span><small>Jabad Barcelona</small><b>Janucá 5787</b></span></a>
+        <p>Suma tu luz · Del viernes 4 al sábado 12 de diciembre de 2026 · Barcelona</p>
+      </div>
+      <nav aria-label="Secciones">
+        <a href="index.html">Inicio</a>
+        <a href="historia.html">Historia</a>
+        <a href="como-encender.html">Cómo encender</a>
+        <a href="horarios.html">Horarios</a>
+        <a href="bendiciones.html">Bendiciones</a>
+        <a href="tradiciones.html">Tradiciones</a>
+        <a href="receta.html">Receta</a>
+        <a href="eventos.html">Eventos</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>
