@@ -177,6 +177,9 @@
       var off = nd.blessings.indexOf(b.n) < 0;
       return '<li' + (off ? ' class="off"' : '') + '><button type="button" data-bless="' + b.n + '"><b>' + b.n + '</b>' + b.name +
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></li>';
+    }).join('') + (D.songs || []).map(function (t) {
+      return '<li class="song-item"><button type="button" data-text="' + t.key + '"><b>♪</b>' + t.name +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></li>';
     }).join('');
     panelEl.innerHTML =
       '<div class="np-card"><h4>' + ICO.cal + D.ord[n] + ' noche</h4>' +
@@ -189,8 +192,8 @@
         '<p>' + (n === 1
           ? 'La vela de hoy va en el extremo derecho de la janukiá. Enciende el shamash y, con él, la vela.'
           : 'Cada noche se añade una vela a la izquierda. Con el shamash, enciende primero <strong>la vela nueva, la de hoy</strong> (la que acabas de añadir) y sigue hacia la derecha.') + '</p></div>' +
-      '<div class="np-card"><h4>' + ICO.book + 'Bendiciones</h4><ul class="blessing-list">' + bl + '</ul>' +
-        '<p class="np-small">Toca una para leerla.</p></div>' +
+      '<div class="np-card"><h4>' + ICO.book + 'Bendiciones y cantos</h4><ul class="blessing-list">' + bl + '</ul>' +
+        '<p class="np-small">Toca una para leerla o cantarla.</p></div>' +
       '<div class="np-card np-light"><h4>' + ICO.spark + 'Suma tu luz</h4>' +
         '<p class="np-quote">«' + nd.thought + '»</p><p>' + nd.idea + '</p>' +
         (ev ? '<a class="np-event" href="eventos.html#' + ev.id + '"><img src="assets/img/' + ev.image + '-sm.webp" alt="" width="48" height="48" loading="lazy"><span><small>Esta noche con Jabad · ' + ev.start + ' h</small>' + ev.place + '</span></a>' : '') +
@@ -228,7 +231,7 @@
         : '<strong>Vela ' + k + ' de ' + n + '</strong><span>Sigue de izquierda a derecha.</span>';
     } else {
       html = '<strong>¡Jag Janucá Saméaj! ✦</strong><span>' + (n === 1 ? 'La primera vela brilla' : 'Las ' + n + ' velas de la ' + D.ord[n] + ' noche brillan') +
-        '. Ahora se canta <a href="bendiciones.html#hanerot">Hanerot Halalu</a> y <a href="bendiciones.html#maoz-tzur">Maoz Tzur</a>.' +
+        '. Ahora se canta <a href="bendiciones.html#hanerot" data-text="hanerot">Hanerot Halalu</a> y <a href="bendiciones.html#maoz-tzur" data-text="maoz">Maoz Tzur</a>.' +
         (state.auto ? ' Pulsa <b>«Encenderla yo»</b> para hacerlo tú, vela a vela.' : '') + '</span>';
     }
     statusEl.innerHTML = html;
@@ -327,39 +330,50 @@
     }
   }
 
-  /* ---------- Bendiciones en diálogo ---------- */
+  /* ---------- Bendiciones y cantos en diálogo ---------- */
+  // Secuencia: 1.ª, 2.ª y 3.ª bendición → Hanerot Halalu → Maoz Tzur
+  var TEXTS = D.blessings.map(function (b) {
+    return { key: String(b.n), kicker: D.ord[b.n] + ' bendición · ' + b.when, name: b.name, he: b.he, tr: b.tr, es: b.es };
+  }).concat((D.songs || []).map(function (s) {
+    return { key: s.key, kicker: s.when, name: s.name, he: s.he, tr: s.tr, es: s.es };
+  }));
+  function textIndex(key) { for (var i = 0; i < TEXTS.length; i++) if (TEXTS[i].key === String(key)) return i; return 0; }
   var bdlg;
-  function blessingHTML(k) {
-    var b = D.blessings[k - 1], last = D.blessings.length;
+  function textHTML(i) {
+    var t = TEXTS[i], prev = TEXTS[i - 1], next = TEXTS[i + 1];
     return '<div class="modal-in"><button class="modal-close" type="button" aria-label="Cerrar">×</button>' +
-      '<p class="eyebrow">' + D.ord[k] + ' bendición · ' + b.when + '</p><h3>' + b.name + '</h3>' +
-      '<p class="bless-he" lang="he" dir="rtl">' + b.he + '</p>' +
-      '<p class="bless-tr">' + b.tr + '</p><p class="bless-es">' + b.es + '</p>' +
+      '<p class="eyebrow">' + t.kicker + '</p><h3>' + t.name + '</h3>' +
+      (t.he ? '<p class="bless-he" lang="he" dir="rtl">' + t.he + '</p>' : '') +
+      (t.tr ? '<p class="bless-tr">' + t.tr + '</p>' : '') +
+      '<p class="bless-es' + (t.he || t.tr ? '' : ' bless-only') + '">' + t.es + '</p>' +
       '<div class="bless-nav">' +
-        (k > 1 ? '<button class="btn btn-ghost btn-sm" type="button" data-bgo="' + (k - 1) + '">← ' + D.blessings[k - 2].name + '</button>' : '<span></span>') +
-        (k < last ? '<button class="btn btn-gold btn-sm" type="button" data-bgo="' + (k + 1) + '">' + D.blessings[k].name + ' →</button>'
-                  : '<a class="btn btn-ghost btn-sm" href="bendiciones.html#hanerot">Hanerot Halalu y Maoz Tzur →</a>') +
+        (prev ? '<button class="btn btn-ghost btn-sm" type="button" data-bgo="' + (i - 1) + '">← ' + prev.name + '</button>' : '<span></span>') +
+        (next ? '<button class="btn btn-gold btn-sm" type="button" data-bgo="' + (i + 1) + '">' + next.name + ' →</button>' : '<span></span>') +
       '</div></div>';
   }
-  function openBlessing(k) {
+  function openText(key) {
     if (!bdlg) {
       bdlg = document.createElement('dialog');
       bdlg.className = 'modal bless-modal';
-      bdlg.setAttribute('aria-label', 'Bendición');
+      bdlg.setAttribute('aria-label', 'Bendiciones y cantos de Janucá');
       document.body.appendChild(bdlg);
       bdlg.addEventListener('click', function (e) {
         if (e.target === bdlg || e.target.closest('.modal-close')) { bdlg.close(); return; }
         var go = e.target.closest('[data-bgo]');
-        if (go) bdlg.innerHTML = blessingHTML(+go.getAttribute('data-bgo'));
+        if (go) { bdlg.innerHTML = textHTML(+go.getAttribute('data-bgo')); bdlg.querySelector('.modal-in').scrollTop = 0; }
       });
     }
-    bdlg.innerHTML = blessingHTML(k);
+    bdlg.innerHTML = textHTML(textIndex(key));
     if (bdlg.showModal) { if (!bdlg.open) bdlg.showModal(); } else bdlg.setAttribute('open', '');
   }
-  if (panelEl) panelEl.addEventListener('click', function (e) {
-    var b = e.target.closest('[data-bless]');
-    if (b) openBlessing(+b.getAttribute('data-bless'));
-  });
+  function onTextClick(e) {
+    var b = e.target.closest('[data-bless],[data-text]');
+    if (!b) return;
+    e.preventDefault();
+    openText(b.getAttribute('data-bless') || b.getAttribute('data-text'));
+  }
+  if (panelEl) panelEl.addEventListener('click', onTextClick);
+  statusEl.addEventListener('click', onTextClick);
 
   /* ---------- Eventos ---------- */
   svg.addEventListener('click', function (e) {
@@ -402,7 +416,7 @@
       ticking = false;
       var range = hero.offsetHeight - window.innerHeight;
       var p = range > 0 ? Math.min(1, Math.max(0, -hero.getBoundingClientRect().top / range)) : 1;
-      var e = 1 - Math.pow(1 - p, 3);
+      var e = 1 - (1 - p) * (1 - p); // sigue al dedo: ligero ease-out, sin retardo
       var s0 = window.innerWidth < 700 ? .84 : .72;
       stage.style.transform = 'translate3d(0,' + ((1 - e) * 7).toFixed(2) + '%,0) scale(' + (s0 + (1 - s0) * e).toFixed(4) + ')';
       if (copy) {
@@ -411,7 +425,7 @@
       }
       if (sky) sky.style.transform = 'translate3d(0,' + ((1 - e) * 24).toFixed(1) + 'px,0)';
       if (hintEl) hintEl.style.opacity = Math.max(0, 1 - p * 5).toFixed(2);
-      if (p > .12) autoStart();
+      if (p > .08) autoStart();
     };
     window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
     window.addEventListener('resize', update);

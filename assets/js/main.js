@@ -373,7 +373,22 @@
   // Si se llega con #ancla a un evento, mostrarlo ya
   if (location.hash) { var tgt = document.getElementById(location.hash.slice(1)); if (tgt) { tgt.classList.add('in'); setTimeout(function () { tgt.scrollIntoView(); }, 50); } }
 
-  /* ---------- Cursor de llama: una luz suave sigue al ratón ---------- */
+  /* ---------- Cielo estrellado (estrellas que titilan + estrella fugaz) ---------- */
+  (function () {
+    var sf = document.createElement('div');
+    sf.className = 'starfield';
+    sf.setAttribute('aria-hidden', 'true');
+    var n = window.innerWidth < 700 ? 26 : 46, h = '';
+    for (var i = 0; i < n; i++) {
+      h += '<i' + (Math.random() < .18 ? ' class="g"' : '') + ' style="left:' + (Math.random() * 100).toFixed(2) + '%;top:' + (Math.random() * 100).toFixed(2) +
+        '%;--s:' + (1 + Math.random() * 1.6).toFixed(2) + 'px;--d:' + (2.2 + Math.random() * 4).toFixed(2) + 's;--l:-' + (Math.random() * 6).toFixed(2) + 's"></i>';
+    }
+    h += '<b style="--t:12%;--x:8%;--d:15s;--l:4s"></b><b style="--t:26%;--x:58%;--d:23s;--l:13s"></b>';
+    sf.innerHTML = h;
+    document.body.insertBefore(sf, document.body.firstChild);
+  })();
+
+  /* ---------- Luz suave que sigue al ratón ---------- */
   if (window.matchMedia && matchMedia('(hover: hover) and (pointer: fine)').matches) {
     var glow = document.createElement('div');
     glow.className = 'cursor-light';

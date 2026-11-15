@@ -116,6 +116,16 @@ window.JANUCA = (function () {
       es: 'Bendito eres Tú, Eterno nuestro Dios, Rey del universo, que nos has dado la vida, nos has sostenido y nos has permitido llegar hasta este momento.' }
   ];
 
+  // Después de encender (se abren en el mismo diálogo que las bendiciones)
+  var songs = [
+    { key: 'hanerot', name: 'Hanerot Halalu', when: 'Después de encender',
+      es: '«Encendemos estas luces con motivo de las salvaciones, milagros y maravillas que has realizado para con nuestros antepasados en aquellos días en esta época, por medio de Tus santos sacerdotes. Estas luces son sagradas durante los ocho días de Janucá, y no nos está permitido hacer uso de ellas, sino únicamente contemplarlas para agradecer y alabar Tu gran Nombre por Tus milagros, Tus maravillas y Tus salvaciones».' },
+    { key: 'maoz', name: 'Maoz Tzur', when: 'Canción tradicional',
+      he: 'מָעוֹז צוּר יְשׁוּעָתִי, לְךָ נָאֶה לְשַׁבֵּחַ,<br>תִּכּוֹן בֵּית תְּפִלָּתִי, וְשָׁם תּוֹדָה נְזַבֵּחַ.<br>לְעֵת תָּכִין מַטְבֵּחַ, מִצָּר הַמְנַבֵּחַ,<br>אָז אֶגְמוֹר בְּשִׁיר מִזְמוֹר, חֲנֻכַּת הַמִּזְבֵּחַ.',
+      tr: 'Maoz Tzur ieshuatí, lejá naé leshabeaj,<br>tikón bet tefilatí, vesham todá nezabeaj.<br>Leet tajín matbeaj mitzar hamnabeaj,<br>az egmor beshir mizmor janucat hamizbeaj.',
+      es: 'Fortaleza, Roca de mi salvación, a Ti es grato alabarte. Restablece mi Casa de oración y allí te ofreceremos gratitud. Cuando silencies al enemigo que nos acosa, concluiré con cánticos la inauguración del altar.' }
+  ];
+
   var faqs = [
     { q: '¿Hay que pagar o reservar entrada?', a: 'No. Todos los encendidos son abiertos y gratuitos. Confirmar asistencia nos ayuda a calcular cuántas sufganiot y kits preparar.' },
     { q: '¿Son actividades para niños?', a: 'Sí. Hay música, Janucá guelt y actividades para los más pequeños. La fiesta del martes 8 en Rambla de Catalunya está pensada especialmente para familias.' },
@@ -182,6 +192,7 @@ window.JANUCA = (function () {
     events: events,
     faqs: faqs,
     blessings: blessings,
+    songs: songs,
     weekdays: WEEKDAYS,
     months: MONTHS,
     ord: ORD,
