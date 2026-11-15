@@ -267,24 +267,6 @@
     }, { passive: true });
   }
 
-  /* ---------- Las 8 noches ---------- */
-  var track = $('#nights-track');
-  if (track) {
-    var st0 = D.status();
-    track.innerHTML = D.nights.map(function (nd) {
-      var ev = D.eventForNight(nd.n), p = D.parse(nd.date);
-      var today = (st0.phase === 'during' || st0.phase === 'last') && st0.night === nd.n;
-      return '<button type="button" class="nt reveal' + (ev ? ' has-event' : '') + (today ? ' is-today' : '') + '" data-night="' + nd.n + '" aria-label="Ver la ' + D.ord[nd.n] + ' noche en la janukiá">' +
-        '<span class="nt-n">' + nd.n + '</span><span class="nt-date">' + D.weekday(nd.date) + ' ' + p.d + '</span>' +
-        '<small>' + nd.hebrew + '</small>' + dots(nd.n) + '<small>' + nd.time + '</small>' +
-        (ev ? '<span class="nt-ev">' + esc(ev.place) + '</span>' : '') + '</button>';
-    }).join('');
-    track.addEventListener('click', function (e) {
-      var b = e.target.closest('[data-night]');
-      if (b && window.JanucaMenorah) window.JanucaMenorah.setNight(+b.getAttribute('data-night'));
-    });
-  }
-
   /* ---------- FAQ ---------- */
   var faq = $('#faq');
   if (faq) faq.innerHTML = D.faqs.map(function (f) { return '<details class="reveal"><summary>' + esc(f.q) + '</summary><p>' + esc(f.a) + '</p></details>'; }).join('');
@@ -299,29 +281,6 @@
     else if (k === 'phone') el.innerHTML = '<a href="tel:' + esc(v.replace(/[^\d+]/g, '')) + '">' + esc(v) + '</a>';
     else el.textContent = v;
   });
-
-  /* ---------- Formulario del kit ---------- */
-  var kitForm = $('#kit-form');
-  if (kitForm) {
-    var sel = kitForm.elements.delivery;
-    D.events.forEach(function (ev) {
-      var o = document.createElement('option'), p = D.parse(ev.date);
-      o.textContent = 'Recoger en ' + ev.place + ' (' + D.weekday(ev.date) + ' ' + p.d + ')';
-      sel.insertBefore(o, sel.lastElementChild); // antes de «envío a domicilio»
-    });
-    var addr = $('#kit-address');
-    var syncAddr = function () { addr.hidden = !/domicilio/i.test(sel.value); };
-    sel.addEventListener('change', syncAddr); syncAddr();
-    kitForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-      if (!kitForm.reportValidity()) return;
-      send('Solicitud de kit de Janucá 5787', [
-        'Nombre: ' + val(kitForm, 'name'), 'Teléfono: ' + val(kitForm, 'phone'), val(kitForm, 'email') && 'Email: ' + val(kitForm, 'email'),
-        'Kits: ' + val(kitForm, 'qty'), 'Entrega: ' + val(kitForm, 'delivery'),
-        !addr.hidden && val(kitForm, 'address') && 'Dirección: ' + val(kitForm, 'address'), val(kitForm, 'note') && 'Comentario: ' + val(kitForm, 'note')
-      ], $('#kit-msg'));
-    });
-  }
 
   /* ---------- Pestañas ---------- */
   $$('[role="tablist"]').forEach(function (list) {
@@ -389,17 +348,55 @@
   if (s2.phase === 'during') { var row = $('tr[data-night="' + s2.night + '"]'); if (row) row.classList.add('today'); }
 
   /* ---------- Aparición al hacer scroll ---------- */
+  // Regla común para toda la web: un bloque que ocupa más de ~70 % de la pantalla
+  // (p. ej. en móvil) no aparece de golpe; se reparte entre sus hijos, que van
+  // apareciendo uno a uno al deslizar.
+  var vh = window.innerHeight;
+  function visibleKids(el) {
+    return [].filter.call(el.children, function (c) { return c.offsetHeight > 0 && !/^(SCRIPT|STYLE|TEMPLATE)$/.test(c.tagName); });
+  }
+  function split(el, depth) {
+    if (depth > 4 || el.offsetHeight < vh * .7) return [el];
+    var kids = visibleKids(el);
+    if (!kids.length) return [el];
+    if (kids.length === 1) return split(kids[0], depth + 1);
+    return kids.reduce(function (acc, k) { return acc.concat(split(k, depth + 1)); }, []);
+  }
+  $$('.reveal').forEach(function (el) {
+    var parts = split(el, 0);
+    if (parts.length === 1 && parts[0] === el) return;
+    el.classList.remove('reveal');
+    parts.forEach(function (p) { p.classList.add('reveal'); });
+  });
+
   var items = $$('.reveal');
   if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+      var shown = entries.filter(function (en) { return en.isIntersecting; });
+      shown.forEach(function (en, i) {
+        var t = en.target;
+        if (shown.length > 1) {
+          // si entran varios a la vez, se escalonan; luego se quita el retardo
+          t.style.transitionDelay = Math.min(i * .08, .4).toFixed(2) + 's';
+          setTimeout(function () { t.style.transitionDelay = ''; }, 1400);
+        }
+        t.classList.add('in');
+        io.unobserve(t);
+      });
     }, { rootMargin: '0px 0px -6% 0px', threshold: .06 });
     items.forEach(function (it) { io.observe(it); });
   } else {
     items.forEach(function (it) { it.classList.add('in'); });
   }
-  // Si se llega con #ancla a un evento, mostrarlo ya
-  if (location.hash) { var tgt = document.getElementById(location.hash.slice(1)); if (tgt) { tgt.classList.add('in'); setTimeout(function () { tgt.scrollIntoView(); }, 50); } }
+  // Si se llega con #ancla (p. ej. a un evento), mostrarlo ya
+  if (location.hash) {
+    var tgt = document.getElementById(location.hash.slice(1));
+    if (tgt) {
+      tgt.classList.add('in');
+      $$('.reveal', tgt).forEach(function (r) { r.classList.add('in'); });
+      setTimeout(function () { tgt.scrollIntoView(); }, 50);
+    }
+  }
 
   /* ---------- Cielo estrellado (estrellas que titilan) ---------- */
   (function () {
