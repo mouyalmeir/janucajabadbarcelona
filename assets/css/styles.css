@@ -850,14 +850,8 @@ dialog.modal::backdrop { background: rgba(3,6,18,.72); -webkit-backdrop-filter: 
 .nights.reveal.in .night-btn:nth-child(4) { animation-delay: .12s; } .nights.reveal.in .night-btn:nth-child(5) { animation-delay: .16s; }
 .nights.reveal.in .night-btn:nth-child(6) { animation-delay: .2s; } .nights.reveal.in .night-btn:nth-child(7) { animation-delay: .24s; }
 .nights.reveal.in .night-btn:nth-child(8) { animation-delay: .28s; }
-.night-panel.reveal { transform: none; transition: opacity .4s; }
-.js .night-panel.reveal .np-card { opacity: 0; }
-.night-panel.reveal.in .np-card { opacity: 1; animation: cardIn .7s cubic-bezier(.2,.8,.2,1) backwards; }
-.night-panel.reveal.in .np-card:nth-child(2) { animation-delay: .08s; }
-.night-panel.reveal.in .np-card:nth-child(3) { animation-delay: .16s; }
-.night-panel.reveal.in .np-card:nth-child(4) { animation-delay: .24s; }
 @keyframes cardIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
-@media (prefers-reduced-motion: reduce) { .js .nights.reveal .night-btn, .js .night-panel.reveal .np-card { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .js .nights.reveal .night-btn, .js .np-card.np-reveal { opacity: 1; transform: none; } }
 @media print { .night-btn, .np-card { opacity: 1 !important; } }
 #menorah .spark-flame { transform-box: fill-box; transform-origin: 50% 100%; animation: flicker .45s ease-in-out infinite alternate; }
 
@@ -876,3 +870,7 @@ dialog.modal::backdrop { background: rgba(3,6,18,.72); -webkit-backdrop-filter: 
 .recipe-photo img { aspect-ratio: 16 / 8; object-position: 50% 55%; }
 .recipe-photo figcaption small { display: block; margin-top: 4px; font-size: .7rem; color: rgba(246,239,224,.6); }
 @media (max-width: 600px) { .recipe-photo img { aspect-ratio: 4 / 3; } }
+
+/* Panel de la noche: cada tarjeta aparece al entrar en pantalla */
+.js .np-card.np-reveal { opacity: 0; transform: translateY(22px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.8,.2,1); }
+.js .np-card.np-reveal.in { opacity: 1; transform: none; }

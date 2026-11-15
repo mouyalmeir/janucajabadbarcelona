@@ -198,6 +198,23 @@
         '<p class="np-quote">«' + nd.thought + '»</p><p>' + nd.idea + '</p>' +
         (ev ? '<a class="np-event" href="eventos.html#' + ev.id + '"><img src="assets/img/' + ev.image + '-sm.webp" alt="" width="48" height="48" loading="lazy"><span><small>Esta noche con Jabad · ' + ev.start + ' h</small>' + ev.place + '</span></a>' : '') +
       '</div>';
+    revealCards();
+  }
+
+  // Cada tarjeta aparece cuando entra en pantalla (en móvil, una a una al deslizar)
+  var cardIO = ('IntersectionObserver' in window && !reduce) ? new IntersectionObserver(function (entries) {
+    var batch = entries.filter(function (en) { return en.isIntersecting; });
+    batch.forEach(function (en, i) {
+      en.target.style.transitionDelay = (i * 0.09).toFixed(2) + 's'; // escalonado si entran a la vez
+      en.target.classList.add('in');
+      cardIO.unobserve(en.target);
+    });
+  }, { rootMargin: '0px 0px -10% 0px', threshold: .15 }) : null;
+  function revealCards() {
+    [].forEach.call(panelEl.querySelectorAll('.np-card'), function (c) {
+      c.classList.add('np-reveal');
+      if (cardIO) cardIO.observe(c); else c.classList.add('in');
+    });
   }
 
   function expected() { return state.step === 0 ? 'sh' : state.order[state.step - 1]; }
