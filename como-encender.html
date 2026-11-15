@@ -36,7 +36,7 @@
         <a href="horarios.html">Horarios</a>
         <a href="bendiciones.html">Bendiciones</a>
         <a href="tradiciones.html">Tradiciones</a>
-        <a href="receta.html">Receta</a>
+        <a href="receta.html">Recetas</a>
         <a href="eventos.html" class="nav-cta">Eventos</a>
       </nav>
     </div>
@@ -53,6 +53,7 @@
 
     <div class="wrap">
       <article class="prose">
+        <div class="page-tools no-print" style="margin:0 0 24px"><button class="btn btn-ghost btn-sm" type="button" data-print>Imprimir la guía</button><a class="btn btn-ghost btn-sm" href="index.html#kit">¿No tienes menorá? Pide tu kit</a></div>
         <p class="reveal">Tanto hombres como mujeres tienen la obligación de encender la menorá o participar en el encendido familiar. Asimismo, se anima a los niños a encender sus propias menorás personales, y los estudiantes o personas que vivan solas deben encenderla en su propio hogar o habitación.</p>
 
         <h2 class="reveal">¿Qué necesitas?</h2>
@@ -81,7 +82,41 @@
           <li class="reveal">Entona el tradicional <a href="bendiciones.html#hanerot">«Hanerot Halalu»</a> y el himno <a href="bendiciones.html#maoz-tzur">«Maoz Tzur»</a>.</li>
           <li class="reveal">Permanece junto a las velas durante al menos <strong>media hora</strong> (excepto el viernes por la tarde). Recuerda que está prohibido aprovechar la luz de las velas de Janucá para leer o trabajar; solo se contemplan para agradecer y celebrar el milagro.</li>
         </ol>
-        <p class="reveal" style="text-align:center;margin-top:24px"><a class="btn btn-gold" href="index.html#menorah">Practica con la januquiá interactiva</a></p>
+        <figure class="diagram reveal" aria-labelledby="dg-cap">
+          <svg viewBox="0 0 640 230" role="img" aria-label="Esquema de la 3.ª noche: las velas se colocan de derecha a izquierda y se encienden de izquierda a derecha">
+            <defs>
+              <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#f2c46d"/></marker>
+              <marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#ffab2e"/></marker>
+            </defs>
+            <text x="505" y="22" fill="#b4b2c8" font-size="13" text-anchor="middle" font-family="system-ui, sans-serif">Se colocan de derecha a izquierda</text>
+            <path d="M610 36H390" stroke="#f2c46d" stroke-width="2" marker-end="url(#ah)" fill="none"/>
+            <g stroke="#f2c46d" stroke-width="5" stroke-linecap="round" fill="none" opacity=".9">
+              <path d="M40 140H600M320 140V200M290 205H350"/>
+            </g>
+            <g fill="#c98a2e">
+              <rect x="28" y="132" width="24" height="10" rx="3"/><rect x="98" y="132" width="24" height="10" rx="3"/><rect x="168" y="132" width="24" height="10" rx="3"/><rect x="238" y="132" width="24" height="10" rx="3"/>
+              <rect x="378" y="132" width="24" height="10" rx="3"/><rect x="448" y="132" width="24" height="10" rx="3"/><rect x="518" y="132" width="24" height="10" rx="3"/><rect x="588" y="132" width="24" height="10" rx="3"/>
+              <rect x="308" y="96" width="24" height="10" rx="3"/><rect x="316" y="104" width="8" height="38"/>
+            </g>
+            <g fill="#f6efe0">
+              <rect x="453" y="88" width="14" height="46" rx="2"/><rect x="523" y="88" width="14" height="46" rx="2"/><rect x="593" y="88" width="14" height="46" rx="2"/>
+              <rect x="313" y="52" width="14" height="46" rx="2" fill="#dfe7ff"/>
+            </g>
+            <g fill="#ffab2e"><path d="M460 86c-6 0-7-8 0-18 7 10 6 18 0 18z"/><path d="M530 86c-6 0-7-8 0-18 7 10 6 18 0 18z"/><path d="M600 86c-6 0-7-8 0-18 7 10 6 18 0 18z"/><path d="M320 50c-6 0-7-8 0-18 7 10 6 18 0 18z"/></g>
+            <text x="320" y="225" fill="#f2c46d" font-size="12" text-anchor="middle" font-family="system-ui, sans-serif">shamash</text>
+            <g font-family="system-ui, sans-serif" font-size="13" font-weight="700" text-anchor="middle">
+              <circle cx="460" cy="164" r="11" fill="#f2c46d"/><text x="460" y="168.5" fill="#1b1408">1</text>
+              <circle cx="530" cy="164" r="11" fill="#151e47" stroke="#f2c46d"/><text x="530" y="168.5" fill="#ffe2a3">2</text>
+              <circle cx="600" cy="164" r="11" fill="#151e47" stroke="#f2c46d"/><text x="600" y="168.5" fill="#ffe2a3">3</text>
+            </g>
+            <path d="M440 192H620" stroke="#ffab2e" stroke-width="2" marker-end="url(#ah2)" fill="none"/>
+            <text x="505" y="212" fill="#ffe2a3" font-size="13" text-anchor="middle" font-family="system-ui, sans-serif">Se encienden de izquierda a derecha</text>
+            <text x="40" y="80" fill="#b4b2c8" font-size="12" font-family="system-ui, sans-serif">Ejemplo: 3.ª noche</text>
+            <text x="40" y="98" fill="#b4b2c8" font-size="12" font-family="system-ui, sans-serif">La vela 1 es la nueva de hoy</text>
+          </svg>
+          <figcaption id="dg-cap" class="sr-only">Las velas se añaden por la derecha cada noche y se encienden empezando por la nueva, la de más a la izquierda.</figcaption>
+        </figure>
+        <p class="reveal" style="text-align:center;margin-top:24px"><a class="btn btn-gold" href="index.html">Practica con la januquiá interactiva</a></p>
 
         <h2 class="reveal">¿Cuándo encenderla?</h2>
         <p class="reveal">La costumbre de Jabad-Lubavitch es encender la menorá poco después de la puesta del sol (o al caer la noche), asegurándose de que tenga suficiente combustible o tamaño de vela para arder hasta <strong>30 minutos después del anochecer</strong> (salida de las estrellas). Las velas estándar de Janucá duran unos 30 minutos, por lo que deben encenderse ya anochecido.</p>
@@ -106,20 +141,39 @@
 
   <footer class="site-footer">
     <div class="wrap">
-      <div>
-        <a class="brand" href="index.html"><svg viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke="#f2c46d" stroke-width="1.7" stroke-linecap="round"><path d="M4 19 20 28M8 19 20 25.6M12 19 20 23.3M16 19 20 21M36 19 20 28M32 19 20 25.6M28 19 20 23.3M24 19 20 21M20 13v21M14.5 35h11"/></g><g fill="#ffab2e"><ellipse cx="20" cy="9.2" rx="1.5" ry="2.5"/><ellipse cx="4" cy="15.4" rx="1.4" ry="2.3"/><ellipse cx="8" cy="15.4" rx="1.4" ry="2.3"/><ellipse cx="12" cy="15.4" rx="1.4" ry="2.3"/><ellipse cx="16" cy="15.4" rx="1.4" ry="2.3"/><ellipse cx="24" cy="15.4" rx="1.4" ry="2.3"/><ellipse cx="28" cy="15.4" rx="1.4" ry="2.3"/><ellipse cx="32" cy="15.4" rx="1.4" ry="2.3"/><ellipse cx="36" cy="15.4" rx="1.4" ry="2.3"/></g></svg><span><small>Jabad Barcelona</small><b>Janucá 5787</b></span></a>
-        <p>Suma tu luz · Del viernes 4 al sábado 12 de diciembre de 2026 · Barcelona</p>
+      <div class="foot-grid">
+        <div>
+          <a class="brand" href="index.html"><svg viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke="#f2c46d" stroke-width="1.7" stroke-linecap="round"><path d="M4 19 20 28M8 19 20 25.6M12 19 20 23.3M16 19 20 21M36 19 20 28M32 19 20 25.6M28 19 20 23.3M24 19 20 21M20 13v21M14.5 35h11"/></g><g fill="#ffab2e"><ellipse cx="20" cy="9.2" rx="1.5" ry="2.5"/><ellipse cx="4" cy="15.4" rx="1.4" ry="2.3"/><ellipse cx="8" cy="15.4" rx="1.4" ry="2.3"/><ellipse cx="12" cy="15.4" rx="1.4" ry="2.3"/><ellipse cx="16" cy="15.4" rx="1.4" ry="2.3"/><ellipse cx="24" cy="15.4" rx="1.4" ry="2.3"/><ellipse cx="28" cy="15.4" rx="1.4" ry="2.3"/><ellipse cx="32" cy="15.4" rx="1.4" ry="2.3"/><ellipse cx="36" cy="15.4" rx="1.4" ry="2.3"/></g></svg><span><small>Jabad Barcelona</small><b>Janucá 5787</b></span></a>
+          <p>Suma tu luz · Del viernes 4 al sábado 12 de diciembre de 2026 · Barcelona</p>
+          <p><a href="index.html#kit">Pide tu kit gratuito de Janucá →</a></p>
+        </div>
+        <div>
+          <h4>Janucá</h4>
+          <nav class="foot-links" aria-label="Secciones">
+            <a href="index.html">Inicio</a>
+            <a href="historia.html">Historia</a>
+            <a href="como-encender.html">Cómo encender</a>
+            <a href="horarios.html">Horarios</a>
+            <a href="bendiciones.html">Bendiciones</a>
+            <a href="tradiciones.html">Tradiciones</a>
+            <a href="receta.html">Recetas</a>
+            <a href="eventos.html">Eventos</a>
+          </nav>
+        </div>
+        <div>
+          <h4>Contacto</h4>
+          <div class="foot-links">
+            <span data-contact="address"></span>
+            <span data-contact="phone"></span>
+            <span data-contact="email"></span>
+            <a href="eventos.html#colabora">Colabora y voluntariado</a>
+          </div>
+        </div>
       </div>
-      <nav aria-label="Secciones">
-        <a href="index.html">Inicio</a>
-        <a href="historia.html">Historia</a>
-        <a href="como-encender.html">Cómo encender</a>
-        <a href="horarios.html">Horarios</a>
-        <a href="bendiciones.html">Bendiciones</a>
-        <a href="tradiciones.html">Tradiciones</a>
-        <a href="receta.html">Receta</a>
-        <a href="eventos.html">Eventos</a>
-      </nav>
+      <div class="legal">
+        <span>© 5787 · 2026 Jabad Lubavitch Barcelona</span>
+        <span>Las fotos de los encendidos son ilustrativas.</span>
+      </div>
     </div>
   </footer>
 </body>

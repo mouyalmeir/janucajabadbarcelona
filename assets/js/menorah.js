@@ -104,7 +104,8 @@
   /* ---------- UI refs ---------- */
   var statusEl = document.getElementById('menorah-status');
   var pickerEl = document.getElementById('night-picker');
-  var infoEl = document.getElementById('night-info');
+  var panelEl = document.getElementById('night-panel');
+  var scene = stage.closest('.menorah-scene') || stage;
   var btnNext = document.getElementById('m-next');
   var btnAll = document.getElementById('m-all');
   var btnReset = document.getElementById('m-reset');
@@ -152,10 +153,41 @@
       orderMarks[i].t.textContent = on ? (i - (9 - n) + 1) : '';
     }
     [].forEach.call(pickerEl.children, function (b, idx) { b.setAttribute('aria-pressed', String(idx + 1 === n)); });
-    var nd = nightData(n);
-    infoEl.innerHTML = '<b>' + D.ord[n] + ' noche · ' + cap(dateLabel(nd)) + '</b> · ' + nd.time + ' <span>(' + nd.note.charAt(0).toLowerCase() + nd.note.slice(1) + ')</span> · Bendiciones ' + blessingsText(nd.blessings) +
-      (nd.alert ? '<span class="night-alert">' + nd.alert + '</span>' : '');
+    renderPanel(nightData(n));
     refresh();
+  }
+
+  var ICO = {
+    cal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg>',
+    candle: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 7v13M3 9l9 6M6 9l6 4M21 9l-9 6M18 9l-6 4M8 21h8M12 2.5v2"/></svg>',
+    book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5zM4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg>',
+    spark: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c1.5 3 5 5.2 5 10a5 5 0 0 1-10 0c0-2.4 1.1-3.9 2.4-5.2.2 1.6.9 2.7 2 3.2C11 7.6 11 4.6 12 2z"/></svg>'
+  };
+  var BLESS = ['Lehadlik ner Janucá', 'Sheasá nisim', 'Shehejeianu'];
+
+  function renderPanel(nd) {
+    if (!panelEl) return;
+    var n = nd.n, ev = D.eventForNight(n);
+    var bl = BLESS.map(function (name, i) {
+      return '<li' + (nd.blessings.indexOf(i + 1) < 0 ? ' class="off"' : '') + '><b>' + (i + 1) + '</b>' + name + '</li>';
+    }).join('');
+    panelEl.innerHTML =
+      '<div class="np-card"><h4>' + ICO.cal + D.ord[n] + ' noche</h4>' +
+        '<p class="np-big">' + cap(dateLabel(nd)) + '</p>' +
+        '<p>Noche del ' + nd.hebrew + ' de 5787</p>' +
+        '<span class="np-time">' + nd.time + '</span>' +
+        '<p' + (nd.alert ? ' class="np-alert"' : '') + '>' + (nd.alert || nd.note) + '</p></div>' +
+      '<div class="np-card"><h4>' + ICO.candle + 'Cómo colocarlas</h4>' +
+        '<p class="np-big">' + (n === 1 ? '1 vela' : n + ' velas') + ' + shamash</p>' +
+        '<p>' + (n === 1
+          ? 'La vela va en el extremo derecho de la menorá. Enciende el shamash y, con él, la vela.'
+          : 'Se colocan de derecha a izquierda. Con el shamash, enciende primero la nueva (la de más a la izquierda) y sigue hacia la derecha.') + '</p></div>' +
+      '<div class="np-card"><h4>' + ICO.book + 'Bendiciones</h4><ul class="blessing-list">' + bl + '</ul>' +
+        '<a class="more" href="bendiciones.html">Ver el texto completo →</a></div>' +
+      '<div class="np-card np-light"><h4>' + ICO.spark + 'Suma tu luz</h4>' +
+        '<p class="np-quote">«' + nd.thought + '»</p><p>' + nd.idea + '</p>' +
+        (ev ? '<a class="np-event" href="eventos.html#' + ev.id + '"><img src="assets/img/' + ev.image + '-sm.webp" alt="" width="48" height="48" loading="lazy"><span><small>Esta noche con Jabad · ' + ev.start + ' h</small>' + ev.place + '</span></a>' : '') +
+      '</div>';
   }
 
   function expected() { return state.step === 0 ? 'sh' : state.order[state.step - 1]; }
@@ -171,7 +203,7 @@
       orderMarks[i].g.classList.toggle('is-next', isNext);
     }
     var lit = state.step;
-    stage.style.setProperty('--lit', (lit / 9).toFixed(3));
+    scene.style.setProperty('--lit', (lit / 9).toFixed(3));
     gFloor.style.opacity = .3 + .7 * (lit / 9);
 
     var n = state.night, nd = nightData(n);
@@ -301,4 +333,13 @@
     if (q >= 1 && q <= 8) start = q;
   } catch (e) {}
   setNight(start);
+
+  // API para otras secciones (p. ej. la línea de las 8 noches)
+  window.JanucaMenorah = {
+    setNight: function (n) {
+      setNight(n);
+      var top = stage.getBoundingClientRect().top + window.scrollY - 90;
+      window.scrollTo({ top: top, behavior: reduce ? 'auto' : 'smooth' });
+    }
+  };
 })();
