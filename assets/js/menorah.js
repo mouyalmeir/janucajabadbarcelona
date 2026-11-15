@@ -231,7 +231,7 @@
         : '<strong>Vela ' + k + ' de ' + n + '</strong><span>Sigue de izquierda a derecha.</span>';
     } else {
       html = '<strong>¡Jag Janucá Saméaj! ✦</strong><span>' + (n === 1 ? 'La primera vela brilla' : 'Las ' + n + ' velas de la ' + D.ord[n] + ' noche brillan') +
-        '. Ahora se canta <a href="bendiciones.html#hanerot" data-text="hanerot">Hanerot Halalu</a> y <a href="bendiciones.html#maoz-tzur" data-text="maoz">Maoz Tzur</a>.' +
+        '. Ahora se recita <a href="bendiciones.html#hanerot" data-text="hanerot">Hanerot Halalu</a>, el <a href="bendiciones.html#mizmor" data-text="mizmor">Mizmor Shir</a> y se canta <a href="bendiciones.html#maoz-tzur" data-text="maoz">Maoz Tzur</a>.' +
         (state.auto ? ' Pulsa <b>«Encenderla yo»</b> para hacerlo tú, vela a vela.' : '') + '</span>';
     }
     statusEl.innerHTML = html;
@@ -261,11 +261,38 @@
     setTimeout(end, dur + 80); // por si la animación se pausa
   }
 
+  // Un fueguito baja lentamente desde arriba, oscilando, y enciende el shamash
+  function descend(cb) {
+    if (reduce || !svg.animate) { cb(); return; }
+    var g = el('g', {}, gFx);
+    el('circle', { r: 36, fill: 'url(#haloG)' }, g);
+    var f = el('g', { class: 'spark-flame' }, g);
+    el('path', { d: flamePath(0, 10, 9, 32), fill: 'url(#flameO)' }, f);
+    el('path', { d: flamePath(0, 9, 4, 16), fill: 'url(#flameI)' }, f);
+    var x1 = shamash.x, y1 = shamash.top - 12, dur = 1900, fired = false;
+    function end() { if (fired) return; fired = true; if (g.parentNode) gFx.removeChild(g); cb(); }
+    g.animate([
+      { transform: 'translate(' + (x1 - 6) + 'px,-70px) scale(.5)', opacity: 0 },
+      { transform: 'translate(' + (x1 + 26) + 'px,-6px) scale(.8)', opacity: 1, offset: .22 },
+      { transform: 'translate(' + (x1 - 22) + 'px,' + (y1 * .45) + 'px) scale(.9)', offset: .5 },
+      { transform: 'translate(' + (x1 + 12) + 'px,' + (y1 * .78) + 'px) scale(.95)', offset: .76 },
+      { transform: 'translate(' + x1 + 'px,' + y1 + 'px) scale(.7)', opacity: 1 }
+    ], { duration: dur, easing: 'cubic-bezier(.45,0,.35,1)', fill: 'forwards' }).onfinish = end;
+    setTimeout(end, dur + 100);
+  }
+
   function lightNext(cb) {
     if (state.busy || done()) return;
     var id = expected();
     if (id === 'sh') {
-      ignite(shamash); state.step++; refresh(); if (cb) setTimeout(cb, 520); return;
+      state.busy = true;
+      var tk = state.token;
+      descend(function () {
+        if (tk !== state.token) return;
+        ignite(shamash); state.step++; state.busy = false; refresh();
+        if (cb) setTimeout(cb, 520);
+      });
+      return;
     }
     state.busy = true;
     var tok = state.token;
@@ -331,7 +358,7 @@
   }
 
   /* ---------- Bendiciones y cantos en diálogo ---------- */
-  // Secuencia: 1.ª, 2.ª y 3.ª bendición → Hanerot Halalu → Maoz Tzur
+  // Secuencia: 1.ª, 2.ª y 3.ª bendición → Hanerot Halalu → Mizmor Shir → Maoz Tzur
   var TEXTS = D.blessings.map(function (b) {
     return { key: String(b.n), kicker: D.ord[b.n] + ' bendición · ' + b.when, name: b.name, he: b.he, tr: b.tr, es: b.es };
   }).concat((D.songs || []).map(function (s) {

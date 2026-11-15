@@ -839,3 +839,40 @@ dialog.modal::backdrop { background: rgba(3,6,18,.72); -webkit-backdrop-filter: 
 .tc-day { opacity: .14; animation: dayLit 5.6s ease-in-out infinite; }
 @keyframes dayLit { 0% { opacity: .14; } 8%, 70% { opacity: 1; } 85%, 100% { opacity: .14; } }
 @media (prefers-reduced-motion: reduce) { .tc-day { opacity: 1; } }
+
+/* Zona interactiva: aparición suave escalonada */
+.menorah-actions.reveal { transition-delay: .08s; }
+.nights.reveal { transition-delay: .14s; }
+.nights-legend.reveal { transition-delay: .2s; }
+.js .nights.reveal .night-btn { opacity: 0; }
+.nights.reveal.in .night-btn { opacity: 1; animation: cardIn .55s cubic-bezier(.2,.8,.2,1) backwards; }
+.nights.reveal.in .night-btn:nth-child(2) { animation-delay: .04s; } .nights.reveal.in .night-btn:nth-child(3) { animation-delay: .08s; }
+.nights.reveal.in .night-btn:nth-child(4) { animation-delay: .12s; } .nights.reveal.in .night-btn:nth-child(5) { animation-delay: .16s; }
+.nights.reveal.in .night-btn:nth-child(6) { animation-delay: .2s; } .nights.reveal.in .night-btn:nth-child(7) { animation-delay: .24s; }
+.nights.reveal.in .night-btn:nth-child(8) { animation-delay: .28s; }
+.night-panel.reveal { transform: none; transition: opacity .4s; }
+.js .night-panel.reveal .np-card { opacity: 0; }
+.night-panel.reveal.in .np-card { opacity: 1; animation: cardIn .7s cubic-bezier(.2,.8,.2,1) backwards; }
+.night-panel.reveal.in .np-card:nth-child(2) { animation-delay: .08s; }
+.night-panel.reveal.in .np-card:nth-child(3) { animation-delay: .16s; }
+.night-panel.reveal.in .np-card:nth-child(4) { animation-delay: .24s; }
+@keyframes cardIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .js .nights.reveal .night-btn, .js .night-panel.reveal .np-card { opacity: 1; } }
+@media print { .night-btn, .np-card { opacity: 1 !important; } }
+#menorah .spark-flame { transform-box: fill-box; transform-origin: 50% 100%; animation: flicker .45s ease-in-out infinite alternate; }
+
+/* Eventos: feedback del encendido visible */
+.filter-bar a { position: relative; transition: border-color .25s, background .25s, color .25s, box-shadow .25s; }
+.filter-bar a.is-active { background: var(--gold); border-color: var(--gold); color: #1b1408; box-shadow: 0 6px 22px -8px rgba(242,196,109,.8); }
+.filter-bar a.is-active::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 7px; border-radius: 50%; background: #1b1408; vertical-align: 1px; animation: pulse 1.4s ease-in-out infinite; }
+.ev-detail { transition: border-color .4s, box-shadow .4s, opacity .8s ease, transform .8s cubic-bezier(.2,.8,.2,1); }
+.ev-detail.is-viewing { border-color: rgba(242,196,109,.6); box-shadow: 0 0 0 1px rgba(242,196,109,.3), 0 30px 70px -40px rgba(255,171,46,.7); }
+@media (max-width: 700px) {
+  .filter-bar { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; scrollbar-width: none; padding-left: 2px; padding-right: 2px; }
+  .filter-bar::-webkit-scrollbar { display: none; }
+  .filter-bar a { flex: none; }
+}
+.recipe-photo { margin: 0 0 22px; }
+.recipe-photo img { aspect-ratio: 16 / 8; object-position: 50% 55%; }
+.recipe-photo figcaption small { display: block; margin-top: 4px; font-size: .7rem; color: rgba(246,239,224,.6); }
+@media (max-width: 600px) { .recipe-photo img { aspect-ratio: 4 / 3; } }

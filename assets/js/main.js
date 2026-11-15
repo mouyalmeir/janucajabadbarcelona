@@ -239,6 +239,34 @@
     return '<a href="#' + ev.id + '">' + cap(D.weekday(ev.date)).slice(0, 3) + ' ' + p.d + ' · ' + esc(ev.place) + '</a>';
   }).join('');
 
+  /* ---------- Barra sticky de eventos: resalta el que se está viendo ---------- */
+  if (fb && 'IntersectionObserver' in window) {
+    var fbLinks = $$('a', fb);
+    var setActive = function (id) {
+      fbLinks.forEach(function (a) {
+        var on = a.getAttribute('href') === '#' + id;
+        var was = a.classList.contains('is-active');
+        a.classList.toggle('is-active', on);
+        if (on) {
+          a.setAttribute('aria-current', 'true');
+          if (!was && fb.scrollWidth > fb.clientWidth) fb.scrollTo({ left: a.offsetLeft - 16, behavior: 'smooth' });
+        } else a.removeAttribute('aria-current');
+      });
+      $$('.ev-detail').forEach(function (d) { d.classList.toggle('is-viewing', d.id === id); });
+    };
+    var spy = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) setActive(en.target.id); });
+    }, { rootMargin: '-42% 0px -52% 0px' });
+    $$('.ev-detail').forEach(function (d) { spy.observe(d); });
+    var evList = $('[data-events="full"]');
+    window.addEventListener('scroll', function () {
+      // por encima del primer evento o por debajo del último: ninguno activo
+      if (!evList) return;
+      var r = evList.getBoundingClientRect(), mid = window.innerHeight * .45;
+      if (r.top > mid || r.bottom < mid) setActive('');
+    }, { passive: true });
+  }
+
   /* ---------- Las 8 noches ---------- */
   var track = $('#nights-track');
   if (track) {
