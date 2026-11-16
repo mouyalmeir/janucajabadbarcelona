@@ -29,7 +29,15 @@
   function stamp(d) { return d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, ''); }
   function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
   function evById(id) { return D.events.filter(function (x) { return x.id === id; })[0]; }
-  function mapsUrl(ev) { return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(ev.address); }
+  function mapsUrl(ev) { return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(ev.mapsQuery || ev.address); }
+  // Si un evento no tiene hora de fin, se calcula 1 h 30 min para el calendario
+  function endHM(ev) {
+    if (ev.end) return ev.end;
+    var t = ev.start.split(':'), m = +t[0] * 60 + +t[1] + 90;
+    return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
+  }
+  function timeLabel(ev) { return ev.end ? ev.start + ' – ' + ev.end + ' h' : ev.start + ' h'; }
+  function evLocation(ev) { return ev.place + ', ' + ev.address.replace(/ · /g, ', '); }
   function miniMenorah(n) {
     var h = '';
     for (var i = 1; i <= 8; i++) {
@@ -62,23 +70,23 @@
     setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
   }
   function eventIcs(ev) {
-    downloadIcs('januca-' + ev.id + '.ics', [vevent(ev.id, D.toUTC(ev.date, ev.start), D.toUTC(ev.date, ev.end),
-      ev.title + ' · Janucá con Jabad Barcelona', ev.description, ev.place + ', ' + ev.address)]);
+    downloadIcs('januca-' + ev.id + '.ics', [vevent(ev.id, D.toUTC(ev.date, ev.start), D.toUTC(ev.date, endHM(ev)),
+      ev.title + ' · Janucá', ev.description + ' Organiza: ' + ev.org + '.', evLocation(ev))]);
   }
   function nightsIcs() {
     downloadIcs('januca-5787-8-noches.ics', D.nights.map(function (nd) {
       var slot = D.nightSlots[nd.n] || ['17:30', '18:00'];
       var ev = D.eventForNight(nd.n);
       var desc = nd.time + ' (' + nd.note + '). Bendiciones: ' + nd.blessings.join(', ') + '.' + (nd.alert ? ' ' + nd.alert : '') +
-        (ev ? ' Esta noche con Jabad Barcelona: ' + ev.title + ', ' + ev.start + ' h, ' + ev.place + '.' : '');
+        (ev ? ' Encendido público: ' + ev.title + ' (' + ev.org + '), ' + ev.start + ' h.' : '');
       return vevent('noche-' + nd.n, D.toUTC(nd.date, slot[0]), D.toUTC(nd.date, slot[1]),
         '🕎 Janucá · ' + D.ord[nd.n] + ' vela (' + nd.n + ' + shamash)', desc, '');
     }));
   }
   function gcal(ev) {
-    return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(ev.title + ' · Janucá con Jabad Barcelona') +
-      '&dates=' + stamp(D.toUTC(ev.date, ev.start)) + '/' + stamp(D.toUTC(ev.date, ev.end)) +
-      '&details=' + encodeURIComponent(ev.description) + '&location=' + encodeURIComponent(ev.place + ', ' + ev.address);
+    return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(ev.title + ' · Janucá') +
+      '&dates=' + stamp(D.toUTC(ev.date, ev.start)) + '/' + stamp(D.toUTC(ev.date, endHM(ev))) +
+      '&details=' + encodeURIComponent(ev.description + ' Organiza: ' + ev.org + '.') + '&location=' + encodeURIComponent(evLocation(ev));
   }
   function share(ev) {
     var p = D.parse(ev.date);
@@ -181,7 +189,7 @@
   var nowT = D.now().getTime(), nextFound = false;
   var flags = {};
   D.events.forEach(function (ev) {
-    var past = D.toUTC(ev.date, ev.end).getTime() < nowT;
+    var past = D.toUTC(ev.date, endHM(ev)).getTime() < nowT;
     var next = !past && !nextFound;
     if (next) nextFound = true;
     flags[ev.id] = { past: past, next: next };
@@ -190,21 +198,20 @@
     var f = flags[ev.id];
     return f.past ? '<span class="ev-badge">Finalizado</span>' : (f.next ? '<span class="ev-badge">Próximo</span>' : '');
   }
-  function media(ev, size) {
+  function media(ev) {
     var p = D.parse(ev.date);
-    return '<img src="assets/img/' + ev.image + (size === 'sm' ? '-sm' : '') + '.webp" alt="' + esc(ev.imageAlt) + '" width="' + (size === 'sm' ? 560 : 960) + '" height="' + (size === 'sm' ? 418 : 717) + '" loading="lazy" decoding="async">' +
+    return '<img src="assets/img/' + ev.art + '.svg" alt="" width="960" height="600" loading="lazy" decoding="async">' +
       badge(ev) +
       '<span class="ev-chip">' + miniMenorah(ev.night) + D.ord[ev.night] + ' noche</span>' +
-      '<span class="ev-date"><span class="ev-day">' + p.d + '</span><span class="ev-mon">dic<small>' + D.weekday(ev.date) + '</small></span></span>' +
-      '<span class="ev-credit">Imagen ilustrativa</span>';
+      '<span class="ev-date"><span class="ev-day">' + p.d + '</span><span class="ev-mon">dic<small>' + D.weekday(ev.date) + '</small></span></span>';
   }
   function eventCard(ev) {
     var f = flags[ev.id];
     return '<article class="event-card reveal' + (f.past ? ' is-past' : '') + (f.next ? ' is-next' : '') + '">' +
-      '<div class="ev-media">' + media(ev, 'sm') + '</div>' +
-      '<div class="ev-body"><p class="ev-kicker">' + esc(ev.kicker) + ' · ' + esc(ev.area) + '</p>' +
+      '<div class="ev-media">' + media(ev) + '</div>' +
+      '<div class="ev-body"><p class="ev-kicker">' + esc(ev.org) + '</p>' +
       '<h3>' + esc(ev.title) + '</h3>' +
-      '<ul class="ev-meta"><li>' + I.clock + '<span>' + ev.start + ' – ' + ev.end + ' h</span></li><li>' + I.pin + '<span>' + esc(ev.place) + '<small>' + esc(ev.metro) + '</small></span></li></ul>' +
+      '<ul class="ev-meta"><li>' + I.clock + '<span>' + cap(D.weekday(ev.date)) + ', ' + timeLabel(ev) + '</span></li><li>' + I.pin + '<span>' + esc(ev.place) + '<small>' + esc(ev.area) + '</small></span></li></ul>' +
       '<p class="ev-desc">' + esc(ev.description) + '</p>' +
       '<div class="ev-actions"><a class="btn btn-gold btn-sm" href="eventos.html#' + esc(ev.id) + '">Ver detalles</a>' + calMenu(ev) +
       '<button class="btn btn-ghost btn-sm icon-btn" type="button" data-share="' + esc(ev.id) + '" aria-label="Compartir ' + esc(ev.title) + '">' + I.share + '</button></div></div></article>';
@@ -213,13 +220,13 @@
     var f = flags[ev.id];
     return '<article class="ev-detail reveal' + (ev.featured ? ' featured' : '') + (f.past ? ' is-past' : '') + '" id="' + esc(ev.id) + '">' +
       '<div class="ev-detail-media ev-media">' + media(ev) + '</div>' +
-      '<div class="ev-detail-body"><p class="ev-kicker">' + D.ord[ev.night] + ' noche · ' + esc(ev.kicker) + '</p>' +
+      '<div class="ev-detail-body"><p class="ev-kicker">' + D.ord[ev.night] + ' noche · ' + esc(ev.org) + '</p>' +
       '<h2>' + esc(ev.title) + '</h2><p>' + esc(ev.description) + '</p>' +
       '<div class="ev-facts">' +
         '<div class="fact">' + I.cal + '<span><small>Fecha</small>' + cap(D.dateLong(ev.date)) + '</span></div>' +
-        '<div class="fact">' + I.clock + '<span><small>Hora</small>' + ev.start + ' – ' + ev.end + ' h</span></div>' +
-        '<div class="fact">' + I.pin + '<span><small>Lugar</small>' + esc(ev.place) + ' · ' + esc(ev.area) + '</span></div>' +
-        '<div class="fact">' + I.metro + '<span><small>Metro</small>' + esc(ev.metro) + '</span></div>' +
+        '<div class="fact">' + I.clock + '<span><small>Hora</small>' + timeLabel(ev) + '</span></div>' +
+        '<div class="fact fact-wide">' + I.pin + '<span><small>Lugar</small>' + esc(ev.place) + '<em>' + esc(ev.address) + '</em></span></div>' +
+        (ev.transport ? '<div class="fact fact-wide">' + I.metro + '<span><small>Cómo llegar</small>' + esc(ev.transport) + '</span></div>' : '') +
       '</div>' +
       '<ul class="ev-program">' + ev.program.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' +
       (ev.notice ? '<p class="ev-notice">' + esc(ev.notice) + '</p>' : '') +
@@ -236,7 +243,7 @@
   var fb = $('#filter-bar');
   if (fb) fb.innerHTML = D.events.map(function (ev) {
     var p = D.parse(ev.date);
-    return '<a href="#' + ev.id + '">' + cap(D.weekday(ev.date)).slice(0, 3) + ' ' + p.d + ' · ' + esc(ev.place) + '</a>';
+    return '<a href="#' + ev.id + '">' + cap(D.weekday(ev.date)).slice(0, 3) + ' ' + p.d + ' · ' + esc(ev.short || ev.place) + '</a>';
   }).join('');
 
   /* ---------- Barra sticky de eventos: resalta el que se está viendo ---------- */
@@ -274,12 +281,27 @@
   /* ---------- Contacto ---------- */
   $$('[data-contact]').forEach(function (el) {
     var C = D.contact || {}, k = el.getAttribute('data-contact'), v = C[k];
-    if (!v) { el.innerHTML = '<span class="placeholder">Por confirmar</span>'; return; }
+    if (!v) { el.hidden = true; return; } // los datos vacíos no se muestran
     if (k === 'email') el.innerHTML = '<a href="mailto:' + esc(v) + '">' + esc(v) + '</a>';
     else if (k === 'whatsapp') el.innerHTML = '<a href="https://wa.me/' + esc(v.replace(/\D/g, '')) + '" target="_blank" rel="noopener">WhatsApp</a>';
     else if (k === 'instagram') el.innerHTML = '<a href="' + esc(v) + '" target="_blank" rel="noopener">Instagram</a>';
-    else if (k === 'phone') el.innerHTML = '<a href="tel:' + esc(v.replace(/[^\d+]/g, '')) + '">' + esc(v) + '</a>';
+    else if (k === 'phone') el.innerHTML = '<a href="tel:+34' + esc(v.replace(/\D/g, '').replace(/^34(?=\d{9}$)/, '')) + '">' + esc(v) + '</a>';
     else el.textContent = v;
+  });
+  // una fila/tarjeta de contacto sin ningún dato se oculta entera
+  $$('[data-contact-row]').forEach(function (row) {
+    if (!$$('[data-contact]', row).some(function (c) { return !c.hidden; })) row.hidden = true;
+  });
+
+  /* ---------- Kit gratuito: enlace al Google Form ---------- */
+  $$('[data-kit-form]').forEach(function (a) {
+    var url = (D.contact || {}).kitFormUrl;
+    if (url) { a.href = url; a.target = '_blank'; a.rel = 'noopener'; }
+    else {
+      a.hidden = true;
+      var soon = a.parentNode.querySelector('.kit-soon');
+      if (soon) soon.hidden = false;
+    }
   });
 
   /* ---------- Pestañas ---------- */

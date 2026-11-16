@@ -833,3 +833,8 @@ dialog.modal::backdrop { background: rgba(3,6,18,.72); -webkit-backdrop-filter: 
 .js .np-card.np-reveal.in { opacity: 1; transform: none; }
 .blessing .ln { display: block; }
 .blessing .es .ln + .ln { margin-top: .35em; }
+[hidden] { display: none !important; }
+.fact-wide { grid-column: 1 / -1; }
+.fact em { display: block; font-style: normal; font-size: .85rem; color: var(--muted); }
+.kit-cta { margin: 0 0 14px; }
+.kit-soon { margin: 0 0 14px; max-width: none; }

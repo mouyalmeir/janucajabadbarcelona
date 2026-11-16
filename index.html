@@ -8,8 +8,14 @@
   <meta name="theme-color" content="#060a1b">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="es_ES">
+  <meta property="og:site_name" content="Janucá 5787 · Jabad Barcelona">
   <meta property="og:title" content="Janucá 5787 en Barcelona · Suma tu luz · Jabad Barcelona">
   <meta property="og:description" content="Janucá 2026 con Jabad Barcelona: del 4 al 12 de diciembre. Enciende tu janukiá, consulta los horarios de Barcelona, pide tu kit gratuito y ven a los 4 grandes encendidos.">
+  <meta property="og:image" content="assets/img/compartir.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Janucá 5787 con Jabad Barcelona · Suma tu luz">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="assets/img/favicon-32.png" sizes="32x32" type="image/png">
   <link rel="icon" href="assets/img/favicon-192.png" sizes="192x192" type="image/png">
   <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
@@ -81,7 +87,7 @@
           <button class="btn btn-ghost" id="m-reset" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/></svg>Encenderla yo</button>
         </div>
         <div class="nights reveal" id="night-picker" role="group" aria-label="Elige la noche de Janucá"></div>
-        <p class="nights-legend reveal"><i class="ev-dot" aria-hidden="true"></i>Noche con encendido público de Jabad Barcelona</p>
+        <p class="nights-legend reveal"><i class="ev-dot" aria-hidden="true"></i>Noche con encendido público</p>
         <div class="night-panel" id="night-panel" aria-live="polite"></div>
       </div>
     </section>
@@ -89,9 +95,9 @@
     <section class="section" id="encendidos">
       <div class="wrap">
         <div class="section-head reveal">
-          <p class="eyebrow">Con Jabad Barcelona</p>
+          <p class="eyebrow">Encendidos públicos</p>
           <h2>4 noches, 4 encendidos</h2>
-          <p>Del Barri Gòtic al Mediterráneo: llevamos la luz de Janucá a las calles de Barcelona. Entrada libre y gratuita.</p>
+          <p>Sant Cugat, Girona y el corazón de Barcelona: cuatro noches para encender juntos en la calle. Entrada libre y gratuita.</p>
         </div>
         <div class="events-grid" data-events="compact"></div>
         <div class="center-actions reveal">
@@ -264,14 +270,16 @@
           </div>
           <div class="kit-form kit-contact">
             <p class="eyebrow">Pide tu kit</p>
-            <h3>Escríbenos o llámanos y te lo preparamos</h3>
+            <h3>Rellena el formulario y te lo preparamos</h3>
+            <a class="btn btn-gold kit-cta" href="#" data-kit-form>Pedir mi kit gratuito</a>
+            <p class="form-note kit-soon" hidden>El formulario estará disponible muy pronto. Mientras tanto, llámanos o escríbenos:</p>
             <ul class="contact-list">
-              <li><span class="topic-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20l1.2-4.2A8.5 8.5 0 1 1 20 11.5z"/></svg></span><span><small>WhatsApp</small><span data-contact="whatsapp"></span></span></li>
-              <li><span class="topic-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg></span><span><small>Teléfono</small><span data-contact="phone"></span></span></li>
-              <li><span class="topic-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3.5 7l8.5 6 8.5-6"/></svg></span><span><small>Email</small><span data-contact="email"></span></span></li>
-              <li><span class="topic-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span><span><small>Centro Jabad Barcelona</small><span data-contact="address"></span></span></li>
+              <li data-contact-row><span class="topic-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20l1.2-4.2A8.5 8.5 0 1 1 20 11.5z"/></svg></span><span><small>WhatsApp</small><span data-contact="whatsapp"></span></span></li>
+              <li data-contact-row><span class="topic-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg></span><span><small>Teléfono</small><span data-contact="phone"></span></span></li>
+              <li data-contact-row><span class="topic-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3.5 7l8.5 6 8.5-6"/></svg></span><span><small>Email</small><span data-contact="email"></span></span></li>
+              <li data-contact-row><span class="topic-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span><span><small>Centro Jabad Barcelona</small><span data-contact="address"></span></span></li>
             </ul>
-            <p class="form-note">También puedes recogerlo en cualquiera de los <a href="#encendidos">4 encendidos públicos</a>.</p>
+            <p class="form-note">¿Dudas? Llámanos o escríbenos y te ayudamos.</p>
           </div>
         </div>
       </div>
@@ -302,16 +310,16 @@
         <div>
           <h4>Contacto</h4>
           <div class="foot-links">
-            <span data-contact="address"></span>
             <span data-contact="phone"></span>
             <span data-contact="email"></span>
+            <span data-contact="address"></span>
             <a href="eventos.html#colabora">Colabora y voluntariado</a>
           </div>
         </div>
       </div>
       <div class="legal">
         <span>© 5787 · 2026 Jabad Lubavitch Barcelona</span>
-        <span>Las fotos de los encendidos son ilustrativas.</span>
+        <span>Fotos de recetas: Wikimedia Commons</span>
       </div>
     </div>
   </footer>

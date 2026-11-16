@@ -131,7 +131,7 @@
       '<span class="nb-h">' + nd.hebrew.replace(' de ', ' ') + '</span>' +
       (ev ? '<i class="ev-dot" aria-hidden="true"></i>' : '');
     b.setAttribute('aria-label', D.ord[nd.n] + ' noche, ' + dateLabel(nd) + ', ' + nd.hebrew + (ev ? '. Encendido público: ' + ev.place : ''));
-    if (ev) b.title = 'Encendido con Jabad: ' + ev.place + ', ' + ev.start + ' h';
+    if (ev) b.title = 'Encendido público: ' + ev.place + ', ' + ev.start + ' h';
     if ((today.phase === 'during' || today.phase === 'last') && today.night === nd.n) {
       b.insertAdjacentHTML('afterbegin', '<span class="tag">' + (today.phase === 'last' ? 'Última' : 'Hoy') + '</span>');
     }
@@ -196,7 +196,7 @@
         '<p class="np-small">Toca una para leerla o cantarla.</p></div>' +
       '<div class="np-card np-light"><h4>' + ICO.spark + 'Suma tu luz</h4>' +
         '<p class="np-quote">«' + nd.thought + '»</p><p>' + nd.idea + '</p>' +
-        (ev ? '<a class="np-event" href="eventos.html#' + ev.id + '"><img src="assets/img/' + ev.image + '-sm.webp" alt="" width="48" height="48" loading="lazy"><span><small>Esta noche con Jabad · ' + ev.start + ' h</small>' + ev.place + '</span></a>' : '') +
+        (ev ? '<a class="np-event" href="eventos.html#' + ev.id + '"><img src="assets/img/' + ev.art + '.svg" alt="" width="48" height="48" loading="lazy"><span><small>Encendido público · ' + ev.start + ' h</small>' + ev.place + ' · ' + ev.org + '</span></a>' : '') +
       '</div>';
     revealCards();
   }

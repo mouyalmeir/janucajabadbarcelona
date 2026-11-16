@@ -1,0 +1,67 @@
+{"title":"Tradiciones de Janucá: dréidel y Janucá guelt · Jabad Barcelona","description":"El juego del dréidel (sevivón) y sus reglas, con un dréidel para girar online, y el sentido del Janucá guelt.","scripts":["dreidel.js"],"hebrew":true}
+    <header class="page-hero">
+      <div class="wrap">
+        <h1>Tradiciones de <em>Janucá</em></h1>
+        <p>Un juego nacido de la valentía y unas monedas que enseñan a dar.</p>
+      </div>
+    </header>
+
+    <div class="wrap">
+      <article class="prose">
+        <h2 class="reveal">El juego del Dréidel <em>(Sevivón)</em></h2>
+        <p class="reveal">Cuando el rey Antíoco prohibió el estudio de la Torá, los niños judíos se reunían en secreto para estudiar. Si se acercaba una patrulla griega, escondían los pergaminos y sacaban sus peonzas fingiendo estar jugando. En homenaje a su valentía, jugamos al <strong>dréidel</strong> (del yidis <em>drei</em>, «girar»), una peonza de cuatro caras con las letras hebreas <strong>Nun (נ), Guímel (ג), Hei (ה) y Shin (ש)</strong>, iniciales de <em>Nes Gadol Haiá Sham</em> («Un gran milagro ocurrió allí»).</p>
+
+        <div class="card dreidel-play reveal">
+          <div class="dreidel-box">
+            <svg id="dreidel" viewBox="0 0 160 220" aria-hidden="true">
+              <defs>
+                <linearGradient id="dg" x1="0" x2="1"><stop offset="0" stop-color="#8a5a18"/><stop offset=".35" stop-color="#ffe6a6"/><stop offset=".6" stop-color="#f2c46d"/><stop offset="1" stop-color="#7a4d12"/></linearGradient>
+                <linearGradient id="dh" x1="0" x2="1"><stop offset="0" stop-color="#c98a2e"/><stop offset=".5" stop-color="#fff1c1"/><stop offset="1" stop-color="#9c6a1f"/></linearGradient>
+              </defs>
+              <rect x="70" y="4" width="20" height="44" rx="8" fill="url(#dh)"/>
+              <g id="dreidel-face">
+                <path d="M24 46h112a6 6 0 0 1 6 6v86c0 6-2 10-6 14l-48 58c-4 5-12 5-16 0l-48-58c-4-4-6-8-6-14V52a6 6 0 0 1 6-6z" fill="url(#dg)"/>
+                <text id="dreidel-letter" x="80" y="118" text-anchor="middle" dominant-baseline="central" font-size="72" font-family="'Times New Roman', serif" fill="#1d1406">נ</text>
+              </g>
+            </svg>
+          </div>
+          <div>
+            <div class="pot" aria-live="polite">
+              <div><small>Bote</small><b id="pot-coins">10</b></div>
+              <div><small>Tus monedas</small><b id="my-coins">10</b></div>
+            </div>
+            <p class="dreidel-result" id="dreidel-result" aria-live="polite">Empiezas con 10 monedas y hay 10 en el bote. ¡Gira el dréidel!</p>
+            <div class="page-tools" style="justify-content:flex-start;margin:0 0 6px">
+              <button class="btn btn-gold" id="dreidel-spin" type="button">Girar el dréidel</button>
+              <button class="btn btn-ghost" id="dreidel-reset" type="button">Reiniciar</button>
+            </div>
+            <ul class="letters" id="letters">
+              <li data-l="נ"><span class="he" lang="he">נ</span><span><strong>Nun · <em>Nisht</em></strong><small>Nada: no pones ni coges nada.</small></span></li>
+              <li data-l="ג"><span class="he" lang="he">ג</span><span><strong>Guímel · <em>Gantz</em></strong><small>Todo: te llevas todo el bote.</small></span></li>
+              <li data-l="ה"><span class="he" lang="he">ה</span><span><strong>Hei · <em>Jalb</em></strong><small>Mitad: te llevas la mitad del bote.</small></span></li>
+              <li data-l="ש"><span class="he" lang="he">ש</span><span><strong>Shin · <em>Shtel</em></strong><small>Pon: añades una ficha al bote.</small></span></li>
+            </ul>
+          </div>
+        </div>
+
+        <h3 class="reveal">¿Cómo se juega?</h3>
+        <p class="reveal">Cada jugador aporta la misma cantidad de monedas de chocolate, frutos secos o fichas al bote común. Por turnos, cada uno hace girar el dréidel y sigue lo que indica la letra que queda arriba.</p>
+
+        <div class="callout reveal">
+          <p class="callout-title">¿Sabías que…?</p>
+          <p>En la Tierra de Israel los dréidels llevan una <strong>Pe (פ)</strong> en lugar de la Shin: <em>Nes Gadol Haiá Po</em>, «un gran milagro ocurrió <strong>aquí</strong>».</p>
+        </div>
+
+        <h2 class="reveal">Janucá Guelt <em>(monedas de Janucá)</em></h2>
+        <p class="reveal">Es costumbre regalar dinero o monedas de chocolate (<em>Janucá Guelt</em>) a los niños durante la festividad. La palabra <em>Janucá</em> comparte raíz con <em>Jinuj</em> («educación»). Esta tradición busca incentivar su estudio de la Torá y enseñarles desde pequeños el valor de la <strong>Tzedaká</strong> (caridad y justicia social), animándoles a destinar una parte de su dinero a ayudar a los demás.</p>
+        <figure class="figure reveal">
+          <img src="assets/img/guelt-tzedaka.webp" alt="Hucha de Tzedaká junto a monedas de chocolate y una janukiá encendida" width="960" height="717" loading="lazy" decoding="async">
+          <figcaption>Una parte del guelt, para la hucha de Tzedaká: así se educa en dar.</figcaption>
+        </figure>
+      </article>
+
+      <nav class="pager" aria-label="Páginas">
+        <a href="bendiciones.html"><small>← Anterior</small><b>Bendiciones</b></a>
+        <a class="next" href="receta.html"><small>Siguiente →</small><b>Recetas de Janucá</b></a>
+      </nav>
+    </div>

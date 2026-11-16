@@ -5,14 +5,14 @@
 window.JANUCA = (function () {
   'use strict';
 
-  // ⚠️ CONTACTO — rellenar con los datos reales de Jabad Barcelona.
-  // Si whatsapp y email están vacíos, los formularios (kit, reservas, voluntariado)
-  // avisan de que aún no están configurados en lugar de enviar nada.
+  // CONTACTO de Jabad Barcelona. Los campos vacíos no se muestran en la web.
+  // Las reservas y el voluntariado se envían por WhatsApp (si hay número) o por email.
   var contact = {
+    email: 'info@chabadbarcelona.org',
+    phone: '93 410 06 85',
     whatsapp: '',        // solo dígitos con prefijo, p. ej. '34600000000'
-    email: '',           // p. ej. 'info@...'
-    phone: '',           // texto visible, p. ej. '+34 600 000 000'
     address: '',         // dirección del centro
+    kitFormUrl: '',      // ⚠️ enlace al Google Form del kit gratuito
     donateUrl: '',       // enlace a la pasarela de donaciones
     instagram: ''        // enlace al perfil
   };
@@ -29,7 +29,7 @@ window.JANUCA = (function () {
       idea: 'Llama a un familiar o a un amigo lejano y deséale Jag Saméaj.' },
     { n: 3, date: '2026-12-06', hebrew: '27 de Kislev', time: 'A partir de las 17:30 h', note: 'Anochecer: 17:54 h', blessings: [1, 2],
       thought: 'En lo sagrado siempre se asciende: cada noche, una luz más que ayer.',
-      idea: 'Ven con tu familia al Gran Encendido en Plaça Sant Jaume.' },
+      idea: 'Invita a un amigo o a un vecino a encender la janukiá contigo.' },
     { n: 4, date: '2026-12-07', hebrew: '28 de Kislev', time: 'A partir de las 17:30 h', note: 'Anochecer: 17:54 h', blessings: [1, 2],
       thought: 'La luz de tu ventana ilumina también a quien pasa por la calle.',
       idea: 'Coloca tu janukiá donde se vea desde la calle y difunde el milagro.' },
@@ -48,54 +48,51 @@ window.JANUCA = (function () {
       idea: 'Enciende las ocho velas y recibe el Shabat en familia.' }
   ];
 
-  // ⚠️ Los 4 encendidos de Jabad Barcelona — lugares y horas PROVISIONALES.
-  // Fotos ilustrativas (generadas con IA): sustituir por fotos reales cuando las haya.
+  // Los 4 encendidos públicos. Horas en hora local (HH:MM); "end" es opcional.
+  // "art" es la ilustración de assets/img/<art>.svg
   var events = [
     {
-      id: 'placa-del-rei', night: 1, date: '2026-12-04', start: '16:30', end: '17:00',
-      kicker: 'Inauguración', area: 'Barri Gòtic',
-      title: 'Primera vela en Plaça del Rei',
-      place: 'Plaça del Rei', address: 'Plaça del Rei, Ciutat Vella, 08002 Barcelona',
-      metro: 'L4 Jaume I · L3 Liceu',
-      image: 'placa-del-rei', imageAlt: 'Encendido de Janucá en la Plaça del Rei, en el Barri Gòtic',
-      description: 'Abrimos Janucá en el corazón del Gòtic: encendemos juntos la primera vela antes de Shabat, con música y las primeras sufganiot.',
-      program: ['Palabras de bienvenida', 'Encendido de la primera vela', 'Música en directo', 'Sufganiot y entrega de kits'],
-      notice: 'Viernes: el acto termina antes de las 17:03 h para llegar a casa a tiempo para Shabat.',
+      id: 'sant-cugat', short: 'Sant Cugat', night: 3, date: '2026-12-06', start: '17:30', end: '',
+      org: 'Jabad Sant Cugat', area: 'Sant Cugat del Vallès',
+      title: 'Encendido en el Turó de Can Matas',
+      place: 'Turó de Can Matas', address: 'Calle Josep Irla, frente a la calle Safir · Sant Cugat del Vallès',
+      mapsQuery: 'Turó de Can Matas, Carrer de Josep Irla, Sant Cugat del Vallès',
+      transport: '', art: 'ev-sant-cugat',
+      description: 'Jabad Sant Cugat enciende la tercera vela de Janucá al aire libre, en el Turó de Can Matas. Abierto a todos: ven con tu familia y tus amigos.',
+      program: ['Encendido de la 3.ª vela', 'Al aire libre', 'Abierto a todos'],
       cta: 'Confirmar asistencia'
     },
     {
-      id: 'placa-sant-jaume', night: 3, date: '2026-12-06', start: '18:00', end: '20:00',
-      kicker: 'Gran encendido central', area: 'Ciutat Vella', featured: true,
-      title: 'Gran Encendido en Plaça Sant Jaume',
-      place: 'Plaça de Sant Jaume', address: 'Plaça de Sant Jaume, Ciutat Vella, 08002 Barcelona',
-      metro: 'L4 Jaume I · L3 Liceu',
-      image: 'placa-sant-jaume', imageAlt: 'Janukiá gigante encendida en la Plaça de Sant Jaume',
-      description: 'El gran acto de Janucá en Barcelona: encendemos la janukiá gigante en plena plaza con música en directo, sufganiot para todos y animación para toda la familia.',
-      program: ['Encendido de la janukiá gigante', 'Música jasídica en directo', 'Sufganiot y Janucá guelt', 'Animación para niños'],
-      cta: 'Inscribirme gratis'
+      id: 'girona', short: 'Girona', night: 5, date: '2026-12-08', start: '18:00', end: '',
+      org: 'Centro Judío de Girona', area: 'Girona · Barri Vell',
+      title: 'Encendido en el Call de Girona',
+      place: 'Carrer de la Força, 20', address: 'Carrer de la Força, 20 · Girona',
+      mapsQuery: 'Carrer de la Força 20, Girona',
+      transport: '', art: 'ev-girona',
+      description: 'El Centro Judío de Girona enciende la quinta vela en el corazón del antiguo barrio judío, el Call. Abierto a todos.',
+      program: ['Encendido de la 5.ª vela', 'En el Call de Girona', 'Abierto a todos'],
+      cta: 'Confirmar asistencia'
     },
     {
-      id: 'rambla-catalunya', night: 5, date: '2026-12-08', start: '18:30', end: '20:30',
-      kicker: 'Janucá en familia', area: 'Eixample',
-      title: 'Fiesta Familiar en Rambla de Catalunya',
-      place: 'Rambla de Catalunya', address: 'Rambla de Catalunya, Eixample, 08007 Barcelona',
-      metro: 'L2 · L3 · L4 Passeig de Gràcia',
-      image: 'rambla-catalunya', imageAlt: 'Familias celebrando Janucá en la Rambla de Catalunya',
-      description: 'Una noche pensada para los más pequeños: torneo de dréidel, latkes calientes, lluvia de Janucá guelt y talleres para crear tu propia janukiá.',
-      program: ['Encendido de la quinta vela', 'Torneo de dréidel', 'Latkes y sufganiot', 'Taller infantil de janukiás'],
-      notice: 'Los talleres infantiles son gratuitos; se agradece inscribirse para preparar material.',
-      cta: 'Inscribir a los niños'
+      id: 'turo-parc', short: 'Turó Parc', night: 6, date: '2026-12-09', start: '18:00', end: '',
+      org: 'Jabad Barcelona', area: 'Sant Gervasi · Barcelona',
+      title: 'Encendido en el Turó Parc',
+      place: 'Turó Parc', address: 'Turó Parc · Barcelona',
+      mapsQuery: 'Turó Parc, Barcelona',
+      transport: 'Tram T1 · T2 · T3 Francesc Macià', art: 'ev-turo-parc',
+      description: 'Jabad Barcelona enciende la sexta vela en el Turó Parc. Una cita al aire libre para toda la familia, abierta a todos.',
+      program: ['Encendido de la 6.ª vela', 'Para toda la familia', 'Abierto a todos'],
+      cta: 'Confirmar asistencia'
     },
     {
-      id: 'moll-de-la-fusta', night: 8, date: '2026-12-11', start: '16:15', end: '16:50',
-      kicker: 'Clausura junto al mar', area: 'Port Vell',
-      title: 'Las 8 luces frente al Mediterráneo',
-      place: 'Moll de la Fusta', address: 'Passeig de Colom, Moll de la Fusta, 08002 Barcelona',
-      metro: 'L4 Barceloneta · L3 Drassanes',
-      image: 'moll-de-la-fusta', imageAlt: 'Janukiá encendida junto al puerto de Barcelona al anochecer',
-      description: 'Cerramos Janucá encendiendo las ocho velas frente al mar, con Hanerot Halalu, Mizmor Shir y Maoz Tzur antes de recibir el Shabat.',
-      program: ['Encendido de las 8 velas', 'Hanerot Halalu, Mizmor Shir y Maoz Tzur', 'Brindis de Janucá', 'Despedida antes de Shabat'],
-      notice: 'Viernes: terminamos con antelación para que todos lleguen a casa antes de las 17:03 h.',
+      id: 'placa-sant-jaume', short: 'Plaça Sant Jaume', night: 7, date: '2026-12-10', start: '18:00', end: '', featured: true,
+      org: 'Jabad Barcelona', area: 'Ciutat Vella · Barcelona',
+      title: 'Gran Encendido en la Plaça Sant Jaume',
+      place: 'Plaça de Sant Jaume', address: 'Plaça de Sant Jaume · Barcelona',
+      mapsQuery: 'Plaça de Sant Jaume, Barcelona',
+      transport: 'Metro L4 Jaume I · L3 Liceu', art: 'ev-sant-jaume',
+      description: 'El gran encendido público de Janucá en Barcelona, frente al Ayuntamiento y el Palau de la Generalitat. Encendemos juntos la séptima vela.',
+      program: ['Encendido de la 7.ª vela', 'Frente al Ayuntamiento', 'Abierto a todos'],
       cta: 'Confirmar asistencia'
     }
   ];
@@ -133,10 +130,10 @@ window.JANUCA = (function () {
   ];
 
   var faqs = [
-    { q: '¿Hay que pagar o reservar entrada?', a: 'No. Todos los encendidos son abiertos y gratuitos. Confirmar asistencia nos ayuda a calcular cuántas sufganiot y kits preparar.' },
-    { q: '¿Son actividades para niños?', a: 'Sí. Hay música, Janucá guelt y actividades para los más pequeños. La fiesta del martes 8 en Rambla de Catalunya está pensada especialmente para familias.' },
-    { q: '¿Por qué los encendidos del viernes son tan pronto?', a: 'Los viernes 4 y 11 la janukiá debe encenderse antes de que empiece Shabat, que en Barcelona es a las 17:03 h. Por eso quedamos a las 16:15–16:30 h: así hay tiempo de celebrar y llegar a casa.' },
-    { q: 'No tengo janukiá ni velas, ¿qué hago?', a: 'Pide tu kit gratuito con janukiá, 44 velas e instrucciones. Puedes recogerlo en cualquiera de los encendidos.' },
+    { q: '¿Hay que pagar o reservar entrada?', a: 'No. Todos los encendidos son abiertos y gratuitos. Confirmar asistencia es opcional y nos ayuda a organizarnos.' },
+    { q: '¿Son actos para niños?', a: 'Sí. Son encendidos al aire libre para toda la familia: trae a los niños a ver cómo se enciende la janukiá.' },
+    { q: '¿Hay encendidos fuera de Barcelona?', a: 'Sí: el domingo 6 en Sant Cugat, con Jabad Sant Cugat, y el martes 8 en Girona, con el Centro Judío de Girona.' },
+    { q: 'No tengo janukiá ni velas, ¿qué hago?', a: 'Pide tu kit gratuito con janukiá, 44 velas e instrucciones a través del formulario de la web o llamando al 93 410 06 85.' },
     { q: '¿Puedo venir aunque no sea judío?', a: 'Claro. Janucá celebra que la luz vence a la oscuridad: todo el mundo es bienvenido a compartir la fiesta en la calle.' }
   ];
 
