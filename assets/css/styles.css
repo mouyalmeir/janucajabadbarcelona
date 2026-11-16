@@ -1078,42 +1078,44 @@ body.nb-on .scroll-hint { visibility: hidden; }
 /* ==========================================================================
    v5 · Primera vista: los encendidos se ven al entrar
    ========================================================================== */
-/* ---------- Ordenador: avance desplegable bajo «Eventos» ---------- */
+/* ---------- Ordenador: línea de encendidos que baja desde «Eventos» ---------- */
 .site-header .wrap { position: relative; }
-.ev-peek { --caret: 60px; position: absolute; top: calc(100% + 10px); right: 0; z-index: 55; width: 356px; padding: 14px 12px 12px; border-radius: 20px;
-  background: rgba(12,18,48,.97); border: 1px solid rgba(242,196,109,.45); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
-  box-shadow: 0 30px 70px -24px rgba(0,0,0,.85), 0 0 50px -20px rgba(255,171,46,.55);
-  transform-origin: calc(100% - var(--caret)) -10px; opacity: 0; visibility: hidden; transform: translateY(-10px) scale(.96);
-  transition: opacity .22s, transform .38s cubic-bezier(.2,.9,.3,1.1), visibility 0s .38s; }
-.ev-peek.open { opacity: 1; visibility: visible; transform: none; transition: opacity .22s, transform .38s cubic-bezier(.2,.9,.3,1.1), visibility 0s; }
-.ev-peek::before { content: ""; position: absolute; top: -8px; right: calc(var(--caret) - 7px); width: 14px; height: 14px; border-radius: 3px 0 0 0;
-  background: rgb(14,20,52); border-left: 1px solid rgba(242,196,109,.45); border-top: 1px solid rgba(242,196,109,.45); transform: rotate(45deg); }
-.ep-head { display: flex; align-items: center; gap: 8px; margin: 0 6px 8px; font-size: .66rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); }
-.ep-head::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--flame); box-shadow: 0 0 10px 2px rgba(255,171,46,.7); }
-.ev-peek ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
-.ev-peek li a { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 12px; align-items: center; padding: 7px 8px; border-radius: 14px; color: var(--cream); text-decoration: none; transition: background .2s; }
-.ev-peek li a:hover { background: rgba(242,196,109,.09); color: var(--cream); }
-.ev-peek li.is-past a { opacity: .5; }
-.ep-when { display: flex; flex-direction: column; align-items: center; padding: 6px 0 5px; border-radius: 12px; line-height: 1; background: #10183c; border: 1px solid rgba(242,196,109,.35); }
-.ep-when small { font-size: .56rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
-.ep-when small:first-child { color: var(--gold); }
-.ep-when b { margin: 3px 0 2px; font-family: var(--font-display); font-weight: 600; font-size: 1.35rem; color: var(--cream); font-feature-settings: "lnum" 1; }
-.is-next .ep-when { background: linear-gradient(180deg, #ffe6ad, #f2c46d); border-color: var(--gold-hi); }
-.is-next .ep-when b, .is-next .ep-when small, .is-next .ep-when small:first-child { color: #1b1408; }
-.ep-info { min-width: 0; display: flex; flex-direction: column; gap: 1px; line-height: 1.25; }
-.ep-time { display: flex; align-items: center; gap: 7px; font-size: .74rem; font-weight: 700; color: var(--gold-hi); }
-.ep-time i { padding: 2px 7px; border-radius: 999px; font-style: normal; font-size: .56rem; letter-spacing: .08em; text-transform: uppercase; background: var(--flame); color: #1b1408; }
-.ep-time i.past { background: rgba(255,255,255,.12); color: var(--muted); }
-.ep-info b { font-family: var(--font-display); font-weight: 600; font-size: 1.04rem; color: var(--gold-hi); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.ep-info small { font-size: .76rem; color: var(--muted); }
-.ep-all { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 8px; padding: 10px; border-radius: 12px; background: var(--gold); color: #1b1408; font-weight: 700; font-size: .86rem; text-decoration: none; }
-.ep-all:hover { background: var(--gold-hi); color: #1b1408; }
-.ep-all svg { width: 15px; height: 15px; }
-.ev-peek.open li { animation: epIn .45s cubic-bezier(.2,.8,.2,1) backwards; }
-.ev-peek.open li:nth-child(2) { animation-delay: .05s; } .ev-peek.open li:nth-child(3) { animation-delay: .1s; } .ev-peek.open li:nth-child(4) { animation-delay: .15s; }
+.ev-peek { position: absolute; top: calc(100% + 10px); right: 0; z-index: 55; width: 300px; padding: 12px 16px 12px 14px; border-radius: 18px; text-align: right;
+  background: rgba(8,12,32,.72); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  opacity: 0; visibility: hidden; transform: translateY(-6px); transition: opacity .3s, transform .4s cubic-bezier(.2,.9,.3,1), visibility 0s .4s; }
+.ev-peek.open { opacity: 1; visibility: visible; transform: none; transition: opacity .3s, transform .4s cubic-bezier(.2,.9,.3,1), visibility 0s; }
+/* la línea: sale del botón y baja por los puntos */
+.ev-peek::before { content: ""; position: absolute; right: 22px; top: -12px; bottom: 46px; width: 1.5px; border-radius: 2px; transform-origin: 50% 0;
+  background: linear-gradient(180deg, rgba(242,196,109,.9), rgba(242,196,109,.55) 70%, rgba(242,196,109,.15)); }
+.ev-peek.open::before { animation: epLine .7s cubic-bezier(.3,.8,.3,1) both; }
+@keyframes epLine { from { transform: scaleY(0); } }
+.ep-head { margin: 0 26px 6px 0; white-space: nowrap; font-size: .6rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); }
+.ep-line { list-style: none; margin: 0; padding: 0; }
+.ep-line a { display: grid; grid-template-columns: minmax(0, 1fr) 16px; gap: 12px; align-items: start; padding: 7px 0; color: var(--cream); text-decoration: none; }
+.ep-line a:hover { color: var(--cream); }
+.ep-txt { min-width: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 1px; line-height: 1.25; }
+.ep-date { display: flex; align-items: center; gap: 7px; font-size: .64rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); }
+.ep-date i { padding: 2px 7px; border-radius: 999px; font-style: normal; font-size: .54rem; letter-spacing: .08em; background: var(--flame); color: #1b1408; }
+.ep-date i.past { background: rgba(255,255,255,.12); color: var(--muted); }
+.ep-txt b { max-width: 100%; font-family: var(--font-display); font-weight: 600; font-size: 1.06rem; color: var(--gold-hi); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color .2s; }
+.ep-txt small:last-child { font-size: .74rem; color: var(--muted); }
+.ep-line a:hover b { color: #fff3d0; }
+.ep-dot { position: relative; justify-self: center; width: 10px; height: 10px; margin-top: 2px; border-radius: 50%; background: var(--night-0); border: 1.5px solid var(--gold); transition: transform .2s; }
+.ep-line a:hover .ep-dot { transform: scale(1.25); }
+.ep-line .is-next .ep-dot { background: var(--flame); border-color: var(--gold-hi); box-shadow: 0 0 0 4px rgba(255,171,46,.18), 0 0 14px 3px rgba(255,171,46,.75); animation: epPulse 1.8s ease-in-out infinite; }
+@keyframes epPulse { 50% { box-shadow: 0 0 0 7px rgba(255,171,46,.08), 0 0 18px 4px rgba(255,171,46,.9); } }
+.ep-line .is-past a { opacity: .5; }
+.ep-line .is-past .ep-dot { border-color: var(--muted); }
+.ep-all { display: inline-flex; align-items: center; gap: 6px; margin: 6px 28px 0 0; font-size: .8rem; font-weight: 650; text-decoration: none; }
+.ep-all svg { width: 14px; height: 14px; transition: transform .2s; }
+.ep-all:hover svg { transform: translateX(3px); }
+.ev-peek.open .ep-line li, .ev-peek.open .ep-all { animation: epIn .5s cubic-bezier(.2,.8,.2,1) backwards; }
+.ev-peek.open .ep-line li:nth-child(1) { animation-delay: .12s; } .ev-peek.open .ep-line li:nth-child(2) { animation-delay: .22s; }
+.ev-peek.open .ep-line li:nth-child(3) { animation-delay: .32s; } .ev-peek.open .ep-line li:nth-child(4) { animation-delay: .42s; }
+.ev-peek.open .ep-all { animation-delay: .5s; }
 @keyframes epIn { from { opacity: 0; transform: translateY(-8px); } }
 @media (max-width: 1120px) { .ev-peek { display: none; } }
-@media (prefers-reduced-motion: reduce) { .ev-peek, .ev-peek.open { transition: none; } .ev-peek.open li { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .ev-peek, .ev-peek.open { transition: none; } .ev-peek.open::before, .ev-peek.open .ep-line li, .ev-peek.open .ep-all, .ep-line .is-next .ep-dot { animation: none; } }
 @media print { .ev-peek { display: none !important; } }
 
 /* ---------- Móvil y tableta: fila de encendidos bajo la cuenta atrás ---------- */

@@ -335,8 +335,9 @@
     }).join('') + '</div>';
   });
 
-  // Ordenador: «Eventos» despliega un avance de los encendidos. En la portada se abre solo
-  // al entrar y se recoge al deslizar; en cualquier página, se abre al pasar el ratón.
+  // Ordenador: del botón «Eventos» baja una línea con los encendidos. En la portada se ve
+  // durante la primera vista y se recoge al llegar a «Encendidos públicos»; en cualquier
+  // página, se despliega al pasar el ratón por «Eventos».
   (function () {
     var cta = $('.nav .nav-cta'), wrap = $('.site-header .wrap');
     if (!nextEv || !cta || !wrap || cta.getAttribute('aria-current') || !window.matchMedia) return;
@@ -345,21 +346,26 @@
     peek.className = 'ev-peek';
     peek.setAttribute('role', 'region');
     peek.setAttribute('aria-label', 'Encendidos públicos');
-    peek.innerHTML = '<p class="ep-head">Encendidos públicos · entrada libre</p><ul>' + D.events.map(function (ev) {
+    peek.innerHTML = '<p class="ep-head">Encendidos públicos · entrada libre</p><ol class="ep-line">' + D.events.map(function (ev) {
       var f = flags[ev.id], p = D.parse(ev.date);
       return '<li class="' + (f.past ? 'is-past' : '') + (f.next ? 'is-next' : '') + '"><a href="' + evHref(ev) + '">' +
-        '<span class="ep-when"><small>' + D.weekday(ev.date).slice(0, 3) + '</small><b>' + p.d + '</b><small>dic</small></span>' +
-        '<span class="ep-info"><span class="ep-time">' + ev.start + ' h' + (f.next ? '<i>Próximo</i>' : f.past ? '<i class="past">Finalizado</i>' : '') + '</span>' +
-          '<b>' + esc(ev.place) + '</b><small>' + esc(ev.city) + (ev.featured ? ' · Gran encendido' : '') + '</small></span></a></li>';
-    }).join('') + '</ul><a class="ep-all" href="' + (onHome ? '#encendidos' : 'eventos') + '">Ver los ' + D.events.length + ' encendidos ' + I.arrow + '</a>';
+        '<span class="ep-txt"><small class="ep-date">' + (f.next ? '<i>Próximo</i>' : f.past ? '<i class="past">Finalizado</i>' : '') +
+          D.weekday(ev.date).slice(0, 3) + ' ' + p.d + ' dic · ' + ev.start + ' h</small>' +
+          '<b>' + esc(ev.place) + '</b><small>' + esc(ev.city) + (ev.featured ? ' · Gran encendido' : '') + '</small></span>' +
+        '<span class="ep-dot" aria-hidden="true"></span></a></li>';
+    }).join('') + '</ol><a class="ep-all" href="' + (onHome ? '#encendidos' : 'eventos') + '">Ver los ' + D.events.length + ' encendidos ' + I.arrow + '</a>';
     peek.inert = true;
     wrap.appendChild(peek);
 
-    var isOpen = false, t;
+    var sec = $('#encendidos'), isOpen = false, firstView = false, t;
+    function place() {
+      // la línea sale justo del centro del botón
+      var w = wrap.getBoundingClientRect(), c = cta.getBoundingClientRect();
+      peek.style.right = Math.round(w.right - (c.left + c.width / 2) - 23) + 'px';
+    }
     function open() {
       if (isOpen || !wide.matches) return;
-      var w = wrap.getBoundingClientRect(), c = cta.getBoundingClientRect();
-      peek.style.setProperty('--caret', Math.round(w.right - c.right + c.width / 2) + 'px'); // la flechita apunta al botón
+      place();
       isOpen = true; peek.inert = false; peek.classList.add('open');
     }
     function close() {
@@ -367,23 +373,23 @@
       isOpen = false; peek.inert = true; peek.classList.remove('open');
     }
     function hovering() { return cta.matches(':hover') || peek.matches(':hover'); }
+    // Portada: abierto hasta que asoma la sección de encendidos (y otra vez si se vuelve arriba)
+    function inFirstView() { return firstView && (!sec || sec.getBoundingClientRect().top > window.innerHeight * .8); }
+    function sync() { if (hovering() || inFirstView()) open(); else close(); }
+    function dismiss() { firstView = false; close(); }
+
     [cta, peek].forEach(function (el) {
       el.addEventListener('mouseenter', function () { clearTimeout(t); t = setTimeout(open, el === cta ? 120 : 0); });
-      el.addEventListener('mouseleave', function () { clearTimeout(t); t = setTimeout(function () { if (!hovering()) close(); }, 300); });
+      el.addEventListener('mouseleave', function () { clearTimeout(t); t = setTimeout(sync, 300); });
     });
     cta.addEventListener('focus', open);
-    peek.addEventListener('focusout', function (e) { if (!peek.contains(e.relatedTarget) && e.relatedTarget !== cta) close(); });
-    peek.addEventListener('click', function (e) { if (e.target.closest('a')) close(); });
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
-    document.addEventListener('click', function (e) { if (!peek.contains(e.target) && !cta.contains(e.target)) close(); });
-    // al deslizar se recoge (salvo que el ratón esté encima)
-    var auto = null;
-    window.addEventListener('scroll', function () {
-      if (window.scrollY > 12) { clearTimeout(auto); if (!hovering()) close(); }
-    }, { passive: true });
-    window.addEventListener('resize', function () { if (!wide.matches) close(); });
-    // portada: se despliega solo en la primera vista
-    if (onHome && window.scrollY < 12 && !location.hash) auto = setTimeout(open, 1100);
+    peek.addEventListener('focusout', function (e) { if (!peek.contains(e.relatedTarget) && e.relatedTarget !== cta) sync(); });
+    peek.addEventListener('click', function (e) { if (e.target.closest('a')) dismiss(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') dismiss(); });
+    document.addEventListener('click', function (e) { if (isOpen && !peek.contains(e.target) && !cta.contains(e.target)) dismiss(); });
+    window.addEventListener('scroll', function () { if (isOpen || firstView) sync(); }, { passive: true });
+    window.addEventListener('resize', function () { if (!wide.matches) close(); else if (isOpen) place(); });
+    if (onHome && !location.hash) setTimeout(function () { firstView = true; sync(); }, 1100);
   })();
 
   /* ---------- Barra flotante: próximo encendido (todas las páginas salvo Eventos) ---------- */
