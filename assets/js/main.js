@@ -90,7 +90,7 @@
   }
   function share(ev) {
     var p = D.parse(ev.date);
-    var url = new URL('eventos.html#' + ev.id, location.href).href;
+    var url = new URL('eventos#' + ev.id, location.href).href;
     var text = ev.title + ' · ' + D.weekday(ev.date) + ' ' + p.d + ' de diciembre, ' + ev.start + ' h. Janucá con Jabad Barcelona ✨';
     if (navigator.share) { navigator.share({ title: ev.title, text: text, url: url }).catch(function () {}); return; }
     window.open('https://wa.me/?text=' + encodeURIComponent(text + ' ' + url), '_blank', 'noopener');
@@ -129,7 +129,7 @@
       '<h3>' + esc(ev.title) + '</h3>' +
       '<ul class="ev-meta"><li>' + I.clock + '<span>' + cap(D.weekday(ev.date)) + ', ' + timeLabel(ev) + '</span></li><li>' + I.pin + '<span>' + esc(ev.place) + '<small>' + esc(ev.area) + '</small></span></li></ul>' +
       '<p class="ev-desc">' + esc(ev.description) + '</p>' +
-      '<div class="ev-actions"><a class="btn btn-gold btn-sm" href="eventos.html#' + esc(ev.id) + '">Ver detalles</a>' + calMenu(ev) +
+      '<div class="ev-actions"><a class="btn btn-gold btn-sm" href="eventos#' + esc(ev.id) + '">Ver detalles</a>' + calMenu(ev) +
       '<button class="btn btn-ghost btn-sm icon-btn" type="button" data-share="' + esc(ev.id) + '" aria-label="Compartir ' + esc(ev.title) + '">' + I.share + '</button></div></div></article>';
   }
   function eventDetail(ev) {

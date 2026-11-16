@@ -33,10 +33,10 @@ La web está configurada para **https://janucabarcelona.com** (`DOMINIO` en `src
 ## Ver la web en local
 
 ```bash
-python3 -m http.server 8787
+node src/servidor.js
 ```
 
-Abre http://localhost:8787. Para simular otro día, añade `?fecha=2026-12-08T19:00` a la dirección; para abrir una noche concreta, `?noche=5`.
+Abre http://localhost:8787. Las direcciones van sin «.html» (`/historia`), igual que en la web publicada. Para simular otro día, añade `?fecha=2026-12-08T19:00` a la dirección; para abrir una noche concreta, `?noche=5`.
 
 ## Publicar
 

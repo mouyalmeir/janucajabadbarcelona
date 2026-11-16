@@ -11,8 +11,8 @@ const path = require('path');
 // ⚠️ Dirección pública de la web, sin barra final (p. ej. 'https://januca.chabadbarcelona.org').
 // Hace falta para que WhatsApp y las redes muestren la imagen al compartir.
 const DOMINIO = 'https://janucabarcelona.com';
-// Cloudflare Pages sirve las páginas sin «.html» (/historia). Si se publica en un hosting
-// clásico (FTP), cambia esto a false.
+// Direcciones sin «.html» (/historia). GitHub Pages y Cloudflare Pages las entienden;
+// para ver la web en local usa «node src/servidor.js». En un hosting clásico (FTP), pon false.
 const URLS_LIMPIAS = true;
 const urlDe = (f) => `${DOMINIO}/${f === 'index.html' ? '' : (URLS_LIMPIAS ? f.replace(/\.html$/, '') : f)}`;
 
@@ -76,11 +76,18 @@ ${rellenar(PIE, { MENU_PIE: menuPie }).trimEnd()}
 `;
 }
 
+// Enlaces internos sin «.html» (historia.html → historia, index.html → ./)
+function enlacesLimpios(html) {
+  if (!URLS_LIMPIAS) return html;
+  return html.replace(/href="([a-z0-9-]+)\.html(#[^"]*)?"/g, (m, nombre, ancla) =>
+    `href="${nombre === 'index' ? './' : nombre}${ancla || ''}"`);
+}
+
 for (const f of fs.readdirSync(PAGINAS).filter((f) => f.endsWith('.html'))) {
   const raw = fs.readFileSync(path.join(PAGINAS, f), 'utf8');
   const i = raw.indexOf('\n');
   const meta = JSON.parse(raw.slice(0, i)); // 1.ª línea: {"title", "description", "scripts", "hebrew"}
-  fs.writeFileSync(path.join(RAIZ, f), pagina(f, meta, raw.slice(i + 1)));
+  fs.writeFileSync(path.join(RAIZ, f), enlacesLimpios(pagina(f, meta, raw.slice(i + 1))));
   console.log('✓', f);
 }
 

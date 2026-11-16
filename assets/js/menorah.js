@@ -196,7 +196,7 @@
         '<p class="np-small">Toca una para leerla o cantarla.</p></div>' +
       '<div class="np-card np-light"><h4>' + ICO.spark + 'Suma tu luz</h4>' +
         '<p class="np-quote">«' + nd.thought + '»</p><p>' + nd.idea + '</p>' +
-        (ev ? '<a class="np-event" href="eventos.html#' + ev.id + '"><img src="assets/img/' + ev.art + '.svg" alt="" width="48" height="48" loading="lazy"><span><small>Encendido público · ' + ev.start + ' h</small>' + ev.place + ' · ' + ev.org + '</span></a>' : '') +
+        (ev ? '<a class="np-event" href="eventos#' + ev.id + '"><img src="assets/img/' + ev.art + '.svg" alt="" width="48" height="48" loading="lazy"><span><small>Encendido público · ' + ev.start + ' h</small>' + ev.place + ' · ' + ev.org + '</span></a>' : '') +
       '</div>';
     revealCards();
   }
@@ -248,7 +248,7 @@
         : '<strong>Vela ' + k + ' de ' + n + '</strong><span>Sigue de izquierda a derecha.</span>';
     } else {
       html = '<strong>¡Jag Janucá Saméaj! ✦</strong><span>' + (n === 1 ? 'La primera vela brilla' : 'Las ' + n + ' velas de la ' + D.ord[n] + ' noche brillan') +
-        '. Ahora se recita <a href="bendiciones.html#hanerot" data-text="hanerot">Hanerot Halalu</a>, el <a href="bendiciones.html#mizmor" data-text="mizmor">Mizmor Shir</a> y se canta <a href="bendiciones.html#maoz-tzur" data-text="maoz">Maoz Tzur</a>.' +
+        '. Ahora se recita <a href="bendiciones#hanerot" data-text="hanerot">Hanerot Halalu</a>, el <a href="bendiciones#mizmor" data-text="mizmor">Mizmor Shir</a> y se canta <a href="bendiciones#maoz-tzur" data-text="maoz">Maoz Tzur</a>.' +
         (state.auto ? ' Pulsa <b>«Encenderla yo»</b> para hacerlo tú, vela a vela.' : '') + '</span>';
     }
     statusEl.innerHTML = html;
