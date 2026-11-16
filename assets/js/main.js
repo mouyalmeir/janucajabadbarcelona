@@ -359,9 +359,9 @@
 
     var sec = $('#encendidos'), isOpen = false, firstView = false, t;
     function place() {
-      // la línea sale justo del centro del botón
+      // la línea sale del botón por la derecha, justo donde empieza a curvarse (radio = media altura)
       var w = wrap.getBoundingClientRect(), c = cta.getBoundingClientRect();
-      peek.style.right = Math.round(w.right - (c.left + c.width / 2) - 23) + 'px';
+      peek.style.right = Math.round(w.right - (c.right - c.height / 2) - 23) + 'px';
     }
     function open() {
       if (isOpen || !wide.matches) return;
