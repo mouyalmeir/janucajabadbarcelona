@@ -6,7 +6,7 @@ window.JANUCA = (function () {
   'use strict';
 
   // CONTACTO de Jabad Barcelona. Los campos vacíos no se muestran en la web.
-  // Las reservas y el voluntariado se envían por WhatsApp (si hay número) o por email.
+  // El patrocinio se envía por WhatsApp (si hay número) o por email.
   var contact = {
     email: 'info@chabadbarcelona.org',
     phone: '93 410 06 85',
@@ -59,8 +59,7 @@ window.JANUCA = (function () {
       mapsQuery: 'Turó de Can Matas, Carrer de Josep Irla, Sant Cugat del Vallès',
       transport: '', art: 'ev-sant-cugat',
       description: 'Jabad Sant Cugat enciende la tercera vela de Janucá al aire libre, en el Turó de Can Matas. Abierto a todos: ven con tu familia y tus amigos.',
-      program: ['Encendido de la 3.ª vela', 'Al aire libre', 'Abierto a todos'],
-      cta: 'Confirmar asistencia'
+      program: ['Encendido de la 3.ª vela', 'Al aire libre', 'Abierto a todos']
     },
     {
       id: 'girona', short: 'Girona', night: 5, date: '2026-12-08', start: '18:00', end: '',
@@ -70,8 +69,7 @@ window.JANUCA = (function () {
       mapsQuery: 'Carrer de la Força 20, Girona',
       transport: '', art: 'ev-girona',
       description: 'El Centro Judío de Girona enciende la quinta vela en el corazón del antiguo barrio judío, el Call. Abierto a todos.',
-      program: ['Encendido de la 5.ª vela', 'En el Call de Girona', 'Abierto a todos'],
-      cta: 'Confirmar asistencia'
+      program: ['Encendido de la 5.ª vela', 'En el Call de Girona', 'Abierto a todos']
     },
     {
       id: 'turo-parc', short: 'Turó Parc', night: 6, date: '2026-12-09', start: '18:00', end: '',
@@ -81,8 +79,7 @@ window.JANUCA = (function () {
       mapsQuery: 'Turó Parc, Barcelona',
       transport: 'Tram T1 · T2 · T3 Francesc Macià', art: 'ev-turo-parc',
       description: 'Jabad Barcelona enciende la sexta vela en el Turó Parc. Una cita al aire libre para toda la familia, abierta a todos.',
-      program: ['Encendido de la 6.ª vela', 'Para toda la familia', 'Abierto a todos'],
-      cta: 'Confirmar asistencia'
+      program: ['Encendido de la 6.ª vela', 'Para toda la familia', 'Abierto a todos']
     },
     {
       id: 'placa-sant-jaume', short: 'Plaça Sant Jaume', night: 7, date: '2026-12-10', start: '18:00', end: '', featured: true,
@@ -92,8 +89,7 @@ window.JANUCA = (function () {
       mapsQuery: 'Plaça de Sant Jaume, Barcelona',
       transport: 'Metro L4 Jaume I · L3 Liceu', art: 'ev-sant-jaume',
       description: 'El gran encendido público de Janucá en Barcelona, frente al Ayuntamiento y el Palau de la Generalitat. Encendemos juntos la séptima vela.',
-      program: ['Encendido de la 7.ª vela', 'Frente al Ayuntamiento', 'Abierto a todos'],
-      cta: 'Confirmar asistencia'
+      program: ['Encendido de la 7.ª vela', 'Frente al Ayuntamiento', 'Abierto a todos']
     }
   ];
 
@@ -130,10 +126,10 @@ window.JANUCA = (function () {
   ];
 
   var faqs = [
-    { q: '¿Hay que pagar o reservar entrada?', a: 'No. Todos los encendidos son abiertos y gratuitos. Confirmar asistencia es opcional y nos ayuda a organizarnos.' },
+    { q: '¿Hay que pagar o reservar entrada?', a: 'No. Todos los encendidos son abiertos y gratuitos.' },
     { q: '¿Son actos para niños?', a: 'Sí. Son encendidos al aire libre para toda la familia: trae a los niños a ver cómo se enciende la janukiá.' },
     { q: '¿Hay encendidos fuera de Barcelona?', a: 'Sí: el domingo 6 en Sant Cugat, con Jabad Sant Cugat, y el martes 8 en Girona, con el Centro Judío de Girona.' },
-    { q: 'No tengo janukiá ni velas, ¿qué hago?', a: 'Pide tu kit gratuito con janukiá, 44 velas e instrucciones a través del formulario de la web o llamando al 93 410 06 85.' },
+    { q: 'No tengo janukiá ni velas, ¿qué hago?', a: 'Pide tu kit gratuito con janukiá y 44 velas a través del formulario de la web o llamando al 93 410 06 85.' },
     { q: '¿Puedo venir aunque no sea judío?', a: 'Claro. Janucá celebra que la luz vence a la oscuridad: todo el mundo es bienvenido a compartir la fiesta en la calle.' }
   ];
 

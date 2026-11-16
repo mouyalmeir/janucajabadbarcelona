@@ -147,32 +147,8 @@
   var F = {
     name: '<div class="field full"><label for="f-name">Nombre y apellidos</label><input id="f-name" name="name" autocomplete="name" required></div>',
     phone: '<div class="field"><label for="f-phone">Teléfono / WhatsApp</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" required></div>',
-    people: '<div class="field"><label for="f-people">¿Cuántos venís?</label><select id="f-people" name="people"><option>1 persona</option><option selected>2 personas</option><option>3 personas</option><option>4 personas (familia)</option><option>5 o más</option></select></div>',
-    role: '<div class="field"><label for="f-role">¿Cómo quieres ayudar?</label><select id="f-role" name="role"><option>Reparto de sufganiot y kits</option><option>Acogida e información</option><option>Talleres infantiles</option><option>Montaje y logística</option></select></div>',
     note: '<div class="field full"><label for="f-note">Comentario (opcional)</label><textarea id="f-note" name="note"></textarea></div>'
   };
-  function openRsvp(ev) {
-    var p = D.parse(ev.date);
-    openDialog({
-      kicker: D.ord[ev.night] + ' noche · ' + cap(D.weekday(ev.date)) + ' ' + p.d + ' dic', title: ev.title,
-      text: 'Es gratis. Confirmar nos ayuda a preparar suficientes sufganiot y kits para todos.',
-      fields: F.name + F.phone + F.people + F.note, submit: ev.cta || 'Confirmar asistencia',
-      onSubmit: function (form, msg) {
-        send('Asistencia · ' + ev.title + ' (' + p.d + ' dic, ' + ev.start + ' h)',
-          ['Nombre: ' + val(form, 'name'), 'Teléfono: ' + val(form, 'phone'), 'Personas: ' + val(form, 'people'), val(form, 'note') && 'Comentario: ' + val(form, 'note')], msg);
-      }
-    });
-  }
-  function openVolunteer() {
-    openDialog({
-      kicker: 'Voluntariado', title: 'Ayúdanos a llevar la luz a Barcelona',
-      text: 'Necesitamos manos para repartir sufganiot, acoger a la gente y animar los talleres de los niños.',
-      fields: F.name + F.phone + F.role + F.note, submit: 'Quiero ser voluntario',
-      onSubmit: function (form, msg) {
-        send('Voluntariado Janucá 5787', ['Nombre: ' + val(form, 'name'), 'Teléfono: ' + val(form, 'phone'), 'Área: ' + val(form, 'role'), val(form, 'note') && 'Comentario: ' + val(form, 'note')], msg);
-      }
-    });
-  }
   function openSponsor() {
     openDialog({
       kicker: 'Patrocinio', title: 'Patrocina Janucá en honor o memoria',
@@ -230,8 +206,8 @@
       '</div>' +
       '<ul class="ev-program">' + ev.program.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' +
       (ev.notice ? '<p class="ev-notice">' + esc(ev.notice) + '</p>' : '') +
-      '<div class="ev-actions">' + (f.past ? '' : '<button class="btn btn-gold btn-sm" type="button" data-rsvp="' + esc(ev.id) + '">' + esc(ev.cta) + '</button>') +
-        '<a class="btn btn-ghost btn-sm" href="' + mapsUrl(ev) + '" target="_blank" rel="noopener">' + I.map + 'Cómo llegar</a>' + calMenu(ev) +
+      '<div class="ev-actions">' +
+        '<a class="btn btn-gold btn-sm" href="' + mapsUrl(ev) + '" target="_blank" rel="noopener">' + I.map + 'Cómo llegar</a>' + calMenu(ev) +
         '<button class="btn btn-ghost btn-sm icon-btn" type="button" data-share="' + esc(ev.id) + '" aria-label="Compartir ' + esc(ev.title) + '">' + I.share + '</button>' +
       '</div></div></article>';
   }
@@ -321,14 +297,13 @@
 
   /* ---------- Acciones globales ---------- */
   document.addEventListener('click', function (e) {
-    var t = e.target.closest('[data-ics],[data-share],[data-rsvp],[data-open],[data-ics-all],[data-print],[data-donate]');
+    var t = e.target.closest('[data-ics],[data-share],[data-open],[data-ics-all],[data-print],[data-donate]');
     if (!t) {
       $$('.ev-cal[open]').forEach(function (d) { if (!d.contains(e.target)) d.removeAttribute('open'); });
       return;
     }
     if (t.hasAttribute('data-ics')) { eventIcs(evById(t.getAttribute('data-ics'))); var d = t.closest('details'); if (d) d.removeAttribute('open'); }
     else if (t.hasAttribute('data-share')) share(evById(t.getAttribute('data-share')));
-    else if (t.hasAttribute('data-rsvp')) openRsvp(evById(t.getAttribute('data-rsvp')));
     else if (t.hasAttribute('data-ics-all')) nightsIcs();
     else if (t.hasAttribute('data-print')) window.print();
     else if (t.hasAttribute('data-donate')) {
@@ -336,7 +311,6 @@
       if (D.contact.donateUrl) window.open(D.contact.donateUrl, '_blank', 'noopener');
       else openSponsor();
     }
-    else if (t.getAttribute('data-open') === 'volunteer') openVolunteer();
     else if (t.getAttribute('data-open') === 'sponsor') openSponsor();
   });
 
