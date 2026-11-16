@@ -40,30 +40,31 @@ Abre http://localhost:8787. Para simular otro día, añade `?fecha=2026-12-08T19
 
 ## Publicar
 
-Cada vez que ejecutas `node src/construir.js` se crea la carpeta **`publicar/`**. Contiene solo lo que hay que subir: las páginas, `assets/`, `robots.txt` y `sitemap.xml`.
+La web está publicada con **GitHub Pages** desde el repositorio https://github.com/mouyalmeir/janucajabadbarcelona.
 
-### Cloudflare Pages (gratis, ancho de banda ilimitado)
-
-**Primera vez**
-
-1. Crea una cuenta gratuita en https://dash.cloudflare.com.
-2. Ve a **Workers & Pages → Create → Pages → Upload assets** (subida directa). Ponle de nombre `januca-barcelona` y arrastra la carpeta `publicar/`. La web queda publicada en `januca-barcelona.pages.dev`.
-3. Pasa el dominio a Cloudflare: **Add a domain** → `janucabarcelona.com` → plan **Free**. Cloudflare te dará 2 *nameservers*.
-4. En **Namecheap → Domain List → Manage → Nameservers**, elige **Custom DNS** y pega esos 2 nameservers. Puede tardar desde unos minutos hasta 24 h.
-5. Vuelve al proyecto de Pages: **Custom domains → Set up a custom domain**. Añade `janucabarcelona.com` y después `www.janucabarcelona.com`. El certificado https se crea solo.
-
-**Para actualizar la web**
-
-Ejecuta `node src/construir.js` y, en el proyecto de Pages, pulsa **Create new deployment** y vuelve a arrastrar `publicar/`.
-
-También se puede publicar desde la terminal:
+**Para actualizarla**, basta con subir los cambios a `main`. GitHub ejecuta `node src/construir.js` y publica la carpeta `publicar/` en un par de minutos (ver `.github/workflows/publicar.yml`):
 
 ```bash
-npx wrangler pages deploy publicar --project-name januca-barcelona
+git add -A && git commit -m "Describe el cambio" && git push
 ```
 
-> Si el dominio tiene configurado en Namecheap el reenvío de correo u otros registros, hay que recrearlos en el DNS de Cloudflare antes de cambiar los nameservers.
+El estado de cada publicación se ve en la pestaña **Actions** del repositorio.
 
-### Hosting clásico (FTP)
+### Dominio (Namecheap → GitHub Pages)
 
-Sube el contenido de `publicar/` a la carpeta raíz del hosting (`public_html` o `httpdocs`). Antes, pon `URLS_LIMPIAS = false` en `src/construir.js` y vuelve a ejecutarlo.
+En **Namecheap → Domain List → Manage → Advanced DNS**, borra los registros de *parking* y deja estos:
+
+| Tipo | Host | Valor |
+| --- | --- | --- |
+| A Record | @ | 185.199.108.153 |
+| A Record | @ | 185.199.109.153 |
+| A Record | @ | 185.199.110.153 |
+| A Record | @ | 185.199.111.153 |
+| CNAME Record | www | mouyalmeir.github.io. |
+
+Cuando el dominio ya funcione, activa **Enforce HTTPS** en *Settings → Pages* del repositorio.
+
+### Alternativas
+
+- **Cloudflare Pages:** sube la carpeta `publicar/` desde *Workers & Pages → Create → Pages → Upload assets* y mueve los nameservers del dominio a Cloudflare.
+- **Hosting clásico (FTP):** sube el contenido de `publicar/` a `public_html` o `httpdocs`. Antes, pon `URLS_LIMPIAS = false` en `src/construir.js`.
