@@ -131,7 +131,6 @@
     var n = daysUntil(ev.date);
     return n <= 0 ? 'Hoy' : n === 1 ? 'Mañana' : 'En ' + n + ' días';
   }
-  function dateShort(ev) { var p = D.parse(ev.date); return cap(D.weekday(ev.date)) + ' ' + p.d + ' de diciembre'; }
   function badge(ev) {
     var f = flags[ev.id];
     return f.past ? '<span class="ev-badge">Finalizado</span>' : (f.next ? '<span class="ev-badge">Próximo encendido</span>' : '');
@@ -148,26 +147,37 @@
       '<span class="ev-date"><span class="ev-day">' + p.d + '</span><span class="ev-mon">dic<small>' + D.weekday(ev.date) + '</small></span></span>' +
       '<span class="ev-city">' + I.pin + esc(ev.city) + '</span>';
   }
-  // Bloque «dónde y cuándo», protagonista en las tarjetas
-  function whereWhen(ev) {
-    return '<div class="ev-where">' + I.pin + '<span><b>' + esc(ev.place) + '</b><small>' + esc(ev.address) + '</small></span></div>' +
-      '<div class="ev-when">' + I.clock + '<span>' + dateShort(ev) + ' · <b>' + timeLabel(ev) + '</b></span>' +
-        '<span class="ev-soon' + (flags[ev.id].past ? ' is-past' : '') + '">' + soonLabel(ev) + '</span></div>';
+  // Lo que añade la dirección al lugar y la ciudad (o, si no añade nada, el barrio)
+  function placeSub(ev) {
+    var skip = function (x) { return x && x !== ev.place && x !== ev.city; };
+    var parts = ev.address.split(' · ').filter(skip);
+    return (parts.length ? parts : String(ev.area || '').split(' · ').filter(skip)).join(' · ');
   }
-  function cardActions(ev) {
-    return '<div class="ev-actions">' +
-      '<a class="btn btn-gold btn-sm" href="' + mapsUrl(ev) + '" target="_blank" rel="noopener">' + I.map + 'Cómo llegar</a>' + calMenu(ev) +
-      '<button class="btn btn-ghost btn-sm icon-btn" type="button" data-share="' + esc(ev.id) + '" aria-label="Compartir ' + esc(ev.title) + '">' + I.share + '</button>' +
-      '<a class="ev-more" href="eventos#' + esc(ev.id) + '">Detalles ' + I.arrow + '</a></div>';
-  }
-  function eventCard(ev, big) {
-    var f = flags[ev.id];
-    return '<article class="event-card reveal' + (big ? ' ev-featured' : '') + (f.past ? ' is-past' : '') + (f.next ? ' is-next' : '') + '">' +
-      '<div class="ev-media">' + media(ev) + '</div>' +
-      '<div class="ev-body"><p class="ev-kicker ev-org-line">' + orgLogo(ev, 'ev-org-mini') + esc(ev.org) + '</p>' +
-      '<h3>' + ev.titleHtml + '</h3>' + whereWhen(ev) +
-      (big ? '<p class="ev-desc">' + ev.descHtml + '</p>' : '') +
-      cardActions(ev) + '</div></article>';
+  // Portada: agenda de los encendidos (fecha y hora a la izquierda, lugar como protagonista)
+  function agendaItem(ev) {
+    var f = flags[ev.id], p = D.parse(ev.date), link = 'eventos#' + esc(ev.id), sub = placeSub(ev);
+    return '<li class="ag-item reveal' + (f.past ? ' is-past' : '') + (f.next ? ' is-next' : '') + (ev.featured ? ' is-featured' : '') + '">' +
+      '<div class="ag-when" aria-hidden="true"><span class="ag-wd">' + D.weekday(ev.date).slice(0, 3) + '</span><b class="ag-day">' + p.d + '</b>' +
+        '<span class="ag-mon">dic</span><span class="ag-time">' + ev.start + '<small>h</small></span></div>' +
+      '<article class="ag-card">' +
+        '<a class="ag-art" href="' + link + '" tabindex="-1" aria-hidden="true">' +
+          '<img src="assets/img/' + ev.art + '.svg" alt="" width="960" height="600" loading="lazy" decoding="async">' + badge(ev) +
+          '<span class="ev-chip">' + miniMenorah(ev.night) + D.ord[ev.night] + ' noche</span></a>' +
+        '<div class="ag-info">' +
+          '<p class="ag-city">' + I.pin + esc(ev.city) + (ev.featured ? '<span class="ag-tag">Gran encendido</span>' : '') + '</p>' +
+          '<h3 class="ag-place"><a href="' + link + '">' + esc(ev.place) + '</a></h3>' +
+          '<p class="sr-only">' + cap(D.dateLong(ev.date)) + ', a las ' + ev.start + ' h</p>' +
+          (sub ? '<p class="ag-sub">' + esc(sub) + '</p>' : '') +
+          (ev.transport ? '<p class="ag-transit">' + I.metro + esc(ev.transport) + '</p>' : '') +
+          '<p class="ag-org">' + orgLogo(ev, 'ag-org-logo') + '<span><small>Organiza</small>' + esc(ev.org) + '</span></p>' +
+        '</div>' +
+        '<div class="ag-actions">' +
+          '<span class="ev-soon' + (f.past ? ' is-past' : '') + '">' + soonLabel(ev) + '</span>' +
+          '<a class="btn btn-gold btn-sm ag-go" href="' + mapsUrl(ev) + '" target="_blank" rel="noopener">' + I.map + 'Cómo llegar</a>' +
+          '<div class="ag-more">' + calMenu(ev) +
+            '<button class="btn btn-ghost btn-sm icon-btn" type="button" data-share="' + esc(ev.id) + '" aria-label="Compartir ' + esc(ev.title) + '">' + I.share + '</button></div>' +
+        '</div>' +
+      '</article></li>';
   }
   function eventDetail(ev) {
     var f = flags[ev.id];
@@ -191,21 +201,8 @@
       '</div></div></article>';
   }
   $$('[data-events]').forEach(function (list) {
-    var full = list.getAttribute('data-events') === 'full';
-    if (full) { list.innerHTML = D.events.map(eventDetail).join(''); return; }
-    // Portada: el próximo encendido en grande y el resto debajo
-    var first = nextEv || D.events[D.events.length - 1];
-    var rest = D.events.filter(function (e) { return e !== first; });
-    list.innerHTML = eventCard(first, true) + '<div class="events-rest">' + rest.map(function (e) { return eventCard(e, false); }).join('') + '</div>';
+    list.innerHTML = D.events.map(list.getAttribute('data-events') === 'full' ? eventDetail : agendaItem).join('');
   });
-  // Resumen de los 4 encendidos (fecha + lugar) en la portada
-  var strip = $('#events-strip');
-  if (strip) strip.innerHTML = D.events.map(function (ev) {
-    var p = D.parse(ev.date);
-    return '<a class="es-item reveal' + (flags[ev.id].past ? ' is-past' : '') + '" href="eventos#' + esc(ev.id) + '">' +
-      '<span class="es-date"><b>' + p.d + '</b>dic<small>' + D.weekday(ev.date).slice(0, 3) + '</small></span>' +
-      '<span class="es-place"><b>' + esc(ev.place) + '</b><small>' + esc(ev.city) + ' · ' + ev.start + ' h</small></span></a>';
-  }).join('');
   var fb = $('#filter-bar');
   if (fb) fb.innerHTML = D.events.map(function (ev) {
     var p = D.parse(ev.date);
@@ -311,10 +308,23 @@
     });
   });
 
+  /* ---------- Menú: «Eventos» con la fecha del próximo encendido ---------- */
+  if (nextEv) (function () {
+    var np = D.parse(nextEv.date);
+    $$('.nav-cta, .head-cta').forEach(function (a) {
+      a.insertAdjacentHTML('beforeend', '<span class="nav-when" aria-hidden="true">' + np.d + ' dic</span>');
+    });
+    // en el menú del móvil, una línea más con el próximo encendido
+    var cta = $('.nav .nav-cta');
+    if (cta) cta.insertAdjacentHTML('beforeend', '<span class="nav-next">Próximo: ' + D.weekday(nextEv.date) + ' ' + np.d + ' dic · ' +
+      nextEv.start + ' h · ' + esc(nextEv.short || nextEv.place) + '</span>');
+  })();
+
   /* ---------- Barra flotante: próximo encendido (todas las páginas salvo Eventos) ---------- */
+  // Sale enseguida (tras un pequeño desplazamiento o a los pocos segundos) y no se cierra.
+  // Se aparta mientras se ven los encendidos de la portada o el pie, para no taparlos.
   (function () {
     if (!nextEv || $('[data-events="full"]')) return;
-    try { if (sessionStorage.getItem('jb-nextbar-off')) return; } catch (e) {}
     var p = D.parse(nextEv.date);
     var bar = document.createElement('aside');
     bar.className = 'next-bar';
@@ -324,27 +334,24 @@
         '<span class="nb-txt"><small>Próximo encendido · ' + soonLabel(nextEv) + '</small>' +
         '<b>' + cap(D.weekday(nextEv.date)).slice(0, 3) + ' ' + p.d + ' dic · ' + nextEv.start + ' h</b>' +
         '<span class="nb-place"><span class="loc">' + esc(nextEv.place) + '</span> · ' + esc(nextEv.city) + '</span></span>' +
-        '<span class="nb-go">Ver ' + I.arrow + '</span></a>' +
-      '<button class="nb-close" type="button" aria-label="Ocultar el aviso del próximo encendido">×</button>';
+        '<span class="nb-go">Ver ' + I.arrow + '</span></a>';
     document.body.appendChild(bar);
-    bar.querySelector('.nb-close').addEventListener('click', function () {
-      bar.remove();
-      try { sessionStorage.setItem('jb-nextbar-off', '1'); } catch (e) {}
-    });
-    var hero = $('.hero-scroll'), sec = $('#encendidos'), foot = $('.site-footer'), ticking = false;
+    var sec = $('#encendidos'), foot = $('.site-footer'), ticking = false, timeUp = false;
     var upd = function () {
       ticking = false;
       var vh = window.innerHeight;
-      var show = window.scrollY > (hero ? hero.offsetHeight - vh * .2 : 360);
+      var show = timeUp || window.scrollY > Math.min(140, vh * .18);
       [sec, foot].forEach(function (el) {
         if (!el) return;
         var r = el.getBoundingClientRect();
         if (r.top < vh * .85 && r.bottom > vh * .15) show = false; // no tapar los encendidos ni el pie
       });
       bar.classList.toggle('show', show);
+      document.body.classList.toggle('nb-on', show);
     };
     window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(upd); } }, { passive: true });
     window.addEventListener('resize', upd);
+    setTimeout(function () { timeUp = true; upd(); }, 3500);
     upd();
   })();
 

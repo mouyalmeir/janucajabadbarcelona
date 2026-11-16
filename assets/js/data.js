@@ -62,7 +62,7 @@ window.JANUCA = (function () {
     },
     {
       id: 'girona', city: 'Girona', orgLogo: '', short: 'Girona', night: 5, date: '2026-12-08', start: '18:00', end: '',
-      org: 'Centro Judío de Girona', area: 'Girona · Barri Vell',
+      org: 'Centro Judío de Girona', area: 'Girona · Barri Vell, el antiguo Call',
       title: 'Encendido en el [[Call de Girona]]',
       place: 'Carrer de la Força, 20', address: 'Carrer de la Força, 20 · Girona',
       mapsQuery: 'Carrer de la Força 20, Girona',
