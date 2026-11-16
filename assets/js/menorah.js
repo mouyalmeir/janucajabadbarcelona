@@ -50,6 +50,7 @@
   /* ---------- Una janukiá (opts.ui = controles; sin ellos es decorativa) ---------- */
   function create(stage, opts) {
     var ui = opts.ui || null;
+    var fast = !!opts.fast; // la del hero: el fueguito baja y enciende más deprisa
 
     /* ----- SVG ----- */
     var svg = el('svg', ui
@@ -297,7 +298,7 @@
       el('circle', { r: 16, fill: 'url(#haloG)' }, s);
       el('circle', { r: 3.5, fill: '#fffbe6' }, s);
       var x0 = shamash.x, y0 = shamash.top - 20, x1 = to.x, y1 = to.top - 10;
-      var midY = Math.min(y0, y1) - 34, dur = 320 + Math.abs(x1 - x0) * .55, fired = false;
+      var midY = Math.min(y0, y1) - 34, dur = fast ? 240 + Math.abs(x1 - x0) * .4 : 320 + Math.abs(x1 - x0) * .55, fired = false;
       function end() { if (fired) return; fired = true; if (s.parentNode) gFx.removeChild(s); cb(); }
       s.animate([
         { transform: 'translate(' + x0 + 'px,' + y0 + 'px)' },
@@ -315,7 +316,7 @@
       var f = el('g', { class: 'spark-flame' }, g);
       el('path', { d: flamePath(0, 10, 9, 32), fill: 'url(#flameO)' }, f);
       el('path', { d: flamePath(0, 9, 4, 16), fill: 'url(#flameI)' }, f);
-      var x1 = shamash.x, y1 = shamash.top - 12, dur = 1900, fired = false;
+      var x1 = shamash.x, y1 = shamash.top - 12, dur = fast ? 1100 : 1900, fired = false;
       function end() { if (fired) return; fired = true; if (g.parentNode) gFx.removeChild(g); cb(); }
       g.animate([
         { transform: 'translate(' + (x1 - 6) + 'px,-70px) scale(.5)', opacity: 0 },
@@ -337,7 +338,7 @@
         descend(function () {
           if (tk !== state.token) return;
           ignite(shamash); state.step++; state.busy = false; refresh();
-          if (cb) setTimeout(cb, 520);
+          if (cb) setTimeout(cb, fast ? 260 : 520);
         });
         return;
       }
@@ -378,7 +379,7 @@
       if (auto) { state.auto = true; refresh(); }
       (function loop() {
         if (tok !== state.token || done()) return;
-        lightNext(function () { setTimeout(loop, 280); });
+        lightNext(function () { setTimeout(loop, fast ? 160 : 280); });
       })();
     }
 
@@ -387,7 +388,7 @@
       clearTimeout(hint.t);
       setNight(state.night);
       state.auto = true; refresh();
-      setTimeout(function () { lightAll(true); }, reduce ? 0 : 450);
+      setTimeout(function () { lightAll(true); }, reduce ? 0 : (fast ? 100 : 450));
     }
 
     function celebrate() {
@@ -484,7 +485,7 @@
 
   /* ---------- Crear las janukiás ---------- */
   var $id = function (x) { return document.getElementById(x); };
-  var heroM = heroStage ? create(heroStage, {}) : null;
+  var heroM = heroStage ? create(heroStage, { fast: true }) : null;
   var toolM = toolStage ? create(toolStage, { ui: {
     status: $id('menorah-status'), picker: $id('night-picker'), panel: $id('night-panel'),
     next: $id('m-next'), all: $id('m-all'), reset: $id('m-reset')
@@ -551,7 +552,7 @@
     window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
     window.addEventListener('resize', function () { measure(); update(); });
     update();
-    setTimeout(autoStart, 2400); // si no se desliza, se enciende igualmente
+    setTimeout(autoStart, 700); // si no se desliza, se enciende igualmente (el shamash, en ~2 s)
   } else {
     setTimeout(autoStart, 300);
   }
