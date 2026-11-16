@@ -47,46 +47,47 @@ window.JANUCA = (function () {
   ];
 
   // Los 4 encendidos públicos. Horas en hora local (HH:MM); "end" es opcional.
+  // En título, descripción y preguntas, [[texto]] marca un lugar: la web lo resalta en dorado.
   // "art" es la ilustración de assets/img/<art>.svg; "orgLogo", el logo del organizador (assets/img/<orgLogo>.webp)
   var events = [
     {
-      id: 'sant-cugat', orgLogo: 'jabad-sant-cugat', short: 'Sant Cugat', night: 3, date: '2026-12-06', start: '17:30', end: '',
+      id: 'sant-cugat', city: 'Sant Cugat del Vallès', orgLogo: 'jabad-sant-cugat', short: 'Sant Cugat', night: 3, date: '2026-12-06', start: '17:30', end: '',
       org: 'Jabad Sant Cugat', area: 'Sant Cugat del Vallès',
-      title: 'Encendido en el Turó de Can Matas',
+      title: 'Encendido en el [[Turó de Can Matas]]',
       place: 'Turó de Can Matas', address: 'Calle Josep Irla, frente a la calle Safir · Sant Cugat del Vallès',
       mapsQuery: 'Turó de Can Matas, Carrer de Josep Irla, Sant Cugat del Vallès',
       transport: '', art: 'ev-sant-cugat',
-      description: 'Jabad Sant Cugat enciende la tercera vela de Janucá al aire libre, en el Turó de Can Matas. Abierto a todos: ven con tu familia y tus amigos.',
+      description: 'Jabad Sant Cugat enciende la tercera vela de Janucá al aire libre, en el [[Turó de Can Matas]] de [[Sant Cugat del Vallès]]. Abierto a todos: ven con tu familia y tus amigos.',
       program: ['Encendido de la 3.ª vela', 'Al aire libre', 'Abierto a todos']
     },
     {
-      id: 'girona', orgLogo: '', short: 'Girona', night: 5, date: '2026-12-08', start: '18:00', end: '',
+      id: 'girona', city: 'Girona', orgLogo: '', short: 'Girona', night: 5, date: '2026-12-08', start: '18:00', end: '',
       org: 'Centro Judío de Girona', area: 'Girona · Barri Vell',
-      title: 'Encendido en el Call de Girona',
+      title: 'Encendido en el [[Call de Girona]]',
       place: 'Carrer de la Força, 20', address: 'Carrer de la Força, 20 · Girona',
       mapsQuery: 'Carrer de la Força 20, Girona',
       transport: '', art: 'ev-girona',
-      description: 'El Centro Judío de Girona enciende la quinta vela en el corazón del antiguo barrio judío, el Call. Abierto a todos.',
+      description: 'El Centro Judío de Girona enciende la quinta vela en el corazón del antiguo barrio judío, en el [[Carrer de la Força, 20]] de [[Girona]]. Abierto a todos.',
       program: ['Encendido de la 5.ª vela', 'En el Call de Girona', 'Abierto a todos']
     },
     {
-      id: 'turo-parc', orgLogo: 'jabad-barcelona', short: 'Turó Parc', night: 6, date: '2026-12-09', start: '18:00', end: '',
+      id: 'turo-parc', city: 'Barcelona', orgLogo: 'jabad-barcelona', short: 'Turó Parc', night: 6, date: '2026-12-09', start: '18:00', end: '',
       org: 'Jabad Barcelona', area: 'Sant Gervasi · Barcelona',
-      title: 'Encendido en el Turó Parc',
+      title: 'Encendido en el [[Turó Parc]]',
       place: 'Turó Parc', address: 'Turó Parc · Barcelona',
       mapsQuery: 'Turó Parc, Barcelona',
       transport: 'Tram T1 · T2 · T3 Francesc Macià', art: 'ev-turo-parc',
-      description: 'Jabad Barcelona enciende la sexta vela en el Turó Parc. Una cita al aire libre para toda la familia, abierta a todos.',
+      description: 'Jabad Barcelona enciende la sexta vela en el [[Turó Parc]] de [[Barcelona]]. Una cita al aire libre para toda la familia, abierta a todos.',
       program: ['Encendido de la 6.ª vela', 'Para toda la familia', 'Abierto a todos']
     },
     {
-      id: 'placa-sant-jaume', orgLogo: 'jabad-barcelona', short: 'Plaça Sant Jaume', night: 7, date: '2026-12-10', start: '18:00', end: '', featured: true,
+      id: 'placa-sant-jaume', city: 'Barcelona', orgLogo: 'jabad-barcelona', short: 'Plaça Sant Jaume', night: 7, date: '2026-12-10', start: '18:00', end: '', featured: true,
       org: 'Jabad Barcelona', area: 'Ciutat Vella · Barcelona',
-      title: 'Gran Encendido en la Plaça Sant Jaume',
+      title: 'Gran Encendido en la [[Plaça Sant Jaume]]',
       place: 'Plaça de Sant Jaume', address: 'Plaça de Sant Jaume · Barcelona',
       mapsQuery: 'Plaça de Sant Jaume, Barcelona',
       transport: 'Metro L4 Jaume I · L3 Liceu', art: 'ev-sant-jaume',
-      description: 'El gran encendido público de Janucá en Barcelona, frente al Ayuntamiento y el Palau de la Generalitat. Encendemos juntos la séptima vela.',
+      description: 'El gran encendido público de Janucá en [[Barcelona]]: en la [[Plaça de Sant Jaume]], frente al Ayuntamiento y el Palau de la Generalitat. Encendemos juntos la séptima vela.',
       program: ['Encendido de la 7.ª vela', 'Frente al Ayuntamiento', 'Abierto a todos']
     }
   ];
@@ -126,7 +127,7 @@ window.JANUCA = (function () {
   var faqs = [
     { q: '¿Hay que pagar o reservar entrada?', a: 'No. Todos los encendidos son abiertos y gratuitos.' },
     { q: '¿Son actos para niños?', a: 'Sí. Son encendidos al aire libre para toda la familia: trae a los niños a ver cómo se enciende la janukiá.' },
-    { q: '¿Hay encendidos fuera de Barcelona?', a: 'Sí: el domingo 6 en Sant Cugat, con Jabad Sant Cugat, y el martes 8 en Girona, con el Centro Judío de Girona.' },
+    { q: '¿Hay encendidos fuera de Barcelona?', a: 'Sí: el domingo 6 en el [[Turó de Can Matas]] de [[Sant Cugat del Vallès]], con Jabad Sant Cugat, y el martes 8 en el [[Carrer de la Força, 20]] de [[Girona]], con el Centro Judío de Girona. En [[Barcelona]] encendemos el miércoles 9 en el [[Turó Parc]] y el jueves 10 en la [[Plaça Sant Jaume]].' },
     { q: 'No tengo janukiá ni velas, ¿qué hago?', a: 'Pide tu kit gratuito con janukiá y 44 velas a través del formulario de la web o llamando al 93 410 06 85.' },
     { q: '¿Puedo venir aunque no sea judío?', a: 'Claro. Janucá celebra que la luz vence a la oscuridad: todo el mundo es bienvenido a compartir la fiesta en la calle.' }
   ];

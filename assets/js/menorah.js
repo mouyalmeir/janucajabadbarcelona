@@ -196,7 +196,7 @@
         '<p class="np-small">Toca una para leerla o cantarla.</p></div>' +
       '<div class="np-card np-light"><h4>' + ICO.spark + 'Suma tu luz</h4>' +
         '<p class="np-quote">«' + nd.thought + '»</p><p>' + nd.idea + '</p>' +
-        (ev ? '<a class="np-event" href="eventos#' + ev.id + '"><img src="assets/img/' + ev.art + '.svg" alt="" width="48" height="48" loading="lazy"><span><small>Encendido público · ' + ev.start + ' h</small>' + ev.place + ' · ' + ev.org + '</span></a>' : '') +
+        (ev ? '<a class="np-event" href="eventos#' + ev.id + '"><img src="assets/img/' + ev.art + '.svg" alt="" width="48" height="48" loading="lazy"><span><small>Encendido público · ' + ev.start + ' h</small><span class="loc">' + ev.place + '</span> · ' + ev.city + '</span></a>' : '') +
       '</div>';
     revealCards();
   }
