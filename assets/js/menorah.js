@@ -383,31 +383,40 @@
   }));
   function textIndex(key) { for (var i = 0; i < TEXTS.length; i++) if (TEXTS[i].key === String(key)) return i; return 0; }
   var bdlg;
+  // Diálogo en 3 partes: cabecera fija (título + cerrar), texto con scroll y acciones fijas abajo
   function textHTML(i) {
     var t = TEXTS[i], prev = TEXTS[i - 1], next = TEXTS[i + 1];
-    return '<div class="modal-in"><button class="modal-close" type="button" aria-label="Cerrar">×</button>' +
-      '<p class="eyebrow">' + t.kicker + '</p><h3>' + t.name + '</h3>' +
-      (t.he ? '<p class="bless-he" lang="he" dir="rtl">' + t.he + '</p>' : '') +
-      (t.tr ? '<p class="bless-tr">' + t.tr + '</p>' : '') +
-      '<p class="bless-es' + (t.he || t.tr ? '' : ' bless-only') + '">' + t.es + '</p>' +
-      '<div class="bless-nav">' +
+    return '<div class="modal-head"><div><p class="eyebrow">' + t.kicker + '</p><h3 id="bless-title">' + t.name + '</h3></div>' +
+        '<button class="modal-close" type="button" aria-label="Cerrar">×</button></div>' +
+      '<div class="modal-body">' +
+        (t.he ? '<p class="bless-he" lang="he" dir="rtl">' + t.he + '</p>' : '') +
+        (t.tr ? '<p class="bless-tr">' + t.tr + '</p>' : '') +
+        '<p class="bless-es' + (t.he || t.tr ? '' : ' bless-only') + '">' + t.es + '</p>' +
+      '</div>' +
+      '<div class="modal-foot bless-nav">' +
         (prev ? '<button class="btn btn-ghost btn-sm" type="button" data-bgo="' + (i - 1) + '">← ' + prev.name + '</button>' : '<span></span>') +
-        (next ? '<button class="btn btn-gold btn-sm" type="button" data-bgo="' + (i + 1) + '">' + next.name + ' →</button>' : '<span></span>') +
-      '</div></div>';
+        (next ? '<button class="btn btn-gold btn-sm" type="button" data-bgo="' + (i + 1) + '">' + next.name + ' →</button>' : '<button class="btn btn-ghost btn-sm" type="button" data-close>Cerrar</button>') +
+      '</div>';
   }
+  function lockPage(on) { document.documentElement.classList.toggle('modal-open', on); }
   function openText(key) {
     if (!bdlg) {
       bdlg = document.createElement('dialog');
       bdlg.className = 'modal bless-modal';
-      bdlg.setAttribute('aria-label', 'Bendiciones y cantos de Janucá');
+      bdlg.setAttribute('aria-labelledby', 'bless-title');
       document.body.appendChild(bdlg);
       bdlg.addEventListener('click', function (e) {
-        if (e.target === bdlg || e.target.closest('.modal-close')) { bdlg.close(); return; }
+        if (e.target === bdlg || e.target.closest('.modal-close,[data-close]')) { bdlg.close(); return; }
         var go = e.target.closest('[data-bgo]');
-        if (go) { bdlg.innerHTML = textHTML(+go.getAttribute('data-bgo')); bdlg.querySelector('.modal-in').scrollTop = 0; }
+        if (go) {
+          bdlg.innerHTML = textHTML(+go.getAttribute('data-bgo'));
+          var body = bdlg.querySelector('.modal-body'); if (body) body.scrollTop = 0;
+        }
       });
+      bdlg.addEventListener('close', function () { lockPage(false); });
     }
     bdlg.innerHTML = textHTML(textIndex(key));
+    lockPage(true);
     if (bdlg.showModal) { if (!bdlg.open) bdlg.showModal(); } else bdlg.setAttribute('open', '');
   }
   function onTextClick(e) {
@@ -439,7 +448,8 @@
   btnReset.addEventListener('click', function () { clearTimeout(hint.t); setNight(state.night); });
 
   /* ---------- Noche de hoy ---------- */
-  var start = today.night;
+  var ens = window.JANUCA_ENSAYO;
+  var start = ens ? ens.noche : today.night;
   try {
     var q = +new URLSearchParams(location.search).get('noche');
     if (q >= 1 && q <= 8) start = q;
@@ -451,8 +461,14 @@
   var copy = document.getElementById('hero-copy');
   var sky = scene.querySelector('.skyline');
   var hintEl = document.querySelector('.scroll-hint');
-  var autoDone = false;
+  // En el ensayo (#jb-ensayo) la janukiá espera apagada a que termine la cuenta atrás
+  var autoDone = !!ens;
   function autoStart() { if (autoDone) return; autoDone = true; play(); }
+
+  // API para otras partes de la web (p. ej. el final de la cuenta atrás)
+  window.JanucaMenorah = {
+    play: function (n) { autoDone = true; n = +n; if (n >= 1 && n <= 8 && n !== state.night) setNight(n); play(); }
+  };
 
   if (hero && !reduce) {
     var ticking = false;

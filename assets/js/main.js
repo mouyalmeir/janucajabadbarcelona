@@ -275,27 +275,80 @@
   });
 
   /* ---------- Cuenta atrás / estado de hoy ---------- */
+  /* Ensayo (uso interno, no enlazado en ninguna parte):
+       #jb-ensayo          → cuenta atrás de 5 s y luego la 1.ª noche
+       #jb-ensayo-10       → 10 s
+       #jb-ensayo-10-3     → 10 s y luego la 3.ª noche
+     Cualquier valor raro vuelve a los valores por defecto (5 s, 1.ª noche). */
+  var ensayo = (function () {
+    try {
+      var m = /^#jb-ensayo(.*)$/i.exec(decodeURIComponent(location.hash || ''));
+      if (!m) return null;
+      var partes = m[1].replace(/^[-:/]/, '').split(/[-:/]/); // posición 1: segundos, posición 2: noche
+      var num = function (x) { return /^\d+$/.test(x || '') ? parseInt(x, 10) : NaN; };
+      var secs = num(partes[0]), noche = num(partes[1]);
+      if (!(secs >= 1 && secs <= 600)) secs = 5;
+      if (!(noche >= 1 && noche <= 8)) noche = 1;
+      return { secs: secs, noche: noche };
+    } catch (e) { return null; }
+  })();
+  window.JANUCA_ENSAYO = ensayo;
+  var demoSecs = ensayo ? ensayo.secs : 0;
   var cd = $('[data-countdown]');
+  function pill(msg, extra) { return '<span class="today-pill' + (extra || '') + '">' + msg + '</span>'; }
+  function burst(host) {
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    for (var i = 0; i < 26; i++) {
+      var e = document.createElement('span');
+      e.className = 'ember';
+      e.style.left = (50 + (Math.random() * 70 - 35)) + '%';
+      e.style.top = (40 + Math.random() * 40) + '%';
+      e.style.setProperty('--dx', (Math.random() * 120 - 60) + 'px');
+      e.style.animationDelay = (Math.random() * .6) + 's';
+      host.appendChild(e);
+      setTimeout(function (x) { return function () { x.remove(); }; }(e), 3600);
+    }
+  }
+  // Al llegar a cero: la cuenta atrás se desvanece, aparece el aviso y se enciende la 1.ª vela
+  function arrived() {
+    var n = ensayo ? ensayo.noche : 1, nd = D.nights[n - 1] || D.nights[0];
+    var aviso = n === 1
+      ? '¡Ha llegado Janucá! Enciende la 1.ª vela · ' + nd.time.toLowerCase()
+      : 'Esta noche: ' + D.ord[n] + ' vela de Janucá · ' + nd.time.toLowerCase();
+    cd.classList.add('cd-out');
+    setTimeout(function () {
+      cd.innerHTML = pill(aviso, ' is-arrived');
+      cd.classList.remove('cd-out');
+      cd.classList.add('cd-in');
+      burst(cd);
+      try { if (window.JanucaMenorah) window.JanucaMenorah.play(n); } catch (e) {}
+    }, 600);
+  }
   if (cd) {
-    var st = D.status();
+    var st = demoSecs ? { phase: 'pre' } : D.status();
     if (st.phase === 'pre') {
+      var target = demoSecs ? Date.now() + demoSecs * 1000 : D.firstLight.getTime();
+      var nowMs = function () { return demoSecs ? Date.now() : D.now().getTime(); };
       var cells = {};
       ['d', 'h', 'm', 's'].forEach(function (k) { cells[k] = cd.querySelector('[data-cd="' + k + '"]'); });
+      var timer;
       var tick = function () {
-        var s = Math.floor(Math.max(0, D.firstLight - D.now()) / 1000);
+        var s = Math.max(0, Math.ceil((target - nowMs()) / 1000));
         cells.d.textContent = Math.floor(s / 86400);
         cells.h.textContent = String(Math.floor(s / 3600) % 24).padStart(2, '0');
         cells.m.textContent = String(Math.floor(s / 60) % 60).padStart(2, '0');
         cells.s.textContent = String(s % 60).padStart(2, '0');
+        cd.classList.toggle('cd-final', s <= 10 && s > 0);
+        if (s === 0) { clearInterval(timer); setTimeout(arrived, 400); }
       };
-      tick(); setInterval(tick, 1000);
+      tick(); timer = setInterval(tick, 250);
     } else {
       var nd = D.nights[st.night - 1];
       var msg = st.phase === 'during'
         ? 'Hoy: ' + D.ord[st.night] + ' noche de Janucá · ' + nd.time
         : st.phase === 'last' ? 'Último día de Janucá: la festividad concluye esta noche'
         : 'Janucá 5787 ha concluido. ¡Que la luz siga con nosotros!';
-      cd.innerHTML = '<span class="today-pill">' + msg + '</span>';
+      cd.innerHTML = pill(msg);
     }
   }
 
