@@ -867,3 +867,14 @@ dialog.bless-modal[open] { display: flex; flex-direction: column; }
   .bless-modal .modal-foot .btn { flex: 1 1 0; min-width: 0; white-space: normal; text-align: center; }
 }
 @keyframes sheet { from { transform: translateY(40px); opacity: 0; } }
+
+/* Organizador de cada encendido */
+.ev-org-line { display: flex; align-items: center; gap: 8px; }
+.ev-org-mini { height: 26px; width: auto; filter: drop-shadow(0 0 6px rgba(255,190,90,.3)); }
+.ev-org { display: flex; align-items: center; gap: 14px; margin-top: 4px; padding: 12px 14px; border-radius: 16px; background: rgba(6,10,27,.45); border: 1px solid var(--line-soft); }
+.ev-org-logo { height: 58px; width: auto; flex: none; filter: drop-shadow(0 0 12px rgba(255,190,90,.3)); }
+.ev-org small { display: block; font-size: .66rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.ev-org span { font-family: var(--font-display); font-weight: 600; font-size: 1.08rem; color: var(--cream); }
+.ev-org.no-logo { padding-left: 16px; }
+/* Localidades destacadas en los textos */
+.loc { font-family: var(--font-display); font-style: italic; font-weight: 500; color: var(--gold); white-space: nowrap; }

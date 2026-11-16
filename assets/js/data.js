@@ -47,10 +47,10 @@ window.JANUCA = (function () {
   ];
 
   // Los 4 encendidos públicos. Horas en hora local (HH:MM); "end" es opcional.
-  // "art" es la ilustración de assets/img/<art>.svg
+  // "art" es la ilustración de assets/img/<art>.svg; "orgLogo", el logo del organizador (assets/img/<orgLogo>.webp)
   var events = [
     {
-      id: 'sant-cugat', short: 'Sant Cugat', night: 3, date: '2026-12-06', start: '17:30', end: '',
+      id: 'sant-cugat', orgLogo: 'jabad-sant-cugat', short: 'Sant Cugat', night: 3, date: '2026-12-06', start: '17:30', end: '',
       org: 'Jabad Sant Cugat', area: 'Sant Cugat del Vallès',
       title: 'Encendido en el Turó de Can Matas',
       place: 'Turó de Can Matas', address: 'Calle Josep Irla, frente a la calle Safir · Sant Cugat del Vallès',
@@ -60,7 +60,7 @@ window.JANUCA = (function () {
       program: ['Encendido de la 3.ª vela', 'Al aire libre', 'Abierto a todos']
     },
     {
-      id: 'girona', short: 'Girona', night: 5, date: '2026-12-08', start: '18:00', end: '',
+      id: 'girona', orgLogo: '', short: 'Girona', night: 5, date: '2026-12-08', start: '18:00', end: '',
       org: 'Centro Judío de Girona', area: 'Girona · Barri Vell',
       title: 'Encendido en el Call de Girona',
       place: 'Carrer de la Força, 20', address: 'Carrer de la Força, 20 · Girona',
@@ -70,7 +70,7 @@ window.JANUCA = (function () {
       program: ['Encendido de la 5.ª vela', 'En el Call de Girona', 'Abierto a todos']
     },
     {
-      id: 'turo-parc', short: 'Turó Parc', night: 6, date: '2026-12-09', start: '18:00', end: '',
+      id: 'turo-parc', orgLogo: 'jabad-barcelona', short: 'Turó Parc', night: 6, date: '2026-12-09', start: '18:00', end: '',
       org: 'Jabad Barcelona', area: 'Sant Gervasi · Barcelona',
       title: 'Encendido en el Turó Parc',
       place: 'Turó Parc', address: 'Turó Parc · Barcelona',
@@ -80,7 +80,7 @@ window.JANUCA = (function () {
       program: ['Encendido de la 6.ª vela', 'Para toda la familia', 'Abierto a todos']
     },
     {
-      id: 'placa-sant-jaume', short: 'Plaça Sant Jaume', night: 7, date: '2026-12-10', start: '18:00', end: '', featured: true,
+      id: 'placa-sant-jaume', orgLogo: 'jabad-barcelona', short: 'Plaça Sant Jaume', night: 7, date: '2026-12-10', start: '18:00', end: '', featured: true,
       org: 'Jabad Barcelona', area: 'Ciutat Vella · Barcelona',
       title: 'Gran Encendido en la Plaça Sant Jaume',
       place: 'Plaça de Sant Jaume', address: 'Plaça de Sant Jaume · Barcelona',

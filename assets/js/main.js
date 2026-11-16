@@ -114,6 +114,10 @@
     var f = flags[ev.id];
     return f.past ? '<span class="ev-badge">Finalizado</span>' : (f.next ? '<span class="ev-badge">Próximo</span>' : '');
   }
+  // Logo del organizador (si lo hay) + nombre
+  function orgLogo(ev, cls) {
+    return ev.orgLogo ? '<img class="' + cls + '" src="assets/img/' + ev.orgLogo + '.webp" alt="" loading="lazy" decoding="async">' : '';
+  }
   function media(ev) {
     var p = D.parse(ev.date);
     return '<img src="assets/img/' + ev.art + '.svg" alt="" width="960" height="600" loading="lazy" decoding="async">' +
@@ -125,7 +129,7 @@
     var f = flags[ev.id];
     return '<article class="event-card reveal' + (f.past ? ' is-past' : '') + (f.next ? ' is-next' : '') + '">' +
       '<div class="ev-media">' + media(ev) + '</div>' +
-      '<div class="ev-body"><p class="ev-kicker">' + esc(ev.org) + '</p>' +
+      '<div class="ev-body"><p class="ev-kicker ev-org-line">' + orgLogo(ev, 'ev-org-mini') + esc(ev.org) + '</p>' +
       '<h3>' + esc(ev.title) + '</h3>' +
       '<ul class="ev-meta"><li>' + I.clock + '<span>' + cap(D.weekday(ev.date)) + ', ' + timeLabel(ev) + '</span></li><li>' + I.pin + '<span>' + esc(ev.place) + '<small>' + esc(ev.area) + '</small></span></li></ul>' +
       '<p class="ev-desc">' + esc(ev.description) + '</p>' +
@@ -136,7 +140,7 @@
     var f = flags[ev.id];
     return '<article class="ev-detail reveal' + (ev.featured ? ' featured' : '') + (f.past ? ' is-past' : '') + '" id="' + esc(ev.id) + '">' +
       '<div class="ev-detail-media ev-media">' + media(ev) + '</div>' +
-      '<div class="ev-detail-body"><p class="ev-kicker">' + D.ord[ev.night] + ' noche · ' + esc(ev.org) + '</p>' +
+      '<div class="ev-detail-body"><p class="ev-kicker">' + D.ord[ev.night] + ' noche · ' + esc(ev.area) + '</p>' +
       '<h2>' + esc(ev.title) + '</h2><p>' + esc(ev.description) + '</p>' +
       '<div class="ev-facts">' +
         '<div class="fact">' + I.cal + '<span><small>Fecha</small>' + cap(D.dateLong(ev.date)) + '</span></div>' +
@@ -146,6 +150,8 @@
       '</div>' +
       '<ul class="ev-program">' + ev.program.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' +
       (ev.notice ? '<p class="ev-notice">' + esc(ev.notice) + '</p>' : '') +
+      '<div class="ev-org' + (ev.orgLogo ? '' : ' no-logo') + '">' + orgLogo(ev, 'ev-org-logo') +
+        '<span><small>Organiza</small>' + esc(ev.org) + '</span></div>' +
       '<div class="ev-actions">' +
         '<a class="btn btn-gold btn-sm" href="' + mapsUrl(ev) + '" target="_blank" rel="noopener">' + I.map + 'Cómo llegar</a>' + calMenu(ev) +
         '<button class="btn btn-ghost btn-sm icon-btn" type="button" data-share="' + esc(ev.id) + '" aria-label="Compartir ' + esc(ev.title) + '">' + I.share + '</button>' +
