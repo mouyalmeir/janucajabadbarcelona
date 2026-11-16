@@ -340,8 +340,8 @@ a:hover { color: var(--gold-hi); }
 .steps li { counter-increment: s; position: relative; padding: 16px 18px 16px 62px; border-radius: 16px; background: var(--card); border: 1px solid var(--line-soft); margin: 0 !important; }
 .steps li::before { content: counter(s); position: absolute; left: 16px; top: 14px; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: rgba(242,196,109,.14); border: 1px solid var(--line); color: var(--gold-hi); font-family: var(--font-display); font-weight: 600; }
 
-.table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--line-soft); background: var(--card); }
-table.sched { width: 100%; border-collapse: collapse; font-size: .95rem; min-width: 600px; }
+.table-wrap { overflow: hidden; overflow: clip; border-radius: var(--radius); border: 1px solid var(--line-soft); background: var(--card); }
+table.sched { width: 100%; border-collapse: collapse; font-size: .95rem; }
 .sched th, .sched td { padding: 14px 16px; text-align: left; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
 .sched th { font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); font-weight: 650; background: rgba(255,255,255,.02); }
 .sched tr:last-child td { border-bottom: 0; }
@@ -648,7 +648,7 @@ dialog.modal::backdrop { background: rgba(3,6,18,.72); -webkit-backdrop-filter: 
 .site-footer .brand-logo { width: 44px; height: 44px; }
 
 /* Hero con entrada al deslizar */
-.hero-scroll { position: relative; height: 128vh; height: 128svh; }
+.hero-scroll { position: relative; height: 116vh; height: 116svh; }
 .hero-sticky { position: sticky; top: 66px; height: calc(100vh - 66px); height: calc(100svh - 66px); display: flex; flex-direction: column; overflow: hidden; }
 .hero-copy { padding-bottom: 0; will-change: transform, opacity; }
 .hero-copy .display { margin: .1em 0 0; }
@@ -942,14 +942,14 @@ dialog.bless-modal[open] { display: flex; flex-direction: column; }
 .is-next .ag-time { border-color: rgba(27,20,8,.18); }
 
 /* Tarjeta: ilustración · dónde · acciones */
-.ag-card { position: relative; display: grid; grid-template-columns: 236px minmax(0, 1fr) 200px; grid-template-areas: "art info act"; border-radius: 24px;
+.ag-card { position: relative; display: grid; grid-template-columns: 300px minmax(0, 1fr) 196px; grid-template-areas: "art info act"; border-radius: 24px;
   background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.025)); border: 1px solid var(--line-soft);
   transition: border-color .3s, box-shadow .3s, transform .3s; }
 .ag-card:hover { border-color: var(--line); transform: translateY(-2px); box-shadow: 0 22px 46px -30px rgba(242,196,109,.55); }
 .is-next .ag-card { border-color: rgba(242,196,109,.62); background: linear-gradient(115deg, rgba(242,196,109,.11), rgba(255,255,255,.03) 55%);
   box-shadow: 0 0 0 1px rgba(242,196,109,.2), 0 34px 80px -44px rgba(255,171,46,.9); }
-.ag-art { grid-area: art; position: relative; display: block; min-height: 180px; overflow: hidden; border-radius: 23px 0 0 23px; background: #111a3d; }
-.ag-art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 1s cubic-bezier(.2,.8,.2,1); }
+.ag-art { grid-area: art; position: relative; display: block; min-height: 187px; overflow: hidden; border-radius: 23px 0 0 23px; background: #111a3d; }
+.ag-art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 72% 50%; transition: transform 1s cubic-bezier(.2,.8,.2,1); }
 .ag-card:hover .ag-art img { transform: scale(1.06); }
 .ag-art::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgba(6,10,27,.6)); pointer-events: none; }
 .ag-art .ev-chip { top: auto; right: auto; left: 12px; bottom: 12px; }
@@ -975,9 +975,10 @@ dialog.bless-modal[open] { display: flex; flex-direction: column; }
 .ag-more .ev-cal { flex: 1; }
 .ag-more .ev-cal summary { width: 100%; }
 @media (max-width: 980px) {
-  .ag-card { grid-template-columns: 200px minmax(0, 1fr); grid-template-areas: "art info" "art act"; }
-  .ag-info { padding-bottom: 8px; }
-  .ag-actions { flex-direction: row; flex-wrap: wrap; align-items: center; padding: 6px 22px 20px; }
+  .ag-card { grid-template-columns: 272px minmax(0, 1fr); grid-template-areas: "art info" "act act"; }
+  .ag-art { min-height: 170px; border-radius: 23px 0 0 0; }
+  .ag-info { padding: 16px 20px; }
+  .ag-actions { flex-direction: row; flex-wrap: wrap; align-items: center; padding: 14px 20px 16px; border-top: 1px solid var(--line-soft); }
   .ag-actions .ev-soon { align-self: center; }
   .ag-go { width: auto; }
   .ag-more .ev-cal { flex: none; }
@@ -993,13 +994,13 @@ dialog.bless-modal[open] { display: flex; flex-direction: column; }
   .ag-time { margin-top: 8px; padding-top: 8px; font-size: 1.02rem; }
   .ag-time small { display: block; margin: 2px 0 0; }
   .ag-card { grid-template-columns: minmax(0, 1fr); grid-template-areas: "art" "info" "act"; border-radius: 20px; }
-  .ag-art { min-height: 0; aspect-ratio: 16 / 8; border-radius: 19px 19px 0 0; }
+  .ag-art { min-height: 0; aspect-ratio: 16 / 9; border-radius: 19px 19px 0 0; }
   .ag-info { padding: 14px 16px 6px; gap: 4px; }
   .ag-city { font-size: .66rem; letter-spacing: .1em; }
   .ag-place { font-size: 1.42rem; }
   .ag-sub { font-size: .88rem; }
   .ag-org-logo { height: 28px; }
-  .ag-actions { flex-wrap: nowrap; gap: 8px; padding: 10px 16px 16px; }
+  .ag-actions { flex-wrap: nowrap; gap: 8px; padding: 10px 16px 16px; border-top: 0; }
   .ag-actions .ev-soon { position: absolute; top: 12px; right: 12px; z-index: 2; }
   .ag-go { flex: 1 1 auto; min-width: 0; }
   .ag-more .ev-cal summary { width: 40px; height: 40px; padding: 0; gap: 0; font-size: 0; }
@@ -1061,3 +1062,15 @@ body.nb-on .scroll-hint { visibility: hidden; }
   .brand small { letter-spacing: .1em; white-space: nowrap; }
   .head-cta { padding: 8px 13px; font-size: .86rem; }
 }
+
+/* ---------- Janukiá interactiva: «Toca aquí» sobre la vela que toca ---------- */
+.tap-hint { position: absolute; z-index: 3; left: 50%; top: 0; transform: translate(-50%, -100%); pointer-events: none; opacity: 0;
+  transition: opacity .3s, left .5s cubic-bezier(.2,.8,.2,1), top .5s cubic-bezier(.2,.8,.2,1); }
+.tap-hint.show { opacity: 1; }
+.tap-hint span { position: relative; display: block; padding: 6px 12px; border-radius: 999px; background: var(--gold); color: #1b1408; font-size: .8rem; font-weight: 700; line-height: 1.2; white-space: nowrap;
+  box-shadow: 0 8px 24px -8px rgba(255,171,46,.9); animation: tapBob 1.3s ease-in-out infinite; }
+.tap-hint span::after { content: ""; position: absolute; left: 50%; bottom: -4px; width: 10px; height: 10px; margin-left: -5px; border-radius: 2px; background: var(--gold); transform: rotate(45deg); }
+@keyframes tapBob { 50% { transform: translateY(-5px); } }
+.tap-lead { color: var(--gold-hi); font-weight: 650; }
+@media (max-width: 560px) { .tap-hint span { padding: 5px 10px; font-size: .72rem; } }
+@media (prefers-reduced-motion: reduce) { .tap-hint span { animation: none; } }

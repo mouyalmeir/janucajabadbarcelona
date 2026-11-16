@@ -124,6 +124,25 @@
     }
     stage.appendChild(svg);
     if (!ui) stage.classList.add('is-deco');
+    // Interactiva: etiqueta «Toca aquí» que señala la vela que toca encender
+    var tapHint = null;
+    if (ui) {
+      tapHint = document.createElement('span');
+      tapHint.className = 'tap-hint';
+      tapHint.setAttribute('aria-hidden', 'true');
+      tapHint.innerHTML = '<span>Toca aquí</span>';
+      stage.appendChild(tapHint);
+    }
+    function placeHint() {
+      if (!tapHint) return;
+      var show = !state.auto && !state.busy && !done();
+      if (show) {
+        var c = expected() === 'sh' ? shamash : candles[expected()];
+        tapHint.style.left = (c.x / 8).toFixed(2) + '%';
+        tapHint.style.top = ((c.top - 60) / 5).toFixed(2) + '%';
+      }
+      tapHint.classList.toggle('show', show);
+    }
 
     var scene = stage.closest('.menorah-scene') || stage;
     var statusEl = ui && ui.status, pickerEl = ui && ui.picker, panelEl = ui && ui.panel;
@@ -238,6 +257,7 @@
       var lit = state.step;
       scene.style.setProperty('--lit', (lit / 9).toFixed(3));
       gFloor.style.opacity = .3 + .7 * (lit / 9);
+      placeHint();
       if (!statusEl) return;
 
       var n = state.night, nd = nightData(n);
@@ -309,6 +329,7 @@
 
     function lightNext(cb) {
       if (state.busy || done()) return;
+      if (tapHint) tapHint.classList.remove('show');
       var id = expected();
       if (id === 'sh') {
         state.busy = true;
@@ -506,11 +527,16 @@
   var hintEl = document.querySelector('.scroll-hint');
 
   if (hero && heroM && !reduce) {
-    var ticking = false;
+    var ticking = false, sticky = hero.querySelector('.hero-sticky'), top0 = 0, range = 1;
+    // Tramo en el que el hero está fijo: el efecto empieza con el primer píxel de scroll y acaba justo al soltarse
+    var measure = function () {
+      top0 = sticky ? parseFloat(getComputedStyle(sticky).top) || 0 : 0;
+      range = hero.offsetHeight - (sticky ? sticky.offsetHeight : window.innerHeight);
+    };
+    measure();
     var update = function () {
       ticking = false;
-      var range = hero.offsetHeight - window.innerHeight;
-      var p = range > 0 ? Math.min(1, Math.max(0, -hero.getBoundingClientRect().top / range)) : 1;
+      var p = range > 0 ? Math.min(1, Math.max(0, (top0 - hero.getBoundingClientRect().top) / range)) : 1;
       var e = 1 - (1 - p) * (1 - p); // sigue al dedo: ligero ease-out, sin retardo
       var s0 = window.innerWidth < 700 ? .84 : .72;
       heroStage.style.transform = 'translate3d(0,' + ((1 - e) * 7).toFixed(2) + '%,0) scale(' + (s0 + (1 - s0) * e).toFixed(4) + ')';
@@ -523,7 +549,7 @@
       if (p > .08) autoStart();
     };
     window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
-    window.addEventListener('resize', update);
+    window.addEventListener('resize', function () { measure(); update(); });
     update();
     setTimeout(autoStart, 2400); // si no se desliza, se enciende igualmente
   } else {
