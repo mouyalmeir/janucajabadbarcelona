@@ -10,7 +10,11 @@ const path = require('path');
 
 // ⚠️ Dirección pública de la web, sin barra final (p. ej. 'https://januca.chabadbarcelona.org').
 // Hace falta para que WhatsApp y las redes muestren la imagen al compartir.
-const DOMINIO = '';
+const DOMINIO = 'https://janucabarcelona.com';
+// Cloudflare Pages sirve las páginas sin «.html» (/historia). Si se publica en un hosting
+// clásico (FTP), cambia esto a false.
+const URLS_LIMPIAS = true;
+const urlDe = (f) => `${DOMINIO}/${f === 'index.html' ? '' : (URLS_LIMPIAS ? f.replace(/\.html$/, '') : f)}`;
 
 // Menú principal (también se usa en el pie). El tercer valor es una clase opcional.
 const MENU = [
@@ -43,7 +47,7 @@ function pagina(archivo, meta, cuerpo) {
     .map((s) => `<script src="assets/js/${s}" defer></script>`).join('\n  ');
   const fuentes = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600' +
     (meta.hebrew ? '&family=Frank+Ruhl+Libre:wght@400;500' : '') + '&display=swap';
-  const url = DOMINIO ? `${DOMINIO}/${archivo === 'index.html' ? '' : archivo}` : '';
+  const url = DOMINIO ? urlDe(archivo) : '';
 
   const cabeza = rellenar(CABEZA, {
     TITULO: meta.title,
@@ -79,3 +83,17 @@ for (const f of fs.readdirSync(PAGINAS).filter((f) => f.endsWith('.html'))) {
   fs.writeFileSync(path.join(RAIZ, f), pagina(f, meta, raw.slice(i + 1)));
   console.log('✓', f);
 }
+
+// Carpeta «publicar/»: solo lo que hay que subir al hosting (las páginas y assets/)
+const PUB = path.join(RAIZ, 'publicar');
+fs.rmSync(PUB, { recursive: true, force: true });
+fs.mkdirSync(PUB);
+fs.readdirSync(RAIZ).filter((f) => f.endsWith('.html')).forEach((f) => fs.copyFileSync(path.join(RAIZ, f), path.join(PUB, f)));
+fs.cpSync(path.join(RAIZ, 'assets'), path.join(PUB, 'assets'), { recursive: true });
+fs.writeFileSync(path.join(PUB, 'robots.txt'), `User-agent: *\nAllow: /\n${DOMINIO ? `Sitemap: ${DOMINIO}/sitemap.xml\n` : ''}`);
+if (DOMINIO) {
+  const urls = fs.readdirSync(PUB).filter((f) => f.endsWith('.html'))
+    .map((f) => `  <url><loc>${urlDe(f)}</loc></url>`).join('\n');
+  fs.writeFileSync(path.join(PUB, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`);
+}
+console.log('✓ carpeta publicar/ lista para subir');
