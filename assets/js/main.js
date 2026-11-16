@@ -162,6 +162,32 @@
     return '<a href="#' + ev.id + '">' + cap(D.weekday(ev.date)).slice(0, 3) + ' ' + p.d + ' · ' + esc(ev.short || ev.place) + '</a>';
   }).join('');
 
+  /* ---------- Saltar a un elemento dejándolo justo debajo de la cabecera (y la barra sticky) ---------- */
+  function jumpTo(el, smooth) {
+    var head = $('.site-header');
+    var offset = (head ? head.getBoundingClientRect().bottom : 0) + 14;
+    var bar = el.closest('[data-events="full"]') && fb;
+    if (bar) offset = bar.getBoundingClientRect().height + (head ? head.offsetHeight : 0) + 10;
+    el.classList.add('in');
+    $$('.reveal', el).forEach(function (r) { r.classList.add('in'); });
+    var reduceMo = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - offset, behavior: smooth && !reduceMo ? 'smooth' : 'auto' });
+    // al terminar, corrige si algo se ha movido durante el desplazamiento
+    clearTimeout(jumpTo.t);
+    jumpTo.t = setTimeout(function () {
+      var diff = el.getBoundingClientRect().top - offset;
+      if (Math.abs(diff) > 3) window.scrollTo({ top: window.scrollY + diff, behavior: 'auto' });
+    }, smooth && !reduceMo ? 900 : 60);
+  }
+  if (fb) fb.addEventListener('click', function (e) {
+    var a = e.target.closest('a[href^="#"]');
+    var el = a && document.getElementById(a.getAttribute('href').slice(1));
+    if (!el) return;
+    e.preventDefault();
+    if (history.replaceState) history.replaceState(null, '', '#' + el.id);
+    jumpTo(el, true);
+  });
+
   /* ---------- Barra sticky de eventos: resalta el que se está viendo ---------- */
   if (fb && 'IntersectionObserver' in window) {
     var fbLinks = $$('a', fb);
@@ -321,11 +347,7 @@
   // Si se llega con #ancla (p. ej. a un evento), mostrarlo ya
   if (location.hash) {
     var tgt = document.getElementById(location.hash.slice(1));
-    if (tgt) {
-      tgt.classList.add('in');
-      $$('.reveal', tgt).forEach(function (r) { r.classList.add('in'); });
-      setTimeout(function () { tgt.scrollIntoView(); }, 50);
-    }
+    if (tgt) setTimeout(function () { jumpTo(tgt, false); }, 60);
   }
 
   /* ---------- Cielo estrellado (estrellas que titilan) ---------- */
