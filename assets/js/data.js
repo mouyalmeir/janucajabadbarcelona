@@ -11,7 +11,7 @@ window.JANUCA = (function () {
     phone: '93 410 06 85',
     whatsapp: '',        // solo dígitos con prefijo, p. ej. '34600000000'
     address: '',         // dirección del centro
-    kitFormUrl: '',      // ⚠️ enlace al Google Form del kit gratuito
+    kitFormUrl: 'https://forms.gle/5A2nKnzbiGF3f3Nn7', // enlace al Google Form del kit gratuito
     instagram: ''        // enlace al perfil
   };
 

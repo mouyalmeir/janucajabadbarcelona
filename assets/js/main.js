@@ -321,8 +321,9 @@
   })();
 
   /* ---------- Barra flotante: próximo encendido (todas las páginas salvo Eventos) ---------- */
-  // Sale enseguida (tras un pequeño desplazamiento o a los pocos segundos) y no se cierra.
-  // Se aparta mientras se ven los encendidos de la portada o el pie, para no taparlos.
+  // No se cierra. En la portada sale cuando ha terminado el efecto de entrada (y ya se han
+  // pasado los encendidos, que van justo después); en el resto, al pasar la cabecera.
+  // Se aparta mientras se ven los encendidos o el pie, para no taparlos.
   (function () {
     if (!nextEv || $('[data-events="full"]')) return;
     var p = D.parse(nextEv.date);
@@ -336,22 +337,22 @@
         '<span class="nb-place"><span class="loc">' + esc(nextEv.place) + '</span> · ' + esc(nextEv.city) + '</span></span>' +
         '<span class="nb-go">Ver ' + I.arrow + '</span></a>';
     document.body.appendChild(bar);
-    var sec = $('#encendidos'), foot = $('.site-footer'), ticking = false, timeUp = false;
+    var sec = $('#encendidos'), foot = $('.site-footer'), head = $('.site-header'), ticking = false;
+    var hero = $('.hero-scroll'), pageHero = $('.page-hero');
     var upd = function () {
       ticking = false;
-      var vh = window.innerHeight;
-      var show = timeUp || window.scrollY > Math.min(140, vh * .18);
-      [sec, foot].forEach(function (el) {
-        if (!el) return;
-        var r = el.getBoundingClientRect();
-        if (r.top < vh * .85 && r.bottom > vh * .15) show = false; // no tapar los encendidos ni el pie
-      });
+      var vh = window.innerHeight, show, r;
+      if (hero) show = hero.getBoundingClientRect().bottom <= vh + 1; // portada: cuando ha terminado el efecto de entrada
+      else if (pageHero) show = pageHero.getBoundingClientRect().bottom <= (head ? head.offsetHeight : 0) + 1; // resto: pasada la cabecera de la página
+      else show = window.scrollY > vh * .4;
+      // no tapar los encendidos de la portada (en cuanto asoman) ni el pie
+      if (sec) { r = sec.getBoundingClientRect(); if (r.top < vh + 2 && r.bottom > vh * .15) show = false; }
+      if (foot) { r = foot.getBoundingClientRect(); if (r.top < vh * .85) show = false; }
       bar.classList.toggle('show', show);
       document.body.classList.toggle('nb-on', show);
     };
     window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(upd); } }, { passive: true });
     window.addEventListener('resize', upd);
-    setTimeout(function () { timeUp = true; upd(); }, 3500);
     upd();
   })();
 

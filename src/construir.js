@@ -41,16 +41,14 @@ const CABECERA = leer('cabecera.html');
 const PIE = leer('pie.html');
 const SKYLINE = leer('skyline.svg').trim();
 
-// Llamita del botón «Eventos» (menú y cabecera en el móvil)
-const LLAMA = '<svg class="nav-flame" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c1.5 3 5 5.2 5 10a5 5 0 0 1-10 0c0-2.4 1.1-3.9 2.4-5.2.2 1.6.9 2.7 2 3.2C11 7.6 11 4.6 12 2z"/></svg>';
 
 function pagina(archivo, meta, cuerpo) {
   const menu = MENU.map(([href, txt, cls]) =>
     `<a href="${href}"${cls ? ` class="${cls}"` : ''}${href === archivo ? ' aria-current="page"' : ''}>` +
-    (cls === 'nav-cta' ? `${LLAMA}<span class="nav-lbl">${txt}</span>` : txt) + '</a>').join('\n        ');
+    (cls === 'nav-cta' ? `<span class="nav-lbl">${txt}</span>` : txt) + '</a>').join('\n        ');
   // En el móvil, «Eventos» se ve siempre junto al menú (salvo en la propia página de eventos)
   const cta = MENU.find((m) => m[2] === 'nav-cta');
-  const headCta = cta && cta[0] !== archivo ? `<a class="head-cta" href="${cta[0]}">${LLAMA}<span class="nav-lbl">${cta[1]}</span></a>` : '';
+  const headCta = cta && cta[0] !== archivo ? `<a class="head-cta" href="${cta[0]}"><span class="nav-lbl">${cta[1]}</span></a>` : '';
   const menuPie = MENU.map(([href, txt]) => `<a href="${href}">${txt}</a>`).join('\n            ');
   const scripts = ['data.js', 'main.js'].concat(meta.scripts || [])
     .map((s) => `<script src="assets/js/${s}" defer></script>`).join('\n  ');
