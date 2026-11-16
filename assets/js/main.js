@@ -101,66 +101,6 @@
       '<button type="button" data-ics="' + esc(ev.id) + '">Apple / Outlook (.ics)</button></div></details>';
   }
 
-  /* ---------- Envío de formularios (WhatsApp o email de Jabad) ---------- */
-  function send(subject, lines, msgEl) {
-    var text = subject + '\n\n' + lines.filter(Boolean).join('\n');
-    var C = D.contact || {};
-    if (C.whatsapp) {
-      window.open('https://wa.me/' + C.whatsapp.replace(/\D/g, '') + '?text=' + encodeURIComponent(text), '_blank', 'noopener');
-      msgEl.textContent = '¡Gracias! Se ha abierto WhatsApp con tu mensaje: solo tienes que enviarlo.';
-    } else if (C.email) {
-      location.href = 'mailto:' + C.email + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(text);
-      msgEl.textContent = '¡Gracias! Se ha abierto tu correo con el mensaje preparado.';
-    } else {
-      msgEl.textContent = 'Muy pronto podrás enviarlo desde aquí: estamos activando las inscripciones online. ¡Gracias por tu interés!';
-      if (window.console) console.info('[Janucá] Configura contact.whatsapp o contact.email en assets/js/data.js para activar los formularios.');
-    }
-    return true;
-  }
-  function val(form, name) { var f = form.elements[name]; return f ? String(f.value || '').trim() : ''; }
-
-  /* ---------- Diálogo genérico ---------- */
-  var dlg;
-  function openDialog(opts) {
-    if (!dlg) {
-      dlg = document.createElement('dialog');
-      dlg.className = 'modal';
-      document.body.appendChild(dlg);
-      dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
-    }
-    dlg.innerHTML = '<form class="modal-in" method="dialog" novalidate>' +
-      '<button class="modal-close" type="button" aria-label="Cerrar">×</button>' +
-      '<p class="eyebrow">' + esc(opts.kicker) + '</p><h3>' + esc(opts.title) + '</h3><p>' + esc(opts.text) + '</p>' +
-      '<div class="form-grid">' + opts.fields + '</div>' +
-      '<div class="form-foot"><p class="form-note">Te contestaremos por WhatsApp o email.</p><button class="btn btn-gold" type="submit">' + esc(opts.submit) + '</button></div>' +
-      '<p class="form-msg" role="status"></p></form>';
-    var form = dlg.querySelector('form');
-    dlg.querySelector('.modal-close').addEventListener('click', function () { dlg.close(); });
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      if (!form.reportValidity()) return;
-      opts.onSubmit(form, dlg.querySelector('.form-msg'));
-    });
-    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
-    var first = form.querySelector('input'); if (first) first.focus();
-  }
-  var F = {
-    name: '<div class="field full"><label for="f-name">Nombre y apellidos</label><input id="f-name" name="name" autocomplete="name" required></div>',
-    phone: '<div class="field"><label for="f-phone">Teléfono / WhatsApp</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" required></div>',
-    note: '<div class="field full"><label for="f-note">Comentario (opcional)</label><textarea id="f-note" name="note"></textarea></div>'
-  };
-  function openSponsor() {
-    openDialog({
-      kicker: 'Patrocinio', title: 'Patrocina Janucá en honor o memoria',
-      text: 'Dedica una noche, una janukiá pública o las sufganiot en honor o en memoria de un ser querido.',
-      fields: F.name + F.phone + '<div class="field full"><label for="f-ded">Dedicatoria</label><input id="f-ded" name="ded" placeholder="En memoria de… / En honor de…"></div>' + F.note,
-      submit: 'Quiero patrocinar',
-      onSubmit: function (form, msg) {
-        send('Patrocinio Janucá 5787', ['Nombre: ' + val(form, 'name'), 'Teléfono: ' + val(form, 'phone'), 'Dedicatoria: ' + val(form, 'ded'), val(form, 'note') && 'Comentario: ' + val(form, 'note')], msg);
-      }
-    });
-  }
-
   /* ---------- Eventos ---------- */
   var nowT = D.now().getTime(), nextFound = false;
   var flags = {};
@@ -297,7 +237,7 @@
 
   /* ---------- Acciones globales ---------- */
   document.addEventListener('click', function (e) {
-    var t = e.target.closest('[data-ics],[data-share],[data-open],[data-ics-all],[data-print],[data-donate]');
+    var t = e.target.closest('[data-ics],[data-share],[data-ics-all],[data-print]');
     if (!t) {
       $$('.ev-cal[open]').forEach(function (d) { if (!d.contains(e.target)) d.removeAttribute('open'); });
       return;
@@ -306,12 +246,6 @@
     else if (t.hasAttribute('data-share')) share(evById(t.getAttribute('data-share')));
     else if (t.hasAttribute('data-ics-all')) nightsIcs();
     else if (t.hasAttribute('data-print')) window.print();
-    else if (t.hasAttribute('data-donate')) {
-      e.preventDefault();
-      if (D.contact.donateUrl) window.open(D.contact.donateUrl, '_blank', 'noopener');
-      else openSponsor();
-    }
-    else if (t.getAttribute('data-open') === 'sponsor') openSponsor();
   });
 
   /* ---------- Cuenta atrás / estado de hoy ---------- */

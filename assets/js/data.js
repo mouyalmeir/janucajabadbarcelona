@@ -6,14 +6,12 @@ window.JANUCA = (function () {
   'use strict';
 
   // CONTACTO de Jabad Barcelona. Los campos vacíos no se muestran en la web.
-  // El patrocinio se envía por WhatsApp (si hay número) o por email.
   var contact = {
     email: 'info@chabadbarcelona.org',
     phone: '93 410 06 85',
     whatsapp: '',        // solo dígitos con prefijo, p. ej. '34600000000'
     address: '',         // dirección del centro
     kitFormUrl: '',      // ⚠️ enlace al Google Form del kit gratuito
-    donateUrl: '',       // enlace a la pasarela de donaciones
     instagram: ''        // enlace al perfil
   };
 
