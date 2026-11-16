@@ -14,7 +14,7 @@
   body {
     position: relative; font-family: system-ui, -apple-system, sans-serif; color: #f6efe0;
     background:
-      radial-gradient(700px 420px at 78% 40%, rgba(255,180,80,.30), transparent 70%),
+      radial-gradient(700px 420px at 50% 70%, rgba(255,180,80,.22), transparent 70%),
       radial-gradient(900px 500px at 20% -10%, rgba(126,166,255,.18), transparent 65%),
       linear-gradient(180deg, #0f1740, #060a1b 85%);
   }
@@ -29,25 +29,27 @@
   .sky svg { width: 100%; height: 100%; }
   .sky .far { fill: #111a40; } .sky .near { fill: #0b1130; } .sky .win { fill: #ffcf7a; opacity: .5; }
   .sill { position: absolute; left: 0; right: 0; bottom: 0; height: 32px; background: linear-gradient(180deg, #2b3157, #10163a); border-top: 1px solid rgba(242,196,109,.35); }
-  .jan { position: absolute; right: 40px; bottom: 26px; width: 560px; }
-  .copy { position: absolute; left: 70px; top: 70px; width: 560px; }
-  .logo { width: 116px; display: block; margin-bottom: 18px; filter: drop-shadow(0 0 18px rgba(255,190,90,.35)); }
-  h1 { margin: 0; font-family: Fraunces, Georgia, serif; font-weight: 600; font-size: 104px; line-height: .95; letter-spacing: -2px; font-variation-settings: "opsz" 144; }
-  h1 em { font-style: italic; font-weight: 500; background: linear-gradient(180deg, #ffe2a3, #ffab2e); -webkit-background-clip: text; background-clip: text; color: transparent; padding-right: .12em; }
-  .sub { margin: 10px 0 0; font-family: Fraunces, Georgia, serif; font-style: italic; font-size: 46px; color: #f2c46d; }
-  .date { margin: 26px 0 0; display: inline-block; padding: 12px 22px; border-radius: 999px; background: rgba(242,196,109,.14); border: 1.5px solid rgba(242,196,109,.5); font-size: 25px; font-weight: 600; letter-spacing: .3px; }
+  /* Composición centrada: si WhatsApp recorta el centro en cuadrado, se ve igual de bien */
+  .jan { position: absolute; left: 50%; bottom: 26px; width: 480px; transform: translateX(-50%); }
+  .glow { position: absolute; left: 50%; bottom: 40px; width: 760px; height: 420px; transform: translateX(-50%); background: radial-gradient(closest-side, rgba(255,180,80,.32), transparent); }
+  .copy { position: absolute; left: 0; right: 0; top: 30px; text-align: center; }
+  .logo { width: 86px; display: block; margin: 0 auto 10px; filter: drop-shadow(0 0 18px rgba(255,190,90,.35)); }
+  h1 { margin: 0; font-family: Fraunces, Georgia, serif; font-weight: 600; font-size: 96px; line-height: .95; letter-spacing: -2px; font-variation-settings: "opsz" 144; }
+  h1 em { font-style: italic; font-weight: 500; background: linear-gradient(180deg, #ffe2a3, #ffab2e); -webkit-background-clip: text; background-clip: text; color: transparent; padding-right: .12em; margin-right: -.12em; }
+  .sub { margin: 10px 0 0; font-family: Fraunces, Georgia, serif; font-style: italic; font-size: 36px; color: #f2c46d; }
+  .sub span { font-family: system-ui, -apple-system, sans-serif; font-style: normal; font-size: 26px; font-weight: 600; color: #f6efe0; }
 </style>
 </head>
 <body>
   <div class="stars"></div>
   <div class="sky"><!--SKYLINE--></div>
   <div class="sill"></div>
+  <div class="glow"></div>
   <img class="jan" src="janukia-8.svg" alt="">
   <div class="copy">
     <img class="logo" src="../../assets/img/jabad-barcelona.webp" alt="">
     <h1>Janucá <em>5787</em></h1>
-    <p class="sub">Suma tu luz</p>
-    <p class="date">4 – 12 de diciembre de 2026 · Barcelona</p>
+    <p class="sub">Suma tu luz <span>· 4 – 12 dic 2026 · Barcelona</span></p>
   </div>
   <script>
     // inserta el skyline de la web

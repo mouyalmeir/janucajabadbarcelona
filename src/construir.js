@@ -14,6 +14,8 @@ const DOMINIO = 'https://janucabarcelona.com';
 // Direcciones sin «.html» (/historia). GitHub Pages y Cloudflare Pages las entienden;
 // para ver la web en local usa «node src/servidor.js». En un hosting clásico (FTP), pon false.
 const URLS_LIMPIAS = true;
+// Súbelo (+1) cada vez que cambies assets/img/compartir.jpg, para que WhatsApp y las redes no usen la copia vieja
+const VERSION_IMAGEN = 2;
 const urlDe = (f) => `${DOMINIO}/${f === 'index.html' ? '' : (URLS_LIMPIAS ? f.replace(/\.html$/, '') : f)}`;
 
 // Menú principal (también se usa en el pie). El tercer valor es una clase opcional.
@@ -53,7 +55,7 @@ function pagina(archivo, meta, cuerpo) {
     TITULO: meta.title,
     DESCRIPCION: meta.description,
     CANONICA: url ? `<link rel="canonical" href="${url}">\n  <meta property="og:url" content="${url}">` : '',
-    IMAGEN_COMPARTIR: (DOMINIO ? DOMINIO + '/' : '') + 'assets/img/compartir.jpg',
+    IMAGEN_COMPARTIR: (DOMINIO ? DOMINIO + '/' : '') + 'assets/img/compartir.jpg?v=' + VERSION_IMAGEN,
     FUENTES: fuentes,
     SCRIPTS: scripts
   }).replace(/\n\s*\n/g, '\n');
