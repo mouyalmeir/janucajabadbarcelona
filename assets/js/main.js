@@ -156,7 +156,7 @@
   // Portada: agenda de los encendidos (fecha y hora a la izquierda, lugar como protagonista)
   function agendaItem(ev) {
     var f = flags[ev.id], p = D.parse(ev.date), link = 'eventos#' + esc(ev.id), sub = placeSub(ev);
-    return '<li class="ag-item reveal' + (f.past ? ' is-past' : '') + (f.next ? ' is-next' : '') + (ev.featured ? ' is-featured' : '') + '">' +
+    return '<li class="ag-item reveal' + (f.past ? ' is-past' : '') + (f.next ? ' is-next' : '') + (ev.featured ? ' is-featured' : '') + '" id="ag-' + esc(ev.id) + '">' +
       '<div class="ag-when" aria-hidden="true"><span class="ag-wd">' + D.weekday(ev.date).slice(0, 3) + '</span><b class="ag-day">' + p.d + '</b>' +
         '<span class="ag-mon">dic</span><span class="ag-time">' + ev.start + '<small>h</small></span></div>' +
       '<article class="ag-card">' +
@@ -318,6 +318,72 @@
     var cta = $('.nav .nav-cta');
     if (cta) cta.insertAdjacentHTML('beforeend', '<span class="nav-next">Próximo: ' + D.weekday(nextEv.date) + ' ' + np.d + ' dic · ' +
       nextEv.start + ' h · ' + esc(nextEv.short || nextEv.place) + '</span>');
+  })();
+
+  /* ---------- Primera vista: los encendidos ya se ven al entrar ---------- */
+  // En la portada, los enlaces llevan a cada encendido de la agenda; en el resto, a su ficha
+  var onHome = !!$('.hero-scroll');
+  function evHref(ev) { return onHome ? '#ag-' + ev.id : 'eventos#' + ev.id; }
+
+  // Móvil y tableta: fila compacta bajo la cuenta atrás (fecha + lugar)
+  $$('[data-hero-events]').forEach(function (h) {
+    h.innerHTML = '<p class="he-head">Encendidos públicos · entrada libre</p><div class="he-list">' + D.events.map(function (ev) {
+      var f = flags[ev.id], p = D.parse(ev.date);
+      return '<a class="he-item' + (f.past ? ' is-past' : '') + (f.next ? ' is-next' : '') + '" href="' + evHref(ev) + '">' +
+        '<span class="he-date">' + D.weekday(ev.date).slice(0, 3) + ' <b>' + p.d + '</b></span>' +
+        '<span class="he-place">' + esc(ev.short || ev.city) + '</span></a>';
+    }).join('') + '</div>';
+  });
+
+  // Ordenador: «Eventos» despliega un avance de los encendidos. En la portada se abre solo
+  // al entrar y se recoge al deslizar; en cualquier página, se abre al pasar el ratón.
+  (function () {
+    var cta = $('.nav .nav-cta'), wrap = $('.site-header .wrap');
+    if (!nextEv || !cta || !wrap || cta.getAttribute('aria-current') || !window.matchMedia) return;
+    var wide = matchMedia('(min-width: 1121px)');
+    var peek = document.createElement('div');
+    peek.className = 'ev-peek';
+    peek.setAttribute('role', 'region');
+    peek.setAttribute('aria-label', 'Encendidos públicos');
+    peek.innerHTML = '<p class="ep-head">Encendidos públicos · entrada libre</p><ul>' + D.events.map(function (ev) {
+      var f = flags[ev.id], p = D.parse(ev.date);
+      return '<li class="' + (f.past ? 'is-past' : '') + (f.next ? 'is-next' : '') + '"><a href="' + evHref(ev) + '">' +
+        '<span class="ep-when"><small>' + D.weekday(ev.date).slice(0, 3) + '</small><b>' + p.d + '</b><small>dic</small></span>' +
+        '<span class="ep-info"><span class="ep-time">' + ev.start + ' h' + (f.next ? '<i>Próximo</i>' : f.past ? '<i class="past">Finalizado</i>' : '') + '</span>' +
+          '<b>' + esc(ev.place) + '</b><small>' + esc(ev.city) + (ev.featured ? ' · Gran encendido' : '') + '</small></span></a></li>';
+    }).join('') + '</ul><a class="ep-all" href="' + (onHome ? '#encendidos' : 'eventos') + '">Ver los ' + D.events.length + ' encendidos ' + I.arrow + '</a>';
+    peek.inert = true;
+    wrap.appendChild(peek);
+
+    var isOpen = false, t;
+    function open() {
+      if (isOpen || !wide.matches) return;
+      var w = wrap.getBoundingClientRect(), c = cta.getBoundingClientRect();
+      peek.style.setProperty('--caret', Math.round(w.right - c.right + c.width / 2) + 'px'); // la flechita apunta al botón
+      isOpen = true; peek.inert = false; peek.classList.add('open');
+    }
+    function close() {
+      if (!isOpen) return;
+      isOpen = false; peek.inert = true; peek.classList.remove('open');
+    }
+    function hovering() { return cta.matches(':hover') || peek.matches(':hover'); }
+    [cta, peek].forEach(function (el) {
+      el.addEventListener('mouseenter', function () { clearTimeout(t); t = setTimeout(open, el === cta ? 120 : 0); });
+      el.addEventListener('mouseleave', function () { clearTimeout(t); t = setTimeout(function () { if (!hovering()) close(); }, 300); });
+    });
+    cta.addEventListener('focus', open);
+    peek.addEventListener('focusout', function (e) { if (!peek.contains(e.relatedTarget) && e.relatedTarget !== cta) close(); });
+    peek.addEventListener('click', function (e) { if (e.target.closest('a')) close(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+    document.addEventListener('click', function (e) { if (!peek.contains(e.target) && !cta.contains(e.target)) close(); });
+    // al deslizar se recoge (salvo que el ratón esté encima)
+    var auto = null;
+    window.addEventListener('scroll', function () {
+      if (window.scrollY > 12) { clearTimeout(auto); if (!hovering()) close(); }
+    }, { passive: true });
+    window.addEventListener('resize', function () { if (!wide.matches) close(); });
+    // portada: se despliega solo en la primera vista
+    if (onHome && window.scrollY < 12 && !location.hash) auto = setTimeout(open, 1100);
   })();
 
   /* ---------- Barra flotante: próximo encendido (todas las páginas salvo Eventos) ---------- */
