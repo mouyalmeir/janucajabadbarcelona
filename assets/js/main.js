@@ -335,6 +335,26 @@
     }).join('') + '</div>';
   });
 
+  // Portada: chispas doradas que llegan desde fuera hasta el botón de los encendidos
+  // justo antes de que aparezca (el botón entra con CSS, así se ve aunque falle esto)
+  (function () {
+    var stage = $('.cta-stage');
+    if (!stage || window.scrollY > 40 || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+    setTimeout(function () {
+      var n = window.innerWidth < 700 ? 12 : 18;
+      for (var i = 0; i < n; i++) {
+        var sp = document.createElement('i');
+        var a = (i / n) * Math.PI * 2 + Math.random() * .5, r = (window.innerWidth < 700 ? 120 : 170) + Math.random() * 120;
+        sp.className = 'cta-spark';
+        sp.style.setProperty('--x', Math.round(Math.cos(a) * r) + 'px');
+        sp.style.setProperty('--y', Math.round(Math.sin(a) * r * .55) + 'px');
+        sp.style.animationDelay = (Math.random() * .25).toFixed(2) + 's';
+        stage.appendChild(sp);
+        setTimeout(function (x) { return function () { x.remove(); }; }(sp), 1500);
+      }
+    }, 1250);
+  })();
+
   // Ordenador: del botón «Eventos» baja una línea con los encendidos. En la portada se ve
   // durante la primera vista y se recoge al llegar a «Encendidos públicos»; en cualquier
   // página, se despliega al pasar el ratón por «Eventos».
@@ -389,7 +409,8 @@
     document.addEventListener('click', function (e) { if (isOpen && !peek.contains(e.target) && !cta.contains(e.target)) dismiss(); });
     window.addEventListener('scroll', function () { if (isOpen || firstView) sync(); }, { passive: true });
     window.addEventListener('resize', function () { if (!wide.matches) close(); else if (isOpen) place(); });
-    if (onHome && !location.hash) setTimeout(function () { firstView = true; sync(); }, 1100);
+    // se abre cuando el botón de los encendidos ya ha llegado, para que no compitan
+    if (onHome && !location.hash) setTimeout(function () { firstView = true; sync(); }, 2900);
   })();
 
   /* ---------- Barra flotante: próximo encendido (todas las páginas salvo Eventos) ---------- */
