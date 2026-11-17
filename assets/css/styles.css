@@ -1021,9 +1021,8 @@ dialog.bless-modal[open] { display: flex; flex-direction: column; }
 body.nb-on .scroll-hint { visibility: hidden; }
 
 /* ---------- Menú: «Eventos» destacado ---------- */
-.nav a.nav-cta { position: relative; isolation: isolate; overflow: hidden; display: inline-flex; align-items: center; gap: 6px; padding: 6px 6px 6px 14px;
+.nav a.nav-cta { position: relative; isolation: isolate; overflow: hidden; display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px;
   box-shadow: 0 0 0 1px rgba(255,226,163,.55), 0 6px 22px -8px rgba(255,171,46,.8); }
-.nav-when { padding: 3px 8px; border-radius: 999px; background: #1b1408; color: var(--gold-hi); font-size: .72rem; font-weight: 700; letter-spacing: .02em; line-height: 1.3; white-space: nowrap; }
 .nav-next { display: none; }
 .nav a.nav-cta::after, .head-cta::after { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
   background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,.6) 50%, transparent 65%) 150% 0 / 250% 100% no-repeat;
@@ -1036,15 +1035,12 @@ body.nb-on .scroll-hint { visibility: hidden; }
     border-radius: 999px; background: var(--gold); color: #1b1408; font-weight: 700; font-size: .9rem; line-height: 1; text-decoration: none; white-space: nowrap;
     box-shadow: 0 0 0 1px rgba(255,226,163,.55), 0 6px 22px -8px rgba(255,171,46,.8); }
   .head-cta:hover { background: var(--gold-hi); color: #1b1408; }
-  .head-cta .nav-when { padding: 3px 7px; font-size: .7rem; }
   /* Dentro del menú, «Eventos» va primero, como tarjeta con el próximo encendido */
-  .nav a.nav-cta { order: -1; display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "lbl when" "next next"; align-items: center; gap: 2px 12px;
+  .nav a.nav-cta { order: -1; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-areas: "lbl" "next"; align-items: center; gap: 2px 12px;
     margin: 4px 0 10px; padding: 13px 14px; border-radius: 16px; text-align: left; white-space: normal; }
   .nav-cta .nav-lbl { grid-area: lbl; font-family: var(--font-display); font-size: 1.2rem; font-weight: 600; }
-  .nav-cta .nav-when { grid-area: when; }
   .nav-cta .nav-next { grid-area: next; display: block; font-size: .82rem; font-weight: 600; line-height: 1.35; color: #5e4111; }
 }
-@media (max-width: 400px) { .head-cta .nav-when { display: none; } }
 @media (prefers-reduced-motion: reduce) { .nav a.nav-cta::after, .head-cta::after { animation: none; } .nav a.nav-cta::after, .head-cta::after { display: none; } }
 
 /* ---------- Barra flotante: sin botón de cerrar, «Ver» pegado a la derecha ---------- */

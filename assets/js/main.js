@@ -308,13 +308,9 @@
     });
   });
 
-  /* ---------- Menú: «Eventos» con la fecha del próximo encendido ---------- */
+  /* ---------- Menú del móvil: «Eventos» con una línea del próximo encendido ---------- */
   if (nextEv) (function () {
     var np = D.parse(nextEv.date);
-    $$('.nav-cta, .head-cta').forEach(function (a) {
-      a.insertAdjacentHTML('beforeend', '<span class="nav-when" aria-hidden="true">' + np.d + ' dic</span>');
-    });
-    // en el menú del móvil, una línea más con el próximo encendido
     var cta = $('.nav .nav-cta');
     if (cta) cta.insertAdjacentHTML('beforeend', '<span class="nav-next">Próximo: ' + D.weekday(nextEv.date) + ' ' + np.d + ' dic · ' +
       nextEv.start + ' h · ' + esc(nextEv.short || nextEv.place) + '</span>');
