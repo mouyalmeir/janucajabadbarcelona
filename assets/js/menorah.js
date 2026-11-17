@@ -13,6 +13,7 @@
 (function () {
   'use strict';
   var D = window.JANUCA;
+  var T = D && D.t;
   var heroStage = document.getElementById('menorah');
   var toolStage = document.getElementById('menorah-tool');
   if (!D || (!heroStage && !toolStage)) return;
@@ -35,9 +36,9 @@
       'C' + (x - w) + ',' + y + ' ' + (x - w * .95) + ',' + (y - h * .42) + ' ' + x + ',' + (y - h) +
       'C' + (x + w * .95) + ',' + (y - h * .42) + ' ' + (x + w) + ',' + y + ' ' + x + ',' + y + 'Z';
   }
-  function blessingsText(arr) { return arr.length === 3 ? '1, 2 y 3' : arr.join(' y '); }
+  function blessingsText(arr) { return D.list(arr); }
   function nightData(n) { return D.nights[n - 1]; }
-  function dateLabel(nd) { var p = D.parse(nd.date); return D.weekday(nd.date) + ' ' + p.d + ' de ' + D.months[p.m - 1]; }
+  function dateLabel(nd) { return D.dateLong(nd.date); }
   function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
   var ICO = {
@@ -55,8 +56,8 @@
 
     /* ----- SVG ----- */
     var svg = el('svg', ui
-      ? { viewBox: '0 0 800 500', role: 'group', 'aria-label': 'Janukiá interactiva: toca las velas para encenderlas' }
-      : { viewBox: '0 0 800 500', role: 'img', 'aria-label': 'Janukiá con las velas de esta noche' });
+      ? { viewBox: '0 0 800 500', role: 'group', 'aria-label': T('ariaTool') }
+      : { viewBox: '0 0 800 500', role: 'img', 'aria-label': T('ariaDeco') });
     var defs = el('defs', {}, svg);
     defs.innerHTML =
       '<linearGradient id="goldU" gradientUnits="userSpaceOnUse" x1="0" y1="120" x2="800" y2="500">' +
@@ -114,7 +115,7 @@
 
     var shamash = makeCandle('sh', CX, SH_CUP, true);
     shamash.g.classList.remove('absent');
-    if (ui) shamash.g.setAttribute('aria-label', 'Shamash (vela auxiliar)');
+    if (ui) shamash.g.setAttribute('aria-label', T('shamashAria'));
     var candles = {};
     var orderMarks = {};
     for (i = 1; i <= 8; i++) {
@@ -132,7 +133,7 @@
       tapHint = document.createElement('span');
       tapHint.className = 'tap-hint';
       tapHint.setAttribute('aria-hidden', 'true');
-      tapHint.innerHTML = '<span>Toca aquí</span>';
+      tapHint.innerHTML = '<span>' + T('tapHere') + '</span>';
       stage.appendChild(tapHint);
     }
     function placeHint() {
@@ -159,13 +160,13 @@
       b.type = 'button';
       b.className = 'night-btn' + (ev ? ' has-event' : '');
       b.setAttribute('aria-pressed', 'false');
-      b.innerHTML = '<b>' + nd.n + '</b><span class="nb-d">' + D.weekday(nd.date).slice(0, 3) + ' ' + p.d + '</span>' +
+      b.innerHTML = '<b>' + nd.n + '</b><span class="nb-d">' + D.wdShort(nd.date) + ' ' + p.d + '</span>' +
         '<span class="nb-h">' + nd.hebrew.replace(' de ', ' ') + '</span>' +
         (ev ? '<i class="ev-dot" aria-hidden="true"></i>' : '');
-      b.setAttribute('aria-label', D.ord[nd.n] + ' noche, ' + dateLabel(nd) + ', ' + nd.hebrew + (ev ? '. Encendido público: ' + ev.place : ''));
-      if (ev) b.title = 'Encendido público: ' + ev.place + ', ' + ev.start + ' h';
+      b.setAttribute('aria-label', T('night', { ord: D.ord[nd.n] }) + ', ' + dateLabel(nd) + ', ' + nd.hebrew + (ev ? '. ' + T('publicLighting') + ': ' + ev.place : ''));
+      if (ev) b.title = T('publicLighting') + ': ' + ev.place + ', ' + D.hm(ev.start);
       if ((today.phase === 'during' || today.phase === 'last') && today.night === nd.n) {
-        b.insertAdjacentHTML('afterbegin', '<span class="tag">' + (today.phase === 'last' ? 'Última' : 'Hoy') + '</span>');
+        b.insertAdjacentHTML('afterbegin', '<span class="tag">' + (today.phase === 'last' ? T('lastTag') : T('today')) + '</span>');
       }
       b.addEventListener('click', function () { setNight(nd.n); });
       pickerEl.appendChild(b);
@@ -185,7 +186,7 @@
         var on = i >= 9 - n;
         candles[i].g.classList.toggle('absent', !on);
         candles[i].g.classList.remove('lit');
-        if (ui) candles[i].g.setAttribute('aria-label', on ? 'Vela ' + (i - (9 - n) + 1) + ' de ' + n : '');
+        if (ui) candles[i].g.setAttribute('aria-label', on ? T('candleOf', { i: i - (9 - n) + 1, n: n }) : '');
         orderMarks[i].g.classList.toggle('show', on);
         orderMarks[i].g.classList.remove('done', 'is-next');
         orderMarks[i].t.textContent = on ? (i - (9 - n) + 1) : '';
@@ -207,21 +208,19 @@
           '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></li>';
       }).join('');
       panelEl.innerHTML =
-        '<div class="np-card"><h4>' + ICO.cal + D.ord[n] + ' noche</h4>' +
+        '<div class="np-card"><h4>' + ICO.cal + T('night', { ord: D.ord[n] }) + '</h4>' +
           '<p class="np-big">' + cap(dateLabel(nd)) + '</p>' +
-          '<p>Noche del ' + nd.hebrew + ' de 5787</p>' +
+          '<p>' + T('nightOf', { hebrew: nd.hebrew }) + '</p>' +
           '<span class="np-time">' + nd.time + '</span>' +
           '<p' + (nd.alert ? ' class="np-alert"' : '') + '>' + (nd.alert || nd.note) + '</p></div>' +
-        '<div class="np-card"><h4>' + ICO.candle + 'Cómo colocarlas</h4>' +
-          '<p class="np-big">' + (n === 1 ? '1 vela' : n + ' velas') + ' + shamash</p>' +
-          '<p>' + (n === 1
-            ? 'La vela de hoy va en el extremo derecho de la janukiá. Enciende el shamash y, con él, la vela.'
-            : 'Cada noche se añade una vela a la izquierda. Con el shamash, enciende primero <strong>la vela nueva, la de hoy</strong> (la que acabas de añadir) y sigue hacia la derecha.') + '</p></div>' +
-        '<div class="np-card"><h4>' + ICO.book + 'Bendiciones y cantos</h4><ul class="blessing-list">' + bl + '</ul>' +
-          '<p class="np-small">Toca una para leerla o cantarla.</p></div>' +
-        '<div class="np-card np-light"><h4>' + ICO.spark + 'Suma tu luz</h4>' +
-          '<p class="np-quote">«' + nd.thought + '»</p><p>' + nd.idea + '</p>' +
-          (ev ? '<a class="np-event" href="eventos#' + ev.id + '"><img src="assets/img/' + ev.art + '.svg" alt="" width="48" height="48" loading="lazy"><span><small>Encendido público · ' + ev.start + ' h</small><span class="loc">' + ev.place + '</span> · ' + ev.city + '</span></a>' : '') +
+        '<div class="np-card"><h4>' + ICO.candle + T('howPlace') + '</h4>' +
+          '<p class="np-big">' + (n === 1 ? T('candles1') : T('candlesN', { n: n })) + ' + shamash</p>' +
+          '<p>' + (n === 1 ? T('place1') : T('placeN')) + '</p></div>' +
+        '<div class="np-card"><h4>' + ICO.book + T('blessSongs') + '</h4><ul class="blessing-list">' + bl + '</ul>' +
+          '<p class="np-small">' + T('tapOne') + '</p></div>' +
+        '<div class="np-card np-light"><h4>' + ICO.spark + T('addLight') + '</h4>' +
+          '<p class="np-quote">' + T('quote', { x: nd.thought }) + '</p><p>' + nd.idea + '</p>' +
+          (ev ? '<a class="np-event" href="eventos#' + ev.id + '"><img src="' + D.base + 'assets/img/' + ev.art + '.svg" alt="" width="48" height="48" loading="lazy"><span><small>' + T('publicLighting') + ' · ' + D.hm(ev.start) + '</small><span class="loc">' + ev.place + '</span> · ' + ev.city + '</span></a>' : '') +
         '</div>';
       revealCards();
     }
@@ -265,25 +264,22 @@
       var n = state.night, nd = nightData(n);
       var html;
       if (state.auto && !done()) {
-        html = '<strong>Encendiendo la ' + D.ord[n] + ' noche…</strong><span>Primero el shamash y después, de izquierda a derecha, empezando por la vela de hoy.</span>';
+        html = T('sAuto', { ord: D.ord[n] });
       } else if (state.step === 0) {
-        html = '<strong>Paso 1 · Enciende el shamash</strong><span>Toca la vela central: con ella se encienden las demás.</span>';
+        html = T('sStep0');
       } else if (!done()) {
         var k = state.step;
         html = k === 1
-          ? '<strong>Recita las bendiciones ' + blessingsText(nd.blessings) + '</strong><span>' + (n === 1
-              ? 'Después enciende <b>la vela de hoy</b>, en el extremo derecho.'
-              : 'Después enciende primero <b>la vela nueva, la de hoy</b>: la que has añadido esta noche, la de más a la izquierda.') + '</span>'
-          : '<strong>Vela ' + k + ' de ' + n + '</strong><span>Sigue de izquierda a derecha.</span>';
+          ? T('sBless', { list: blessingsText(nd.blessings) }) + '<span>' + (n === 1 ? T('sBless1') : T('sBlessN')) + '</span>'
+          : T('sCandle', { k: k, n: n });
       } else {
-        html = '<strong>¡Jag Janucá Saméaj! ✦</strong><span>' + (n === 1 ? 'La primera vela brilla' : 'Las ' + n + ' velas de la ' + D.ord[n] + ' noche brillan') +
-          '. Ahora se recita <a href="bendiciones#hanerot" data-text="hanerot">Hanerot Halalu</a>, el <a href="bendiciones#mizmor" data-text="mizmor">Mizmor Shir</a> y se canta <a href="bendiciones#maoz-tzur" data-text="maoz">Maoz Tzur</a>.' +
-          (state.auto ? ' Pulsa <b>«Encenderla yo»</b> para hacerlo tú, vela a vela.' : '') + '</span>';
+        html = '<strong>' + T('sDone') + '</strong><span>' + (n === 1 ? T('sDone1') : T('sDoneN', { n: n, ord: D.ord[n] })) +
+          T('sAfter') + (state.auto ? T('sAutoHint') : '') + '</span>';
       }
       statusEl.innerHTML = html;
       if (btnNext) {
         btnNext.disabled = done() || state.auto;
-        btnNext.querySelector('span').textContent = state.step === 0 ? 'Encender el shamash' : 'Encender la siguiente';
+        btnNext.querySelector('span').textContent = state.step === 0 ? T('btnShamash') : T('btnNext');
       }
     }
 
@@ -378,7 +374,7 @@
       void c.g.getBBox();
       c.g.classList.add('shake');
       setTimeout(function () { c.g.classList.remove('shake'); }, 500);
-      statusEl.innerHTML = '<strong>Todavía no</strong><span>' + msg + '</span>';
+      statusEl.innerHTML = '<strong>' + T('notYet') + '</strong><span>' + msg + '</span>';
       clearTimeout(hint.t);
       hint.t = setTimeout(refresh, 2800);
     }
@@ -388,8 +384,8 @@
       var c = id === 'sh' ? shamash : candles[id];
       if (c.g.classList.contains('lit')) return;
       if (id === expected()) { clearTimeout(hint.t); lightNext(); return; }
-      if (state.step === 0) hint(c, 'Primero se enciende el <b>shamash</b>, la vela central más alta: con él se encienden las demás.');
-      else hint(c, 'Se enciende de <b>izquierda a derecha</b>, empezando por <b>la vela nueva de hoy</b>, la que has añadido esta noche. Toca la vela marcada.');
+      if (state.step === 0) hint(c, T('hintShamash'));
+      else hint(c, T('hintOrder'));
     }
 
     function lightAll(auto) {
@@ -452,7 +448,7 @@
   /* ---------- Bendiciones y cantos en diálogo ---------- */
   // Secuencia: 1.ª, 2.ª y 3.ª bendición → Hanerot Halalu → Mizmor Shir → Maoz Tzur
   var TEXTS = D.blessings.map(function (b) {
-    return { key: String(b.n), kicker: D.ord[b.n] + ' bendición · ' + b.when, name: b.name, he: b.he, tr: b.tr, es: b.es };
+    return { key: String(b.n), kicker: T('blessKicker', { ord: D.ord[b.n], when: b.when }), name: b.name, he: b.he, tr: b.tr, es: b.es };
   }).concat((D.songs || []).map(function (s) {
     return { key: s.key, kicker: s.when, name: s.name, he: s.he, tr: s.tr, es: s.es };
   }));
@@ -462,7 +458,7 @@
   function textHTML(i) {
     var t = TEXTS[i], prev = TEXTS[i - 1], next = TEXTS[i + 1];
     return '<div class="modal-head"><div><p class="eyebrow">' + t.kicker + '</p><h3 id="bless-title">' + t.name + '</h3></div>' +
-        '<button class="modal-close" type="button" aria-label="Cerrar">×</button></div>' +
+        '<button class="modal-close" type="button" aria-label="' + T('close') + '">×</button></div>' +
       '<div class="modal-body">' +
         (t.he ? '<p class="bless-he" lang="he" dir="rtl">' + t.he + '</p>' : '') +
         (t.tr ? '<p class="bless-tr">' + t.tr + '</p>' : '') +
@@ -470,7 +466,7 @@
       '</div>' +
       '<div class="modal-foot bless-nav">' +
         (prev ? '<button class="btn btn-ghost btn-sm" type="button" data-bgo="' + (i - 1) + '">← ' + prev.name + '</button>' : '<span></span>') +
-        (next ? '<button class="btn btn-gold btn-sm" type="button" data-bgo="' + (i + 1) + '">' + next.name + ' →</button>' : '<button class="btn btn-ghost btn-sm" type="button" data-close>Cerrar</button>') +
+        (next ? '<button class="btn btn-gold btn-sm" type="button" data-bgo="' + (i + 1) + '">' + next.name + ' →</button>' : '<button class="btn btn-ghost btn-sm" type="button" data-close>' + T('close') + '</button>') +
       '</div>';
   }
   function lockPage(on) { document.documentElement.classList.toggle('modal-open', on); }

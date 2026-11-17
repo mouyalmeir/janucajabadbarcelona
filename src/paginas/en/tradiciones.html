@@ -1,0 +1,67 @@
+{"title": "Chanukah traditions: dreidel and Chanukah gelt · Chabad Barcelona", "description": "The dreidel (sevivon) game and its rules, with a dreidel you can spin online, and the meaning of Chanukah gelt.", "scripts": ["dreidel.js"], "hebrew": true}
+    <header class="page-hero">
+      <div class="wrap">
+        <h1>Chanukah <em>traditions</em></h1>
+        <p>A game born of courage, and coins that teach us to give.</p>
+      </div>
+    </header>
+
+    <div class="wrap">
+      <article class="prose">
+        <h2 class="reveal">The dreidel game <em>(sevivon)</em></h2>
+        <p class="reveal">When King Antiochus banned the study of Torah, Jewish children would meet in secret to learn. If a Greek patrol came near, they hid their scrolls and took out spinning tops, pretending to play. In honour of their courage we play <strong>dreidel</strong> (from the Yiddish <em>drei</em>, “to spin”), a four-sided top with the Hebrew letters <strong>Nun (נ), Gimel (ג), Hei (ה) and Shin (ש)</strong>, the initials of <em>Nes Gadol Hayah Sham</em> (“A great miracle happened there”).</p>
+
+        <div class="card dreidel-play reveal">
+          <div class="dreidel-box">
+            <svg id="dreidel" viewBox="0 0 160 220" aria-hidden="true">
+              <defs>
+                <linearGradient id="dg" x1="0" x2="1"><stop offset="0" stop-color="#8a5a18"/><stop offset=".35" stop-color="#ffe6a6"/><stop offset=".6" stop-color="#f2c46d"/><stop offset="1" stop-color="#7a4d12"/></linearGradient>
+                <linearGradient id="dh" x1="0" x2="1"><stop offset="0" stop-color="#c98a2e"/><stop offset=".5" stop-color="#fff1c1"/><stop offset="1" stop-color="#9c6a1f"/></linearGradient>
+              </defs>
+              <rect x="70" y="4" width="20" height="44" rx="8" fill="url(#dh)"/>
+              <g id="dreidel-face">
+                <path d="M24 46h112a6 6 0 0 1 6 6v86c0 6-2 10-6 14l-48 58c-4 5-12 5-16 0l-48-58c-4-4-6-8-6-14V52a6 6 0 0 1 6-6z" fill="url(#dg)"/>
+                <text id="dreidel-letter" x="80" y="118" text-anchor="middle" dominant-baseline="central" font-size="72" font-family="'Times New Roman', serif" fill="#1d1406">נ</text>
+              </g>
+            </svg>
+          </div>
+          <div>
+            <div class="pot" aria-live="polite">
+              <div><small>Pot</small><b id="pot-coins">10</b></div>
+              <div><small>Your coins</small><b id="my-coins">10</b></div>
+            </div>
+            <p class="dreidel-result" id="dreidel-result" aria-live="polite">You start with 10 coins and there are 10 in the pot. Spin the dreidel!</p>
+            <div class="page-tools" style="justify-content:flex-start;margin:0 0 6px">
+              <button class="btn btn-gold" id="dreidel-spin" type="button">Spin the dreidel</button>
+              <button class="btn btn-ghost" id="dreidel-reset" type="button">Restart</button>
+            </div>
+            <ul class="letters" id="letters">
+              <li data-l="נ"><span class="he" lang="he">נ</span><span><strong>Nun · <em>Nisht</em></strong><small>Nothing: you don’t add or take anything.</small></span></li>
+              <li data-l="ג"><span class="he" lang="he">ג</span><span><strong>Gimel · <em>Gantz</em></strong><small>Everything: you take the whole pot.</small></span></li>
+              <li data-l="ה"><span class="he" lang="he">ה</span><span><strong>Hei · <em>Halb</em></strong><small>Half: you take half of the pot.</small></span></li>
+              <li data-l="ש"><span class="he" lang="he">ש</span><span><strong>Shin · <em>Shtel</em></strong><small>Put in: you add one coin to the pot.</small></span></li>
+            </ul>
+          </div>
+        </div>
+
+        <h3 class="reveal">How do you play?</h3>
+        <p class="reveal">Each player puts the same number of chocolate coins, nuts or counters into a shared pot. Taking turns, each player spins the dreidel and does what the letter facing up says.</p>
+
+        <div class="callout reveal">
+          <p class="callout-title">Did you know…?</p>
+          <p>In the Land of Israel dreidels have a <strong>Pe (פ)</strong> instead of the Shin: <em>Nes Gadol Hayah Po</em>, “a great miracle happened <strong>here</strong>”.</p>
+        </div>
+
+        <h2 class="reveal">Chanukah gelt <em>(Chanukah coins)</em></h2>
+        <p class="reveal">It is customary to give children money or chocolate coins (<em>Chanukah gelt</em>) during the festival. The word <em>Chanukah</em> shares its root with <em>chinuch</em> (“education”). The custom aims to encourage their Torah study and to teach them from a young age the value of <strong>tzedakah</strong> (charity and justice), encouraging them to set aside part of their money to help others.</p>
+        <figure class="figure reveal">
+          <img src="assets/img/guelt-tzedaka.webp" alt="Tzedakah box next to chocolate coins and a lit menorah" width="960" height="717" loading="lazy" decoding="async">
+          <figcaption>Part of the gelt goes into the tzedakah box: that is how we learn to give.</figcaption>
+        </figure>
+      </article>
+
+      <nav class="pager" aria-label="Pages">
+        <a href="bendiciones.html"><small>← Previous</small><b>Blessings</b></a>
+        <a class="next" href="receta.html"><small>Next →</small><b>Chanukah recipes</b></a>
+      </nav>
+    </div>

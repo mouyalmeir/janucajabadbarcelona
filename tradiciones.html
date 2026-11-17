@@ -8,8 +8,14 @@
   <meta name="theme-color" content="#060a1b">
   <link rel="canonical" href="https://janucabarcelona.com/tradiciones">
   <meta property="og:url" content="https://janucabarcelona.com/tradiciones">
+  <link rel="alternate" hreflang="es" href="https://janucabarcelona.com/tradiciones">
+  <link rel="alternate" hreflang="ca" href="https://janucabarcelona.com/ca/tradiciones">
+  <link rel="alternate" hreflang="en" href="https://janucabarcelona.com/en/tradiciones">
+  <link rel="alternate" hreflang="x-default" href="https://janucabarcelona.com/tradiciones">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="es_ES">
+  <meta property="og:locale:alternate" content="ca_ES">
+  <meta property="og:locale:alternate" content="en_GB">
   <meta property="og:site_name" content="Janucá 5787 · Jabad Barcelona">
   <meta property="og:title" content="Tradiciones de Janucá: dréidel y Janucá guelt · Jabad Barcelona">
   <meta property="og:description" content="El juego del dréidel (sevivón) y sus reglas, con un dréidel para girar online, y el sentido del Janucá guelt.">
@@ -32,6 +38,7 @@
   <link rel="stylesheet" href="assets/css/styles.css">
   <script>document.documentElement.className = 'js';</script>
   <script src="assets/js/data.js" defer></script>
+  <script src="assets/js/textos.js" defer></script>
   <script src="assets/js/main.js" defer></script>
   <script src="assets/js/dreidel.js" defer></script>
 </head>
@@ -56,6 +63,10 @@
         <a href="tradiciones" aria-current="page">Tradiciones</a>
         <a href="receta">Recetas</a>
         <a href="eventos" class="nav-cta"><span class="nav-lbl">Eventos</span></a>
+        <div class="lang" data-lang>
+          <button class="lang-btn" type="button" aria-expanded="false" aria-controls="lang-list" aria-label="Idioma: Español"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 3.8 5.6 3.8 9s-1.2 6.4-3.8 9c-2.6-2.6-3.8-5.6-3.8-9S9.4 5.6 12 3z"/></svg><span>ES</span></button>
+          <ul class="lang-list" id="lang-list" aria-label="Idioma"><li><a href="tradiciones" hreflang="es" lang="es" aria-current="true"><b>ES</b>Español</a></li><li><a href="ca/tradiciones" hreflang="ca" lang="ca"><b>CA</b>Català</a></li><li><a href="en/tradiciones" hreflang="en" lang="en"><b>EN</b>English</a></li></ul>
+        </div>
       </nav>
     </div>
   </header>
@@ -166,6 +177,7 @@
       <div class="legal">
         <span>© 5787 · 2026 Jabad Lubavitch Barcelona</span>
         <span>Fotos de recetas: Wikimedia Commons</span>
+        <nav class="foot-lang" aria-label="Idioma"><a href="tradiciones" hreflang="es" lang="es" aria-current="true">Español</a><a href="ca/tradiciones" hreflang="ca" lang="ca">Català</a><a href="en/tradiciones" hreflang="en" lang="en">English</a></nav>
       </div>
     </div>
   </footer>

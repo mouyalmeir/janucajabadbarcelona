@@ -1,0 +1,67 @@
+{"title": "Tradicions de Hanukkà: dreidel i Hanukkà guelt · Jabad Barcelona", "description": "El joc del dreidel (sevivon) i les seves regles, amb un dreidel per fer girar en línia, i el sentit del Hanukkà guelt.", "scripts": ["dreidel.js"], "hebrew": true}
+    <header class="page-hero">
+      <div class="wrap">
+        <h1>Tradicions de <em>Hanukkà</em></h1>
+        <p>Un joc nascut de la valentia i unes monedes que ensenyen a donar.</p>
+      </div>
+    </header>
+
+    <div class="wrap">
+      <article class="prose">
+        <h2 class="reveal">El joc del dreidel <em>(sevivon)</em></h2>
+        <p class="reveal">Quan el rei Antíoc va prohibir l’estudi de la Torà, els nens jueus es reunien en secret per estudiar. Si s’acostava una patrulla grega, amagaven els pergamins i treien les baldufes fent veure que jugaven. En homenatge a la seva valentia, juguem al <strong>dreidel</strong> (del jiddisch <em>drei</em>, «girar»), una baldufa de quatre cares amb les lletres hebrees <strong>Nun (נ), Guímel (ג), Hei (ה) i Shin (ש)</strong>, inicials de <em>Nes Gadol Haià Sham</em> («Un gran miracle va passar allà»).</p>
+
+        <div class="card dreidel-play reveal">
+          <div class="dreidel-box">
+            <svg id="dreidel" viewBox="0 0 160 220" aria-hidden="true">
+              <defs>
+                <linearGradient id="dg" x1="0" x2="1"><stop offset="0" stop-color="#8a5a18"/><stop offset=".35" stop-color="#ffe6a6"/><stop offset=".6" stop-color="#f2c46d"/><stop offset="1" stop-color="#7a4d12"/></linearGradient>
+                <linearGradient id="dh" x1="0" x2="1"><stop offset="0" stop-color="#c98a2e"/><stop offset=".5" stop-color="#fff1c1"/><stop offset="1" stop-color="#9c6a1f"/></linearGradient>
+              </defs>
+              <rect x="70" y="4" width="20" height="44" rx="8" fill="url(#dh)"/>
+              <g id="dreidel-face">
+                <path d="M24 46h112a6 6 0 0 1 6 6v86c0 6-2 10-6 14l-48 58c-4 5-12 5-16 0l-48-58c-4-4-6-8-6-14V52a6 6 0 0 1 6-6z" fill="url(#dg)"/>
+                <text id="dreidel-letter" x="80" y="118" text-anchor="middle" dominant-baseline="central" font-size="72" font-family="'Times New Roman', serif" fill="#1d1406">נ</text>
+              </g>
+            </svg>
+          </div>
+          <div>
+            <div class="pot" aria-live="polite">
+              <div><small>Pot</small><b id="pot-coins">10</b></div>
+              <div><small>Les teves monedes</small><b id="my-coins">10</b></div>
+            </div>
+            <p class="dreidel-result" id="dreidel-result" aria-live="polite">Comences amb 10 monedes i n’hi ha 10 al pot. Fes girar el dreidel!</p>
+            <div class="page-tools" style="justify-content:flex-start;margin:0 0 6px">
+              <button class="btn btn-gold" id="dreidel-spin" type="button">Fes girar el dreidel</button>
+              <button class="btn btn-ghost" id="dreidel-reset" type="button">Reinicia</button>
+            </div>
+            <ul class="letters" id="letters">
+              <li data-l="נ"><span class="he" lang="he">נ</span><span><strong>Nun · <em>Nisht</em></strong><small>Res: no poses ni agafes res.</small></span></li>
+              <li data-l="ג"><span class="he" lang="he">ג</span><span><strong>Guímel · <em>Gantz</em></strong><small>Tot: t’emportes tot el pot.</small></span></li>
+              <li data-l="ה"><span class="he" lang="he">ה</span><span><strong>Hei · <em>Halb</em></strong><small>Meitat: t’emportes la meitat del pot.</small></span></li>
+              <li data-l="ש"><span class="he" lang="he">ש</span><span><strong>Shin · <em>Shtel</em></strong><small>Posa: afegeixes una fitxa al pot.</small></span></li>
+            </ul>
+          </div>
+        </div>
+
+        <h3 class="reveal">Com s’hi juga?</h3>
+        <p class="reveal">Cada jugador aporta la mateixa quantitat de monedes de xocolata, fruits secs o fitxes al pot comú. Per torns, cadascú fa girar el dreidel i segueix el que indica la lletra que queda a dalt.</p>
+
+        <div class="callout reveal">
+          <p class="callout-title">Sabies que…?</p>
+          <p>A la Terra d’Israel els dreidels porten una <strong>Pe (פ)</strong> en lloc de la Shin: <em>Nes Gadol Haià Po</em>, «un gran miracle va passar <strong>aquí</strong>».</p>
+        </div>
+
+        <h2 class="reveal">Hanukkà guelt <em>(monedes de Hanukkà)</em></h2>
+        <p class="reveal">És costum regalar diners o monedes de xocolata (<em>Hanukkà guelt</em>) als nens durant la festa. La paraula <em>Hanukkà</em> comparteix arrel amb <em>Hinukh</em> («educació»). Aquesta tradició vol estimular el seu estudi de la Torà i ensenyar-los des de petits el valor de la <strong>tsedakà</strong> (caritat i justícia social), animant-los a destinar una part dels seus diners a ajudar els altres.</p>
+        <figure class="figure reveal">
+          <img src="assets/img/guelt-tzedaka.webp" alt="Guardiola de tsedakà al costat de monedes de xocolata i una hanukkià encesa" width="960" height="717" loading="lazy" decoding="async">
+          <figcaption>Una part del guelt, per a la guardiola de tsedakà: així s’educa a donar.</figcaption>
+        </figure>
+      </article>
+
+      <nav class="pager" aria-label="Pàgines">
+        <a href="bendiciones.html"><small>← Anterior</small><b>Benediccions</b></a>
+        <a class="next" href="receta.html"><small>Següent →</small><b>Receptes de Hanukkà</b></a>
+      </nav>
+    </div>

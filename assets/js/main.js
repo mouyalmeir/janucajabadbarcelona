@@ -2,6 +2,7 @@
 (function () {
   'use strict';
   var D = window.JANUCA;
+  var T = D.t, IMG = D.base + 'assets/img/';
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return [].slice.call((r || document).querySelectorAll(s)); };
 
@@ -12,7 +13,18 @@
       var open = nav.classList.toggle('open');
       toggle.setAttribute('aria-expanded', String(open));
     });
-    nav.addEventListener('click', function (e) { if (e.target.tagName === 'A') { nav.classList.remove('open'); toggle.setAttribute('aria-expanded', 'false'); } });
+    nav.addEventListener('click', function (e) { if (e.target.closest('a')) { nav.classList.remove('open'); toggle.setAttribute('aria-expanded', 'false'); } });
+  }
+
+  /* ---------- Selector de idioma (desplegable en el ordenador) ---------- */
+  var langBox = $('[data-lang]');
+  if (langBox) {
+    var langBtn = $('.lang-btn', langBox);
+    var setLang = function (open) { langBox.classList.toggle('open', open); langBtn.setAttribute('aria-expanded', String(open)); };
+    langBtn.addEventListener('click', function () { setLang(!langBox.classList.contains('open')); });
+    document.addEventListener('click', function (e) { if (!langBox.contains(e.target)) setLang(false); });
+    langBox.addEventListener('keydown', function (e) { if (e.key === 'Escape') { setLang(false); langBtn.focus(); } });
+    langBox.addEventListener('focusout', function (e) { if (!langBox.contains(e.relatedTarget)) setLang(false); });
   }
 
   /* ---------- Utilidades ---------- */
@@ -37,7 +49,7 @@
     var t = ev.start.split(':'), m = +t[0] * 60 + +t[1] + 90;
     return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
   }
-  function timeLabel(ev) { return ev.end ? ev.start + ' – ' + ev.end + ' h' : ev.start + ' h'; }
+  function timeLabel(ev) { return ev.end ? ev.start + ' – ' + D.hm(ev.end) : D.hm(ev.start); }
   function evLocation(ev) { return ev.place + ', ' + ev.address.replace(/ · /g, ', '); }
   function miniMenorah(n) {
     var h = '';
@@ -72,32 +84,31 @@
   }
   function eventIcs(ev) {
     downloadIcs('januca-' + ev.id + '.ics', [vevent(ev.id, D.toUTC(ev.date, ev.start), D.toUTC(ev.date, endHM(ev)),
-      ev.title + ' · Janucá', ev.description + ' Organiza: ' + ev.org + '.', evLocation(ev))]);
+      ev.title + T('evSuffix'), ev.description + ' ' + T('icsOrg', { org: ev.org }), evLocation(ev))]);
   }
   function nightsIcs() {
     downloadIcs('januca-5787-8-noches.ics', D.nights.map(function (nd) {
       var slot = D.nightSlots[nd.n] || ['17:30', '18:00'];
       var ev = D.eventForNight(nd.n);
-      var desc = nd.time + ' (' + nd.note + '). Bendiciones: ' + nd.blessings.join(', ') + '.' + (nd.alert ? ' ' + nd.alert : '') +
-        (ev ? ' Encendido público: ' + ev.title + ' (' + ev.org + '), ' + ev.start + ' h.' : '');
+      var desc = nd.time + ' (' + nd.note + '). ' + T('icsBless', { list: D.list(nd.blessings) }) + (nd.alert ? ' ' + nd.alert : '') +
+        (ev ? ' ' + T('icsPublic', { title: ev.title, org: ev.org, time: D.hm(ev.start) }) : '');
       return vevent('noche-' + nd.n, D.toUTC(nd.date, slot[0]), D.toUTC(nd.date, slot[1]),
-        '🕎 Janucá · ' + D.ord[nd.n] + ' vela (' + nd.n + ' + shamash)', desc, '');
+        T('icsNight', { ord: D.ord[nd.n], n: nd.n }), desc, '');
     }));
   }
   function gcal(ev) {
-    return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(ev.title + ' · Janucá') +
+    return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(ev.title + T('evSuffix')) +
       '&dates=' + stamp(D.toUTC(ev.date, ev.start)) + '/' + stamp(D.toUTC(ev.date, endHM(ev))) +
-      '&details=' + encodeURIComponent(ev.description + ' Organiza: ' + ev.org + '.') + '&location=' + encodeURIComponent(evLocation(ev));
+      '&details=' + encodeURIComponent(ev.description + ' ' + T('icsOrg', { org: ev.org })) + '&location=' + encodeURIComponent(evLocation(ev));
   }
   function share(ev) {
-    var p = D.parse(ev.date);
     var url = new URL('eventos#' + ev.id, location.href).href;
-    var text = ev.title + ' · ' + D.weekday(ev.date) + ' ' + p.d + ' de diciembre, ' + ev.start + ' h. Janucá con Jabad Barcelona ✨';
+    var text = T('shareText', { title: ev.title, date: D.dateLong(ev.date), time: D.hm(ev.start) });
     if (navigator.share) { navigator.share({ title: ev.title, text: text, url: url }).catch(function () {}); return; }
     window.open('https://wa.me/?text=' + encodeURIComponent(text + ' ' + url), '_blank', 'noopener');
   }
   function calMenu(ev) {
-    return '<details class="ev-cal"><summary class="btn btn-ghost btn-sm">' + I.cal + 'Calendario</summary><div class="ev-cal-menu">' +
+    return '<details class="ev-cal"><summary class="btn btn-ghost btn-sm">' + I.cal + T('calendar') + '</summary><div class="ev-cal-menu">' +
       '<a href="' + gcal(ev) + '" target="_blank" rel="noopener">Google Calendar</a>' +
       '<button type="button" data-ics="' + esc(ev.id) + '">Apple / Outlook (.ics)</button></div></details>';
   }
@@ -127,24 +138,24 @@
   }
   function daysUntil(ds) { return Math.round((Date.parse(ds + 'T00:00:00Z') - Date.parse(todayMadrid() + 'T00:00:00Z')) / 864e5); }
   function soonLabel(ev) {
-    if (flags[ev.id].past) return 'Finalizado';
+    if (flags[ev.id].past) return T('finished');
     var n = daysUntil(ev.date);
-    return n <= 0 ? 'Hoy' : n === 1 ? 'Mañana' : 'En ' + n + ' días';
+    return n <= 0 ? T('today') : n === 1 ? T('tomorrow') : T('inDays', { n: n });
   }
   function badge(ev) {
     var f = flags[ev.id];
-    return f.past ? '<span class="ev-badge">Finalizado</span>' : (f.next ? '<span class="ev-badge">Próximo encendido</span>' : '');
+    return f.past ? '<span class="ev-badge">' + T('finished') + '</span>' : (f.next ? '<span class="ev-badge">' + T('nextLighting') + '</span>' : '');
   }
   // Logo del organizador (si lo hay) + nombre
   function orgLogo(ev, cls) {
-    return ev.orgLogo ? '<img class="' + cls + '" src="assets/img/' + ev.orgLogo + '.webp" alt="" loading="lazy" decoding="async">' : '';
+    return ev.orgLogo ? '<img class="' + cls + '" src="' + IMG + ev.orgLogo + '.webp" alt="" loading="lazy" decoding="async">' : '';
   }
   function media(ev) {
     var p = D.parse(ev.date);
-    return '<img src="assets/img/' + ev.art + '.svg" alt="" width="960" height="600" loading="lazy" decoding="async">' +
+    return '<img src="' + IMG + ev.art + '.svg" alt="" width="960" height="600" loading="lazy" decoding="async">' +
       badge(ev) +
-      '<span class="ev-chip">' + miniMenorah(ev.night) + D.ord[ev.night] + ' noche</span>' +
-      '<span class="ev-date"><span class="ev-day">' + p.d + '</span><span class="ev-mon">dic<small>' + D.weekday(ev.date) + '</small></span></span>' +
+      '<span class="ev-chip">' + miniMenorah(ev.night) + T('night', { ord: D.ord[ev.night] }) + '</span>' +
+      '<span class="ev-date"><span class="ev-day">' + p.d + '</span><span class="ev-mon">' + D.monShort(ev.date) + '<small>' + D.weekday(ev.date) + '</small></span></span>' +
       '<span class="ev-city">' + I.pin + esc(ev.city) + '</span>';
   }
   // Lo que añade la dirección al lugar y la ciudad (o, si no añade nada, el barrio)
@@ -157,25 +168,25 @@
   function agendaItem(ev) {
     var f = flags[ev.id], p = D.parse(ev.date), link = 'eventos#' + esc(ev.id), sub = placeSub(ev);
     return '<li class="ag-item reveal' + (f.past ? ' is-past' : '') + (f.next ? ' is-next' : '') + (ev.featured ? ' is-featured' : '') + '" id="ag-' + esc(ev.id) + '">' +
-      '<div class="ag-when" aria-hidden="true"><span class="ag-wd">' + D.weekday(ev.date).slice(0, 3) + '</span><b class="ag-day">' + p.d + '</b>' +
-        '<span class="ag-mon">dic</span><span class="ag-time">' + ev.start + '<small>h</small></span></div>' +
+      '<div class="ag-when" aria-hidden="true"><span class="ag-wd">' + D.wdShort(ev.date) + '</span><b class="ag-day">' + p.d + '</b>' +
+        '<span class="ag-mon">' + D.monShort(ev.date) + '</span><span class="ag-time">' + ev.start + (D.hm('') ? '<small>h</small>' : '') + '</span></div>' +
       '<article class="ag-card">' +
         '<a class="ag-art" href="' + link + '" tabindex="-1" aria-hidden="true">' +
-          '<img src="assets/img/' + ev.art + '.svg" alt="" width="960" height="600" loading="lazy" decoding="async">' + badge(ev) +
-          '<span class="ev-chip">' + miniMenorah(ev.night) + D.ord[ev.night] + ' noche</span></a>' +
+          '<img src="' + IMG + ev.art + '.svg" alt="" width="960" height="600" loading="lazy" decoding="async">' + badge(ev) +
+          '<span class="ev-chip">' + miniMenorah(ev.night) + T('night', { ord: D.ord[ev.night] }) + '</span></a>' +
         '<div class="ag-info">' +
-          '<p class="ag-city">' + I.pin + esc(ev.city) + (ev.featured ? '<span class="ag-tag">Gran encendido</span>' : '') + '</p>' +
+          '<p class="ag-city">' + I.pin + esc(ev.city) + (ev.featured ? '<span class="ag-tag">' + T('bigLighting') + '</span>' : '') + '</p>' +
           '<h3 class="ag-place"><a href="' + link + '">' + esc(ev.place) + '</a></h3>' +
-          '<p class="sr-only">' + cap(D.dateLong(ev.date)) + ', a las ' + ev.start + ' h</p>' +
+          '<p class="sr-only">' + T('atTime', { date: cap(D.dateLong(ev.date)), time: D.hm(ev.start) }) + '</p>' +
           (sub ? '<p class="ag-sub">' + esc(sub) + '</p>' : '') +
           (ev.transport ? '<p class="ag-transit">' + I.metro + esc(ev.transport) + '</p>' : '') +
-          '<p class="ag-org">' + orgLogo(ev, 'ag-org-logo') + '<span><small>Organiza</small>' + esc(ev.org) + '</span></p>' +
+          '<p class="ag-org">' + orgLogo(ev, 'ag-org-logo') + '<span><small>' + T('org') + '</small>' + esc(ev.org) + '</span></p>' +
         '</div>' +
         '<div class="ag-actions">' +
           '<span class="ev-soon' + (f.past ? ' is-past' : '') + '">' + soonLabel(ev) + '</span>' +
-          '<a class="btn btn-gold btn-sm ag-go" href="' + mapsUrl(ev) + '" target="_blank" rel="noopener">' + I.map + 'Cómo llegar</a>' +
+          '<a class="btn btn-gold btn-sm ag-go" href="' + mapsUrl(ev) + '" target="_blank" rel="noopener">' + I.map + T('directions') + '</a>' +
           '<div class="ag-more">' + calMenu(ev) +
-            '<button class="btn btn-ghost btn-sm icon-btn" type="button" data-share="' + esc(ev.id) + '" aria-label="Compartir ' + esc(ev.title) + '">' + I.share + '</button></div>' +
+            '<button class="btn btn-ghost btn-sm icon-btn" type="button" data-share="' + esc(ev.id) + '" aria-label="' + esc(T('share', { title: ev.title })) + '">' + I.share + '</button></div>' +
         '</div>' +
       '</article></li>';
   }
@@ -183,21 +194,21 @@
     var f = flags[ev.id];
     return '<article class="ev-detail reveal' + (ev.featured ? ' featured' : '') + (f.past ? ' is-past' : '') + '" id="' + esc(ev.id) + '">' +
       '<div class="ev-detail-media ev-media">' + media(ev) + '</div>' +
-      '<div class="ev-detail-body"><p class="ev-kicker">' + D.ord[ev.night] + ' noche · ' + esc(ev.area) + '</p>' +
+      '<div class="ev-detail-body"><p class="ev-kicker">' + T('night', { ord: D.ord[ev.night] }) + ' · ' + esc(ev.area) + '</p>' +
       '<h2>' + ev.titleHtml + '</h2><p>' + ev.descHtml + '</p>' +
       '<div class="ev-facts">' +
-        '<div class="fact fact-wide fact-place">' + I.pin + '<span><small>Lugar</small><b>' + esc(ev.place) + '</b><em>' + esc(ev.address) + '</em></span></div>' +
-        '<div class="fact">' + I.cal + '<span><small>Fecha</small>' + cap(D.dateLong(ev.date)) + '</span></div>' +
-        '<div class="fact">' + I.clock + '<span><small>Hora</small>' + timeLabel(ev) + ' <span class="ev-soon' + (f.past ? ' is-past' : '') + '">' + soonLabel(ev) + '</span></span></div>' +
-        (ev.transport ? '<div class="fact fact-wide">' + I.metro + '<span><small>Cómo llegar</small>' + esc(ev.transport) + '</span></div>' : '') +
+        '<div class="fact fact-wide fact-place">' + I.pin + '<span><small>' + T('place') + '</small><b>' + esc(ev.place) + '</b><em>' + esc(ev.address) + '</em></span></div>' +
+        '<div class="fact">' + I.cal + '<span><small>' + T('date') + '</small>' + cap(D.dateLong(ev.date)) + '</span></div>' +
+        '<div class="fact">' + I.clock + '<span><small>' + T('time') + '</small>' + timeLabel(ev) + ' <span class="ev-soon' + (f.past ? ' is-past' : '') + '">' + soonLabel(ev) + '</span></span></div>' +
+        (ev.transport ? '<div class="fact fact-wide">' + I.metro + '<span><small>' + T('transport') + '</small>' + esc(ev.transport) + '</span></div>' : '') +
       '</div>' +
       '<ul class="ev-program">' + ev.program.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' +
       (ev.notice ? '<p class="ev-notice">' + esc(ev.notice) + '</p>' : '') +
       '<div class="ev-org' + (ev.orgLogo ? '' : ' no-logo') + '">' + orgLogo(ev, 'ev-org-logo') +
-        '<span><small>Organiza</small>' + esc(ev.org) + '</span></div>' +
+        '<span><small>' + T('org') + '</small>' + esc(ev.org) + '</span></div>' +
       '<div class="ev-actions">' +
-        '<a class="btn btn-gold btn-sm" href="' + mapsUrl(ev) + '" target="_blank" rel="noopener">' + I.map + 'Cómo llegar</a>' + calMenu(ev) +
-        '<button class="btn btn-ghost btn-sm icon-btn" type="button" data-share="' + esc(ev.id) + '" aria-label="Compartir ' + esc(ev.title) + '">' + I.share + '</button>' +
+        '<a class="btn btn-gold btn-sm" href="' + mapsUrl(ev) + '" target="_blank" rel="noopener">' + I.map + T('directions') + '</a>' + calMenu(ev) +
+        '<button class="btn btn-ghost btn-sm icon-btn" type="button" data-share="' + esc(ev.id) + '" aria-label="' + esc(T('share', { title: ev.title })) + '">' + I.share + '</button>' +
       '</div></div></article>';
   }
   $$('[data-events]').forEach(function (list) {
@@ -206,7 +217,7 @@
   var fb = $('#filter-bar');
   if (fb) fb.innerHTML = D.events.map(function (ev) {
     var p = D.parse(ev.date);
-    return '<a href="#' + ev.id + '">' + cap(D.weekday(ev.date)).slice(0, 3) + ' ' + p.d + ' · ' + esc(ev.short || ev.place) + '</a>';
+    return '<a href="#' + ev.id + '">' + cap(D.wdShort(ev.date)) + ' ' + p.d + ' · ' + esc(ev.short || ev.place) + '</a>';
   }).join('');
 
   /* ---------- Saltar a un elemento dejándolo justo debajo de la cabecera (y la barra sticky) ---------- */
@@ -312,8 +323,8 @@
   if (nextEv) (function () {
     var np = D.parse(nextEv.date);
     var cta = $('.nav .nav-cta');
-    if (cta) cta.insertAdjacentHTML('beforeend', '<span class="nav-next">Próximo: ' + D.weekday(nextEv.date) + ' ' + np.d + ' dic · ' +
-      nextEv.start + ' h · ' + esc(nextEv.short || nextEv.place) + '</span>');
+    if (cta) cta.insertAdjacentHTML('beforeend', '<span class="nav-next">' + T('navNext', { date: D.weekday(nextEv.date) + ' ' + np.d + ' ' + D.monShort(nextEv.date),
+      time: D.hm(nextEv.start), place: esc(nextEv.short || nextEv.place) }) + '</span>');
   })();
 
   // Portada: chispas doradas que llegan desde fuera hasta el botón de los encendidos
@@ -346,13 +357,13 @@
     var p = D.parse(nextEv.date);
     var bar = document.createElement('aside');
     bar.className = 'next-bar';
-    bar.setAttribute('aria-label', 'Próximo encendido');
+    bar.setAttribute('aria-label', T('nextLighting'));
     bar.innerHTML = '<a class="nb-link" href="eventos#' + esc(nextEv.id) + '">' +
-        '<img src="assets/img/' + nextEv.art + '.svg" alt="" width="72" height="45">' +
-        '<span class="nb-txt"><small>Próximo encendido · ' + soonLabel(nextEv) + '</small>' +
-        '<b>' + cap(D.weekday(nextEv.date)).slice(0, 3) + ' ' + p.d + ' dic · ' + nextEv.start + ' h</b>' +
+        '<img src="' + IMG + nextEv.art + '.svg" alt="" width="72" height="45">' +
+        '<span class="nb-txt"><small>' + T('nextLighting') + ' · ' + soonLabel(nextEv) + '</small>' +
+        '<b>' + cap(D.wdShort(nextEv.date)) + ' ' + p.d + ' ' + D.monShort(nextEv.date) + ' · ' + D.hm(nextEv.start) + '</b>' +
         '<span class="nb-place"><span class="loc">' + esc(nextEv.place) + '</span> · ' + esc(nextEv.city) + '</span></span>' +
-        '<span class="nb-go">Ver ' + I.arrow + '</span></a>';
+        '<span class="nb-go">' + T('see') + ' ' + I.arrow + '</span></a>';
     document.body.appendChild(bar);
     var sec = $('#encendidos'), foot = $('.site-footer'), head = $('.site-header'), ticking = false;
     var hero = $('.hero-scroll'), pageHero = $('.page-hero');
@@ -425,8 +436,8 @@
   function arrived() {
     var n = ensayo ? ensayo.noche : 1, nd = D.nights[n - 1] || D.nights[0];
     var aviso = n === 1
-      ? '¡Ha llegado Janucá! Enciende la 1.ª vela · ' + nd.time.toLowerCase()
-      : 'Esta noche: ' + D.ord[n] + ' vela de Janucá · ' + nd.time.toLowerCase();
+      ? T('arrived1', { time: nd.time.toLowerCase() })
+      : T('arrivedN', { ord: D.ord[n], time: nd.time.toLowerCase() });
     cd.classList.add('cd-out');
     setTimeout(function () {
       cd.innerHTML = pill(aviso, ' is-arrived');
@@ -457,9 +468,9 @@
     } else {
       var nd = D.nights[st.night - 1];
       var msg = st.phase === 'during'
-        ? 'Hoy: ' + D.ord[st.night] + ' noche de Janucá · ' + nd.time
-        : st.phase === 'last' ? 'Último día de Janucá: la festividad concluye esta noche'
-        : 'Janucá 5787 ha concluido. ¡Que la luz siga con nosotros!';
+        ? T('during', { ord: D.ord[st.night], time: nd.time })
+        : st.phase === 'last' ? T('last')
+        : T('post');
       cd.innerHTML = pill(msg);
     }
   }

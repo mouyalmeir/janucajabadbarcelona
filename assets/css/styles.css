@@ -1170,3 +1170,44 @@ body.nb-on .scroll-hint { visibility: hidden; }
   .hero-sticky .hero-copy > .rise, .hero-sticky .hero-perks, .hero-cta-btn, .hero-cta-btn::after, .cta-stage::before, .cta-stars i { animation: none !important; }
   .cta-stars { display: none; }
 }
+
+/* ==========================================================================
+   Idiomas: selector (desplegable en el ordenador, fila de tres en el menú del móvil)
+   ========================================================================== */
+.lang { position: relative; margin-left: 8px; }
+.lang-btn { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px 0 10px; border-radius: 999px; cursor: pointer;
+  background: rgba(255,255,255,.04); border: 1px solid var(--line-soft); color: var(--muted); font: 650 .78rem/1 var(--font-body); letter-spacing: .08em;
+  transition: color .2s, background .2s, border-color .2s; }
+.lang-btn svg { width: 17px; height: 17px; }
+.lang-btn:hover, .lang.open .lang-btn { color: var(--cream); background: rgba(255,255,255,.08); border-color: var(--line); }
+.lang-list { position: absolute; right: 0; top: calc(100% + 10px); z-index: 60; min-width: 172px; margin: 0; padding: 6px; list-style: none;
+  background: rgba(10, 15, 40, .98); border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 18px 40px -12px rgba(0,0,0,.6);
+  opacity: 0; visibility: hidden; transform: translateY(-6px); transition: opacity .18s, transform .18s, visibility 0s .18s; }
+.lang.open .lang-list { opacity: 1; visibility: visible; transform: none; transition: opacity .18s, transform .18s, visibility 0s; }
+.nav .lang-list a { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; font-size: .92rem; color: var(--cream); background: none; }
+.nav .lang-list a b { min-width: 22px; font-size: .7rem; letter-spacing: .08em; color: var(--gold); }
+.nav .lang-list a:hover { background: rgba(255,255,255,.07); color: var(--cream); }
+.nav .lang-list a[aria-current="true"] { background: rgba(242,196,109,.12); color: var(--gold-hi); }
+.nav .lang-list a[aria-current="true"]::after { content: ""; width: 7px; height: 7px; margin-left: auto; border-radius: 50%; background: var(--gold); box-shadow: 0 0 8px var(--flame); }
+@media (max-width: 1120px) {
+  .lang { order: 99; margin: 12px 0 0; padding-top: 14px; border-top: 1px solid var(--line-soft); }
+  .lang-btn { display: none; }
+  .lang-list { position: static; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; min-width: 0; padding: 0;
+    background: none; border: 0; box-shadow: none; opacity: 1; visibility: visible; transform: none; transition: none; }
+  .nav .lang-list a { justify-content: center; padding: 11px 6px; border-radius: 12px; border: 1px solid var(--line-soft); font-size: .92rem; color: var(--muted); }
+  .nav .lang-list a b { display: none; }
+  .nav .lang-list a[aria-current="true"] { border-color: var(--gold); color: var(--gold-hi); }
+  .nav .lang-list a[aria-current="true"]::after { display: none; }
+}
+.site-footer .foot-lang { display: flex; flex-wrap: wrap; gap: 6px 16px; }
+.site-footer .foot-lang a { color: var(--muted); text-decoration: none; }
+.site-footer .foot-lang a:hover, .site-footer .foot-lang a[aria-current="true"] { color: var(--gold-hi); }
+@media print { .lang, .foot-lang { display: none !important; } }
+
+/* Textos que pone el CSS, en cada idioma */
+:lang(ca) .sched tr.today .n::after { content: "Avui"; }
+:lang(en) .sched tr.today .n::after { content: "Today"; }
+@media (max-width: 640px) {
+  :lang(ca) .sched td:last-child::before { content: "Benediccions "; }
+  :lang(en) .sched td:last-child::before { content: "Blessings "; }
+}

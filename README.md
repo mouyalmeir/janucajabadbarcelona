@@ -12,6 +12,7 @@ Web estática (HTML, CSS y JavaScript, sin dependencias): se puede alojar en cua
 | El pie de página | `src/partes/pie.html` |
 | Metadatos, iconos y fuentes del `<head>` | `src/partes/cabeza.html` |
 | Estilos | `assets/css/styles.css` |
+| Textos de la web en catalán e inglés | ver «Idiomas», más abajo |
 
 Después de tocar algo dentro de `src/`, regenera las páginas desde la carpeta del proyecto:
 
@@ -21,10 +22,23 @@ node src/construir.js
 
 Los `.html` de la raíz se generan solos: no los edites a mano, porque se sobrescriben.
 
+### Idiomas
+
+La web está en **español** (raíz: `/historia`), **catalán** (`/ca/historia`) e **inglés** (`/en/historia`). Cada página tiene un selector de idioma en la cabecera, en el menú del móvil y en el pie.
+
+| Quiero cambiar… | Español | Catalán | Inglés |
+| --- | --- | --- | --- |
+| El texto de una página | `src/paginas/<página>.html` | `src/paginas/ca/<página>.html` | `src/paginas/en/<página>.html` |
+| Menú, cabecera y pie | `src/idiomas.js` | `src/idiomas.js` | `src/idiomas.js` |
+| Eventos, noches, bendiciones y preguntas | `assets/js/data.js` | `assets/js/data-ca.js` | `assets/js/data-en.js` |
+| Textos que escriben los scripts (agenda, janukiá, dréidel…) | `assets/js/textos.js` | `assets/js/textos.js` | `assets/js/textos.js` |
+
+Si cambias un texto en español, cámbialo también en las otras dos versiones. Las fechas, horas, lugares y enlaces de los eventos solo están en `data.js`: los archivos `data-ca.js` y `data-en.js` traducen los textos.
+
 ### Otros generadores
 
 - `node src/partes/generar-ilustraciones.js` vuelve a dibujar las ilustraciones de los encendidos (`assets/img/ev-*.svg`).
-- La imagen para compartir (`assets/img/compartir.jpg`) se hace desde `src/partes/compartir.html`. Dentro de ese archivo están las instrucciones.
+- La imagen para compartir (`assets/img/compartir.jpg`, y `compartir-ca.jpg` / `compartir-en.jpg`) se hace desde `src/partes/compartir.html`. Dentro de ese archivo están las instrucciones.
 
 ### Dominio
 

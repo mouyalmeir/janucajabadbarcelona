@@ -22,6 +22,12 @@ function archivo(ruta) {
 }
 
 http.createServer((req, res) => {
+  // /ca → /ca/ (como GitHub Pages), para que los enlaces relativos de la carpeta funcionen
+  const [camino, consulta] = req.url.split('?');
+  const carpeta = path.normalize(path.join(RAIZ, decodeURIComponent(camino)));
+  if (!camino.endsWith('/') && carpeta.startsWith(RAIZ) && fs.existsSync(carpeta) && fs.statSync(carpeta).isDirectory()) {
+    res.writeHead(301, { Location: camino + '/' + (consulta ? '?' + consulta : '') }); res.end(); return;
+  }
   const f = archivo(req.url);
   if (!f) { res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' }); res.end('No encontrado'); return; }
   res.writeHead(200, { 'Content-Type': TIPOS[path.extname(f)] || 'application/octet-stream', 'Cache-Control': 'no-cache' });
