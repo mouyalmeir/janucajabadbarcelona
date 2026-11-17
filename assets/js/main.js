@@ -320,21 +320,6 @@
       nextEv.start + ' h · ' + esc(nextEv.short || nextEv.place) + '</span>');
   })();
 
-  /* ---------- Primera vista: los encendidos ya se ven al entrar ---------- */
-  // En la portada, los enlaces llevan a cada encendido de la agenda; en el resto, a su ficha
-  var onHome = !!$('.hero-scroll');
-  function evHref(ev) { return onHome ? '#ag-' + ev.id : 'eventos#' + ev.id; }
-
-  // Móvil y tableta: fila compacta bajo la cuenta atrás (fecha + lugar)
-  $$('[data-hero-events]').forEach(function (h) {
-    h.innerHTML = '<div class="he-list">' + D.events.map(function (ev) {
-      var f = flags[ev.id], p = D.parse(ev.date);
-      return '<a class="he-item' + (f.past ? ' is-past' : '') + (f.next ? ' is-next' : '') + '" href="' + evHref(ev) + '">' +
-        '<span class="he-date">' + D.weekday(ev.date).slice(0, 3) + ' <b>' + p.d + '</b></span>' +
-        '<span class="he-place">' + esc(ev.short || ev.city) + '</span></a>';
-    }).join('') + '</div>';
-  });
-
   // Portada: chispas doradas que llegan desde fuera hasta el botón de los encendidos
   // justo antes de que aparezca (el botón entra con CSS, así se ve aunque falle esto)
   (function () {

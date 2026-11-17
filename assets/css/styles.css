@@ -1075,38 +1075,16 @@ body.nb-on .scroll-hint { visibility: hidden; }
 @media (max-width: 560px) { .tap-hint span { padding: 5px 10px; font-size: .72rem; } }
 @media (prefers-reduced-motion: reduce) { .tap-hint span { animation: none; } }
 
-/* ==========================================================================
-   v5 · Primera vista: los encendidos se ven al entrar
-   ========================================================================== */
-/* ---------- Móvil y tableta: fila de encendidos bajo la cuenta atrás ---------- */
-.hero-events { display: none; }
-@media (max-width: 1120px) {
-  .hero-events { display: block; width: 100%; max-width: 520px; margin: 14px auto 0; }
-  .he-head { margin: 0 0 7px; font-size: .64rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); }
-  .he-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
-  .he-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 7px 4px 8px; border-radius: 12px; line-height: 1.15;
-    background: rgba(6,10,27,.55); border: 1px solid rgba(242,196,109,.32); color: var(--cream); text-decoration: none; transition: border-color .2s, background .2s; }
-  .he-item:hover { color: var(--cream); border-color: var(--gold); }
-  .he-date { font-size: .6rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
-  .he-date b { margin-left: 1px; font-family: var(--font-display); font-size: 1.12rem; letter-spacing: 0; color: var(--gold-hi); font-feature-settings: "lnum" 1; }
-  .he-place { font-size: .7rem; font-weight: 600; text-align: center; color: var(--cream); }
-  .he-item.is-next { border-color: var(--gold); background: rgba(242,196,109,.14); box-shadow: 0 0 22px -8px rgba(255,171,46,.85); }
-  .he-item.is-past { opacity: .5; }
-}
 /* Móviles de pantalla baja: hero más compacto para que la janukiá siga viéndose entera */
 @media (max-width: 700px) and (max-height: 760px) {
-  .hero-logo { display: none; }
   .hero-copy { padding-top: 14px; }
   .hero-copy .hero-meta { margin-top: 10px; }
-  .hero-events { margin-top: 10px; }
   .hero-sticky .sill { height: 5vh; height: 5svh; }
   .hero-sticky .skyline { bottom: calc(5svh - 3px); }
   .scroll-hint { display: none; }
 }
 @media (min-width: 701px) and (max-width: 1120px) and (max-height: 820px) {
-  .hero-logo { display: none; }
   .hero-copy .hero-meta { margin-top: 10px; }
-  .hero-events { margin-top: 10px; }
 }
 
 /* ---------- Hero: botón «Descubre nuestros encendidos» y lo que hay en ellos ---------- */
@@ -1122,7 +1100,6 @@ body.nb-on .scroll-hint { visibility: hidden; }
 @media (prefers-reduced-motion: reduce) { .hero-cta-btn svg { animation: none; } }
 @media (max-width: 1120px) {
   .hero-cta { margin-top: 14px; gap: 8px; }
-  .hero-events { margin-top: 12px; }
 }
 @media (max-width: 700px) {
   .hero-copy .lede { font-size: .92rem; }
@@ -1153,7 +1130,6 @@ body.nb-on .scroll-hint { visibility: hidden; }
 .hero-sticky .hero-copy > [data-countdown].cd-in { animation: cdIn .7s cubic-bezier(.2,.9,.3,1.2) both; }
 .hero-sticky .hero-copy > .hero-cta.rise { animation: none; }
 .hero-sticky .hero-perks { animation: heroUp .7s cubic-bezier(.25,.6,.3,1) 1.8s both; }
-.hero-sticky .hero-copy > .hero-events.rise { animation-duration: .7s; animation-delay: 1.95s; }
 
 /* Botón de los encendidos: llega con chispas que convergen, un destello y una onda de luz */
 .cta-stage { position: relative; display: inline-block; }
