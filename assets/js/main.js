@@ -327,7 +327,7 @@
 
   // Móvil y tableta: fila compacta bajo la cuenta atrás (fecha + lugar)
   $$('[data-hero-events]').forEach(function (h) {
-    h.innerHTML = '<p class="he-head">Encendidos públicos · entrada libre</p><div class="he-list">' + D.events.map(function (ev) {
+    h.innerHTML = '<div class="he-list">' + D.events.map(function (ev) {
       var f = flags[ev.id], p = D.parse(ev.date);
       return '<a class="he-item' + (f.past ? ' is-past' : '') + (f.next ? ' is-next' : '') + '" href="' + evHref(ev) + '">' +
         '<span class="he-date">' + D.weekday(ev.date).slice(0, 3) + ' <b>' + p.d + '</b></span>' +

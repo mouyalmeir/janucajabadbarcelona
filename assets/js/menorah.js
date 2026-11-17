@@ -527,7 +527,29 @@
   var sky = heroScene && heroScene.querySelector('.skyline');
   var hintEl = document.querySelector('.scroll-hint');
 
+  // Encaje del hero: la base de la janukiá siempre apoyada abajo, sin que la tape el texto.
+  // Mientras está reducida (antes de deslizar) la parte alta de su caja está vacía, así que
+  // la escena puede subir por detrás del texto; solo si aun así no cabe, se hace más pequeña.
+  var stickyEl = hero && hero.querySelector('.hero-sticky');
+  var heroSceneEl = heroStage && heroStage.closest('.menorah-scene');
+  function fitHero() {
+    if (!stickyEl || !copy || !heroSceneEl || reduce) return;
+    heroStage.style.width = ''; heroStage.style.marginLeft = ''; heroSceneEl.style.marginTop = '';
+    var s0 = window.innerWidth < 700 ? .84 : .72; // escala inicial (la misma que en el efecto)
+    var room = stickyEl.clientHeight - (copy.offsetTop + copy.offsetHeight);
+    var below = heroSceneEl.offsetHeight - heroStage.offsetHeight; // alféizar
+    var maxH = (room - below - 14) / (s0 - .07); // altura de caja con la que lo visible no toca el texto
+    if (maxH > 0 && heroStage.offsetHeight > maxH) {
+      heroStage.style.width = Math.max(240, Math.round(maxH * 1.6)) + 'px';
+      heroStage.style.marginLeft = 'auto';
+    }
+    var free = room - heroSceneEl.offsetHeight;
+    if (free < 0) heroSceneEl.style.marginTop = free + 'px';
+  }
   if (hero && heroM && !reduce) {
+    fitHero();
+    window.addEventListener('load', fitHero);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitHero);
     var ticking = false, sticky = hero.querySelector('.hero-sticky'), top0 = 0, range = 1;
     // Tramo en el que el hero está fijo: el efecto empieza con el primer píxel de scroll y acaba justo al soltarse
     var measure = function () {
@@ -550,7 +572,7 @@
       if (p > .08) autoStart();
     };
     window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
-    window.addEventListener('resize', function () { measure(); update(); });
+    window.addEventListener('resize', function () { fitHero(); measure(); update(); });
     update();
     setTimeout(autoStart, 700); // si no se desliza, se enciende igualmente (el shamash, en ~2 s)
   } else {
