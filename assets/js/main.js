@@ -335,6 +335,26 @@
     }).join('') + '</div>';
   });
 
+  // Portada: chispas doradas que llegan desde fuera hasta el botón de los encendidos
+  // justo antes de que aparezca (el botón entra con CSS, así se ve aunque falle esto)
+  (function () {
+    var stage = $('.cta-stage');
+    if (!stage || window.scrollY > 40 || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+    setTimeout(function () {
+      var n = window.innerWidth < 700 ? 12 : 18;
+      for (var i = 0; i < n; i++) {
+        var sp = document.createElement('i');
+        var a = (i / n) * Math.PI * 2 + Math.random() * .5, r = (window.innerWidth < 700 ? 120 : 170) + Math.random() * 120;
+        sp.className = 'cta-spark';
+        sp.style.setProperty('--x', Math.round(Math.cos(a) * r) + 'px');
+        sp.style.setProperty('--y', Math.round(Math.sin(a) * r * .55) + 'px');
+        sp.style.animationDelay = (Math.random() * .2).toFixed(2) + 's';
+        stage.appendChild(sp);
+        setTimeout(function (x) { return function () { x.remove(); }; }(sp), 1400);
+      }
+    }, 1150);
+  })();
+
   // Ordenador: del botón «Eventos» baja una línea con los encendidos. En la portada se ve
   // durante la primera vista y se recoge al llegar a «Encendidos públicos»; en cualquier
   // página, se despliega al pasar el ratón por «Eventos».
@@ -390,7 +410,7 @@
     window.addEventListener('scroll', function () { if (isOpen || firstView) sync(); }, { passive: true });
     window.addEventListener('resize', function () { if (!wide.matches) close(); else if (isOpen) place(); });
     // se abre cuando la janukiá ya se ha encendido, para no robarle protagonismo
-    if (onHome && !location.hash) setTimeout(function () { firstView = true; sync(); }, 3800);
+    if (onHome && !location.hash) setTimeout(function () { firstView = true; sync(); }, 4400);
   })();
 
   /* ---------- Barra flotante: próximo encendido (todas las páginas salvo Eventos) ---------- */

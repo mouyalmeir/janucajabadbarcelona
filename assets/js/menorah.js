@@ -51,6 +51,7 @@
   function create(stage, opts) {
     var ui = opts.ui || null;
     var fast = !!opts.fast; // la del hero: el fueguito baja y enciende más deprisa
+    var fireFrom = opts.fireFrom || null; // punto de la página (px) del que sale el fueguito, si lo hay
 
     /* ----- SVG ----- */
     var svg = el('svg', ui
@@ -316,15 +317,32 @@
       var f = el('g', { class: 'spark-flame' }, g);
       el('path', { d: flamePath(0, 10, 9, 32), fill: 'url(#flameO)' }, f);
       el('path', { d: flamePath(0, 9, 4, 16), fill: 'url(#flameI)' }, f);
-      var x1 = shamash.x, y1 = shamash.top - 12, dur = fast ? 1100 : 1900, fired = false;
+      var x1 = shamash.x, y1 = shamash.top - 12, fired = false, from = null;
+      // ¿sale de un punto de la página? (p. ej. el botón de los encendidos): se pasa a coordenadas del dibujo
+      if (fireFrom && svg.getScreenCTM && svg.createSVGPoint) {
+        try {
+          var at = fireFrom(), m = svg.getScreenCTM();
+          if (at && m) { var pt = svg.createSVGPoint(); pt.x = at.x; pt.y = at.y; from = pt.matrixTransform(m.inverse()); }
+          if (from && !(from.y < y1 - 40)) from = null; // solo si está por encima de la janukiá
+        } catch (e) { from = null; }
+      }
+      var dur = from ? 1500 : (fast ? 1100 : 1900);
       function end() { if (fired) return; fired = true; if (g.parentNode) gFx.removeChild(g); cb(); }
-      g.animate([
+      var frames = from ? [
+        { transform: 'translate(' + from.x + 'px,' + from.y + 'px) scale(.35)', opacity: 0 },
+        { transform: 'translate(' + from.x + 'px,' + (from.y + 16) + 'px) scale(.75)', opacity: 1, offset: .14 },
+        { transform: 'translate(' + (from.x + (x1 - from.x) * .45 + 26) + 'px,' + (from.y + (y1 - from.y) * .45) + 'px) scale(.9)', offset: .48 },
+        { transform: 'translate(' + (x1 - 16) + 'px,' + (from.y + (y1 - from.y) * .8) + 'px) scale(.95)', offset: .78 },
+        { transform: 'translate(' + x1 + 'px,' + y1 + 'px) scale(.7)', opacity: 1 }
+      ] : [
         { transform: 'translate(' + (x1 - 6) + 'px,-70px) scale(.5)', opacity: 0 },
         { transform: 'translate(' + (x1 + 26) + 'px,-6px) scale(.8)', opacity: 1, offset: .22 },
         { transform: 'translate(' + (x1 - 22) + 'px,' + (y1 * .45) + 'px) scale(.9)', offset: .5 },
         { transform: 'translate(' + (x1 + 12) + 'px,' + (y1 * .78) + 'px) scale(.95)', offset: .76 },
         { transform: 'translate(' + x1 + 'px,' + y1 + 'px) scale(.7)', opacity: 1 }
-      ], { duration: dur, easing: 'cubic-bezier(.45,0,.35,1)', fill: 'forwards' }).onfinish = end;
+      ];
+      if (from && opts.onFire) opts.onFire();
+      g.animate(frames, { duration: dur, easing: 'cubic-bezier(.45,0,.35,1)', fill: 'forwards' }).onfinish = end;
       setTimeout(end, dur + 100);
     }
 
@@ -485,7 +503,21 @@
 
   /* ---------- Crear las janukiás ---------- */
   var $id = function (x) { return document.getElementById(x); };
-  var heroM = heroStage ? create(heroStage, { fast: true }) : null;
+  // En la portada, la llama nace del botón de los encendidos y baja hasta el shamash
+  var ctaBtn = document.querySelector('.hero-cta-btn');
+  var heroM = heroStage ? create(heroStage, {
+    fast: true,
+    fireFrom: ctaBtn ? function () {
+      var r = ctaBtn.getBoundingClientRect();
+      return r.width ? { x: r.left + r.width / 2, y: r.bottom - 10 } : null;
+    } : null,
+    onFire: function () {
+      var st = ctaBtn && (ctaBtn.closest('.cta-stage') || ctaBtn);
+      if (!st) return;
+      st.classList.remove('fire-out'); void st.offsetWidth; st.classList.add('fire-out');
+      setTimeout(function () { st.classList.remove('fire-out'); }, 1200);
+    }
+  }) : null;
   var toolM = toolStage ? create(toolStage, { ui: {
     status: $id('menorah-status'), picker: $id('night-picker'), panel: $id('night-panel'),
     next: $id('m-next'), all: $id('m-all'), reset: $id('m-reset')
@@ -574,7 +606,7 @@
     window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
     window.addEventListener('resize', function () { fitHero(); measure(); update(); });
     update();
-    setTimeout(autoStart, 1450); // justo cuando el texto ya se ha mostrado entero (si no se desliza antes)
+    setTimeout(autoStart, 2350); // justo al terminar de mostrarse lo último del hero (si no se desliza antes)
   } else {
     setTimeout(autoStart, 300);
   }
