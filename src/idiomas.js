@@ -2,7 +2,7 @@
    Idiomas de la web · Janucá 5787 · Jabad Barcelona
    Textos fijos de la cabecera, el menú y el pie en cada idioma.
    El contenido de cada página está en src/paginas/ (español), src/paginas/ca/
-   (catalán) y src/paginas/en/ (inglés).
+   (catalán), src/paginas/en/ (inglés) y src/paginas/he/ (hebreo, de derecha a izquierda).
    ========================================================================== */
 module.exports = {
   es: {
@@ -87,6 +87,34 @@ module.exports = {
       PIE_CONTACTO: 'Contact',
       PIE_COPY: '© 5787 · 2026 Chabad Lubavitch Barcelona',
       PIE_FOTOS: 'Recipe photos: Wikimedia Commons'
+    }
+  },
+  he: {
+    carpeta: 'he', html: 'he', dir: 'rtl', og: 'he_IL', nombre: 'עברית', corto: 'HE',
+    menu: {
+      'index.html': 'ראשי', 'historia.html': 'היסטוריה', 'como-encender.html': 'איך מדליקים',
+      'horarios.html': 'זמני הדלקה', 'bendiciones.html': 'ברכות', 'tradiciones.html': 'מנהגים',
+      'receta.html': 'מתכונים', 'eventos.html': 'אירועים'
+    },
+    t: {
+      SITIO: 'חנוכה תשפ״ז · חב״ד ברצלונה',
+      IMAGEN_ALT: 'חנוכה תשפ״ז עם חב״ד ברצלונה · הוסיפו אור',
+      SALTAR: 'דילוג לתוכן',
+      MARCA_ARIA: 'חנוכה תשפ״ז עם חב״ד ברצלונה: עמוד ראשי',
+      MARCA_ORG: 'חב״ד ברצלונה',
+      MARCA_TITULO: 'חנוכה תשפ״ז',
+      ABRIR_MENU: 'פתיחת התפריט',
+      MENU_ARIA: 'ראשי',
+      IDIOMA: 'שפה',
+      PIE_INICIO_ARIA: 'חב״ד ברצלונה: עמוד ראשי',
+      PIE_SC_ARIA: 'חב״ד סנט קוגט: הדלקה בסנט קוגט',
+      PIE_LEMA: 'הוסיפו אור · מיום שישי 4 עד שבת 12 בדצמבר 2026 · ברצלונה',
+      PIE_KIT: 'הזמינו ערכת חנוכה בחינם ←',
+      PIE_JANUCA: 'חנוכה',
+      PIE_SECCIONES: 'מדורים',
+      PIE_CONTACTO: 'יצירת קשר',
+      PIE_COPY: '© תשפ״ז · 2026 חב״ד ליובאוויטש ברצלונה',
+      PIE_FOTOS: 'צילומי המתכונים: Wikimedia Commons'
     }
   }
 };

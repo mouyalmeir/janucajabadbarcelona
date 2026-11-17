@@ -448,7 +448,7 @@
   /* ---------- Bendiciones y cantos en diálogo ---------- */
   // Secuencia: 1.ª, 2.ª y 3.ª bendición → Hanerot Halalu → Mizmor Shir → Maoz Tzur
   var TEXTS = D.blessings.map(function (b) {
-    return { key: String(b.n), kicker: T('blessKicker', { ord: D.ord[b.n], when: b.when }), name: b.name, he: b.he, tr: b.tr, es: b.es };
+    return { key: String(b.n), kicker: T('blessKicker', { ord: D.ord[b.n], n: b.n, when: b.when }), name: b.name, he: b.he, tr: b.tr, es: b.es };
   }).concat((D.songs || []).map(function (s) {
     return { key: s.key, kicker: s.when, name: s.name, he: s.he, tr: s.tr, es: s.es };
   }));
@@ -462,11 +462,11 @@
       '<div class="modal-body">' +
         (t.he ? '<p class="bless-he" lang="he" dir="rtl">' + t.he + '</p>' : '') +
         (t.tr ? '<p class="bless-tr">' + t.tr + '</p>' : '') +
-        '<p class="bless-es' + (t.he || t.tr ? '' : ' bless-only') + '">' + t.es + '</p>' +
+        (t.es ? '<p class="bless-es' + (t.he || t.tr ? '' : ' bless-only') + '">' + t.es + '</p>' : '') +
       '</div>' +
       '<div class="modal-foot bless-nav">' +
-        (prev ? '<button class="btn btn-ghost btn-sm" type="button" data-bgo="' + (i - 1) + '">← ' + prev.name + '</button>' : '<span></span>') +
-        (next ? '<button class="btn btn-gold btn-sm" type="button" data-bgo="' + (i + 1) + '">' + next.name + ' →</button>' : '<button class="btn btn-ghost btn-sm" type="button" data-close>' + T('close') + '</button>') +
+        (prev ? '<button class="btn btn-ghost btn-sm" type="button" data-bgo="' + (i - 1) + '">' + T('arrPrev') + ' ' + prev.name + '</button>' : '<span></span>') +
+        (next ? '<button class="btn btn-gold btn-sm" type="button" data-bgo="' + (i + 1) + '">' + next.name + ' ' + T('arrNext') + '</button>' : '<button class="btn btn-ghost btn-sm" type="button" data-close>' + T('close') + '</button>') +
       '</div>';
   }
   function lockPage(on) { document.documentElement.classList.toggle('modal-open', on); }

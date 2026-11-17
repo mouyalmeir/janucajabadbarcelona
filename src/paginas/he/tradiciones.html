@@ -1,0 +1,67 @@
+{"title": "מנהגי חנוכה: סביבון ודמי חנוכה · חב״ד ברצלונה", "description": "משחק הסביבון וחוקיו, עם סביבון שאפשר לסובב באתר, והמשמעות של דמי חנוכה.", "scripts": ["dreidel.js"], "hebrew": true}
+    <header class="page-hero">
+      <div class="wrap">
+        <h1>מנהגי <em>חנוכה</em></h1>
+        <p>משחק שנולד מאומץ, ומטבעות שמלמדים לתת.</p>
+      </div>
+    </header>
+
+    <div class="wrap">
+      <article class="prose">
+        <h2 class="reveal">משחק הסביבון <em>(דריידל)</em></h2>
+        <p class="reveal">כשהמלך אנטיוכוס אסר על לימוד התורה, ילדים יהודים נפגשו בסתר כדי ללמוד. כשסיור יווני התקרב, הם החביאו את המגילות והוציאו סביבונים, כאילו הם משחקים. לזכר האומץ שלהם אנחנו משחקים ב<strong>סביבון</strong> (ביידיש <em>דריידל</em>, מלשון ״לסובב״), שעל ארבע פאותיו האותיות <strong>נ, ג, ה, ש</strong>: ראשי התיבות של <em>נס גדול היה שם</em>.</p>
+
+        <div class="card dreidel-play reveal">
+          <div class="dreidel-box">
+            <svg id="dreidel" viewBox="0 0 160 220" aria-hidden="true">
+              <defs>
+                <linearGradient id="dg" x1="0" x2="1"><stop offset="0" stop-color="#8a5a18"/><stop offset=".35" stop-color="#ffe6a6"/><stop offset=".6" stop-color="#f2c46d"/><stop offset="1" stop-color="#7a4d12"/></linearGradient>
+                <linearGradient id="dh" x1="0" x2="1"><stop offset="0" stop-color="#c98a2e"/><stop offset=".5" stop-color="#fff1c1"/><stop offset="1" stop-color="#9c6a1f"/></linearGradient>
+              </defs>
+              <rect x="70" y="4" width="20" height="44" rx="8" fill="url(#dh)"/>
+              <g id="dreidel-face">
+                <path d="M24 46h112a6 6 0 0 1 6 6v86c0 6-2 10-6 14l-48 58c-4 5-12 5-16 0l-48-58c-4-4-6-8-6-14V52a6 6 0 0 1 6-6z" fill="url(#dg)"/>
+                <text id="dreidel-letter" x="80" y="118" text-anchor="middle" dominant-baseline="central" font-size="72" font-family="'Times New Roman', serif" fill="#1d1406">נ</text>
+              </g>
+            </svg>
+          </div>
+          <div>
+            <div class="pot" aria-live="polite">
+              <div><small>קופה</small><b id="pot-coins">10</b></div>
+              <div><small>המטבעות שלכם</small><b id="my-coins">10</b></div>
+            </div>
+            <p class="dreidel-result" id="dreidel-result" aria-live="polite">אתם מתחילים עם 10 מטבעות, ויש 10 בקופה. סובבו את הסביבון!</p>
+            <div class="page-tools" style="justify-content:flex-start;margin:0 0 6px">
+              <button class="btn btn-gold" id="dreidel-spin" type="button">לסובב את הסביבון</button>
+              <button class="btn btn-ghost" id="dreidel-reset" type="button">להתחיל מחדש</button>
+            </div>
+            <ul class="letters" id="letters">
+              <li data-l="נ"><span class="he" lang="he">נ</span><span><strong>נון · <em>נס</em></strong><small>כלום: לא שמים ולא לוקחים.</small></span></li>
+              <li data-l="ג"><span class="he" lang="he">ג</span><span><strong>גימל · <em>גדול</em></strong><small>הכול: לוקחים את כל הקופה.</small></span></li>
+              <li data-l="ה"><span class="he" lang="he">ה</span><span><strong>הא · <em>היה</em></strong><small>חצי: לוקחים חצי מהקופה.</small></span></li>
+              <li data-l="ש"><span class="he" lang="he">ש</span><span><strong>שין · <em>שם</em></strong><small>שים: מוסיפים מטבע לקופה.</small></span></li>
+            </ul>
+          </div>
+        </div>
+
+        <h3 class="reveal">איך משחקים?</h3>
+        <p class="reveal">כל שחקן שם בקופה המשותפת אותו מספר של מטבעות שוקולד, אגוזים או אסימונים. בתורו, כל אחד מסובב את הסביבון ועושה מה שאומרת האות שנשארת למעלה.</p>
+
+        <div class="callout reveal">
+          <p class="callout-title">הידעתם?</p>
+          <p>בארץ ישראל על הסביבונים מופיעה האות <strong>פ</strong> במקום ש: <em>נס גדול היה <strong>פה</strong></em>.</p>
+        </div>
+
+        <h2 class="reveal">דמי חנוכה <em>(חנוכה געלט)</em></h2>
+        <p class="reveal">נוהגים לתת לילדים כסף או מטבעות שוקולד (<em>דמי חנוכה</em>) בחג. למילה <em>חנוכה</em> אותו שורש כמו למילה <em>חינוך</em>. המנהג נועד לעודד את הילדים ללמוד תורה וללמד אותם מגיל צעיר את ערך ה<strong>צדקה</strong>, כשהם מקדישים חלק מכספם לעזרה לאחרים.</p>
+        <figure class="figure reveal">
+          <img src="assets/img/guelt-tzedaka.webp" alt="קופת צדקה ליד מטבעות שוקולד וחנוכייה דולקת" width="960" height="717" loading="lazy" decoding="async">
+          <figcaption>חלק מדמי החנוכה לקופת הצדקה: כך מחנכים לתת.</figcaption>
+        </figure>
+      </article>
+
+      <nav class="pager" aria-label="עמודים">
+        <a href="bendiciones.html"><small>→ הקודם</small><b>ברכות</b></a>
+        <a class="next" href="receta.html"><small>הבא ←</small><b>מתכוני חנוכה</b></a>
+      </nav>
+    </div>

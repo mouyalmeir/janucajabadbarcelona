@@ -17,7 +17,7 @@ const URLS_LIMPIAS = true;
 // Súbelo (+1) cada vez que cambies assets/img/compartir.jpg, para que WhatsApp y las redes no usen la copia vieja
 const VERSION_IMAGEN = 2;
 
-// Idiomas: el español va en la raíz; el catalán en /ca/ y el inglés en /en/ (src/idiomas.js)
+// Idiomas: el español va en la raíz; el catalán en /ca/, el inglés en /en/ y el hebreo en /he/ (src/idiomas.js)
 const IDIOMAS = require('./idiomas');
 const LENGUAS = Object.keys(IDIOMAS);
 
@@ -59,7 +59,7 @@ function pagina(lg, archivo, meta, cuerpo) {
   const cta = MENU.find((m) => m[1] === 'nav-cta');
   const headCta = cta && cta[0] !== archivo ? `<a class="head-cta" href="${cta[0]}"><span class="nav-lbl">${L.menu[cta[0]]}</span></a>` : '';
   const menuPie = MENU.map(([href]) => `<a href="${href}">${L.menu[href]}</a>`).join('\n            ');
-  // Selector de idioma: desplegable en el ordenador; fila de tres en el menú del móvil
+  // Selector de idioma: desplegable en el ordenador; fila de cuatro en el menú del móvil
   const opciones = LENGUAS.map((x) => `<li><a href="${enlaceA(lg, x, archivo)}" hreflang="${IDIOMAS[x].html}" lang="${IDIOMAS[x].html}"` +
     (x === lg ? ' aria-current="true"' : '') + `><b>${IDIOMAS[x].corto}</b>${IDIOMAS[x].nombre}</a></li>`).join('');
   const idiomas = `<div class="lang" data-lang>\n          <button class="lang-btn" type="button" aria-expanded="false" aria-controls="lang-list" aria-label="${L.t.IDIOMA}: ${L.nombre}">` +
@@ -70,7 +70,7 @@ function pagina(lg, archivo, meta, cuerpo) {
   const scripts = ['data.js', 'textos.js'].concat(datosIdioma, ['main.js'], meta.scripts || [])
     .map((s) => `<script src="assets/js/${s}" defer></script>`).join('\n  ');
   const fuentes = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600' +
-    (meta.hebrew ? '&family=Frank+Ruhl+Libre:wght@400;500' : '') + '&display=swap';
+    (lg === 'he' ? '&family=Frank+Ruhl+Libre:wght@400..700' : meta.hebrew ? '&family=Frank+Ruhl+Libre:wght@400;500' : '') + '&display=swap';
   const url = DOMINIO ? urlDe(lg, archivo) : '';
   const alternativas = DOMINIO ? LENGUAS.map((x) => `<link rel="alternate" hreflang="${IDIOMAS[x].html}" href="${urlDe(x, archivo)}">`)
     .concat(`<link rel="alternate" hreflang="x-default" href="${urlDe('es', archivo)}">`).join('\n  ') : '';
@@ -88,7 +88,7 @@ function pagina(lg, archivo, meta, cuerpo) {
   })).replace(/\n\s*\n/g, '\n');
 
   const html = `<!doctype html>
-<html lang="${L.html}"${L.carpeta ? ' data-base="../"' : ''}>
+<html lang="${L.html}"${L.dir ? ` dir="${L.dir}"` : ''}${L.carpeta ? ' data-base="../"' : ''}>
 <head>
 ${cabeza.trimEnd()}
 </head>

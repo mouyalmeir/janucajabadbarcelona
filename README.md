@@ -24,21 +24,23 @@ Los `.html` de la raíz se generan solos: no los edites a mano, porque se sobres
 
 ### Idiomas
 
-La web está en **español** (raíz: `/historia`), **catalán** (`/ca/historia`) e **inglés** (`/en/historia`). Cada página tiene un selector de idioma en la cabecera, en el menú del móvil y en el pie.
+La web está en **español** (raíz: `/historia`), **catalán** (`/ca/historia`), **inglés** (`/en/historia`) y **hebreo** (`/he/historia`, de derecha a izquierda). Cada página tiene un selector de idioma en la cabecera, en el menú del móvil y en el pie.
 
-| Quiero cambiar… | Español | Catalán | Inglés |
-| --- | --- | --- | --- |
-| El texto de una página | `src/paginas/<página>.html` | `src/paginas/ca/<página>.html` | `src/paginas/en/<página>.html` |
-| Menú, cabecera y pie | `src/idiomas.js` | `src/idiomas.js` | `src/idiomas.js` |
-| Eventos, noches, bendiciones y preguntas | `assets/js/data.js` | `assets/js/data-ca.js` | `assets/js/data-en.js` |
-| Textos que escriben los scripts (agenda, janukiá, dréidel…) | `assets/js/textos.js` | `assets/js/textos.js` | `assets/js/textos.js` |
+| Quiero cambiar… | Español | Catalán | Inglés | Hebreo |
+| --- | --- | --- | --- | --- |
+| El texto de una página | `src/paginas/<página>.html` | `src/paginas/ca/<página>.html` | `src/paginas/en/<página>.html` | `src/paginas/he/<página>.html` |
+| Menú, cabecera y pie | `src/idiomas.js` | `src/idiomas.js` | `src/idiomas.js` | `src/idiomas.js` |
+| Eventos, noches, bendiciones y preguntas | `assets/js/data.js` | `assets/js/data-ca.js` | `assets/js/data-en.js` | `assets/js/data-he.js` |
+| Textos que escriben los scripts (agenda, janukiá, dréidel…) | `assets/js/textos.js` | `assets/js/textos.js` | `assets/js/textos.js` | `assets/js/textos.js` |
 
-Si cambias un texto en español, cámbialo también en las otras dos versiones. Las fechas, horas, lugares y enlaces de los eventos solo están en `data.js`: los archivos `data-ca.js` y `data-en.js` traducen los textos.
+Si cambias un texto en español, cámbialo también en las otras versiones. Las fechas, horas y enlaces de los eventos solo están en `data.js`: los archivos `data-ca.js`, `data-en.js` y `data-he.js` traducen los textos.
+
+El hebreo se lee de derecha a izquierda: las páginas de `/he/` llevan `dir="rtl"` y los ajustes de diseño están al final de `assets/css/styles.css` (bloque «Hebreo»). La janukiá y los esquemas no se invierten, porque izquierda y derecha son las reales.
 
 ### Otros generadores
 
 - `node src/partes/generar-ilustraciones.js` vuelve a dibujar las ilustraciones de los encendidos (`assets/img/ev-*.svg`).
-- La imagen para compartir (`assets/img/compartir.jpg`, y `compartir-ca.jpg` / `compartir-en.jpg`) se hace desde `src/partes/compartir.html`. Dentro de ese archivo están las instrucciones.
+- La imagen para compartir (`assets/img/compartir.jpg`, y `compartir-ca.jpg` / `compartir-en.jpg` / `compartir-he.jpg`) se hace desde `src/partes/compartir.html`. Dentro de ese archivo están las instrucciones.
 
 ### Dominio
 

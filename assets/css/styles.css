@@ -1172,7 +1172,7 @@ body.nb-on .scroll-hint { visibility: hidden; }
 }
 
 /* ==========================================================================
-   Idiomas: selector (desplegable en el ordenador, fila de tres en el menú del móvil)
+   Idiomas: selector (desplegable en el ordenador, fila de cuatro en el menú del móvil)
    ========================================================================== */
 .lang { position: relative; margin-left: 8px; }
 .lang-btn { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px 0 10px; border-radius: 999px; cursor: pointer;
@@ -1192,9 +1192,9 @@ body.nb-on .scroll-hint { visibility: hidden; }
 @media (max-width: 1120px) {
   .lang { order: 99; margin: 12px 0 0; padding-top: 14px; border-top: 1px solid var(--line-soft); }
   .lang-btn { display: none; }
-  .lang-list { position: static; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; min-width: 0; padding: 0;
+  .lang-list { position: static; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; min-width: 0; padding: 0;
     background: none; border: 0; box-shadow: none; opacity: 1; visibility: visible; transform: none; transition: none; }
-  .nav .lang-list a { justify-content: center; padding: 11px 6px; border-radius: 12px; border: 1px solid var(--line-soft); font-size: .92rem; color: var(--muted); }
+  .nav .lang-list a { justify-content: center; padding: 11px 4px; border-radius: 12px; border: 1px solid var(--line-soft); font-size: .92rem; color: var(--muted); }
   .nav .lang-list a b { display: none; }
   .nav .lang-list a[aria-current="true"] { border-color: var(--gold); color: var(--gold-hi); }
   .nav .lang-list a[aria-current="true"]::after { display: none; }
@@ -1207,7 +1207,83 @@ body.nb-on .scroll-hint { visibility: hidden; }
 /* Textos que pone el CSS, en cada idioma */
 :lang(ca) .sched tr.today .n::after { content: "Avui"; }
 :lang(en) .sched tr.today .n::after { content: "Today"; }
+:lang(he) .sched tr.today .n::after { content: "היום"; letter-spacing: 0; }
 @media (max-width: 640px) {
   :lang(ca) .sched td:last-child::before { content: "Benediccions "; }
   :lang(en) .sched td:last-child::before { content: "Blessings "; }
+  :lang(he) .sched td:last-child::before { content: "ברכות: "; }
 }
+
+/* ==========================================================================
+   Hebreo: de derecha a izquierda (las páginas de /he/ llevan dir="rtl")
+   La janukiá y los esquemas no se invierten: izquierda y derecha son las reales.
+   ========================================================================== */
+:lang(he) { --font-display: 'Frank Ruhl Libre', 'Times New Roman', serif; }
+:lang(he) h1 em, :lang(he) h2 em, :lang(he) .hero-sub, :lang(he) blockquote, :lang(he) .np-quote { font-style: normal; }
+:lang(he) .display, :lang(he) h1, :lang(he) h2, :lang(he) h3 { letter-spacing: 0; }
+:lang(he) .eyebrow, :lang(he) .brand small, :lang(he) .tc-chip, :lang(he) .ev-badge, :lang(he) .ag-tag, :lang(he) .countdown span,
+:lang(he) .ev-kicker, :lang(he) .fact small, :lang(he) .np-card h4, :lang(he) .ag-org small, :lang(he) .ev-org small, :lang(he) .nb-txt small { letter-spacing: 0; }
+[dir="rtl"] svg { direction: ltr; }
+[dir="rtl"] .skip { left: auto; right: 16px; }
+[dir="rtl"] .nav a.nav-cta { margin-left: 0; margin-right: 6px; }
+[dir="rtl"] .lang { margin-left: 0; margin-right: 8px; }
+[dir="rtl"] .lang-list { right: auto; left: 0; }
+[dir="rtl"] .nav .lang-list a[aria-current="true"]::after { margin-left: 0; margin-right: auto; }
+[dir="rtl"] .ev-badge { left: auto; right: 22px; }
+[dir="rtl"] .ev-media .ev-badge, [dir="rtl"] .ag-art .ev-badge { right: 12px; }
+[dir="rtl"] .ev-cal-menu { left: auto; right: 0; }
+[dir="rtl"] .ev-cal-menu a, [dir="rtl"] .ev-cal-menu button { text-align: right; }
+[dir="rtl"] .prose ul, [dir="rtl"] .prose ol { padding-left: 0; padding-right: 1.2em; }
+[dir="rtl"] .callout { border-left: 1px solid var(--line); border-right: 3px solid var(--gold); }
+[dir="rtl"] .steps li { padding: 16px 62px 16px 18px; }
+[dir="rtl"] .steps li::before { left: auto; right: 16px; }
+[dir="rtl"] .sched th, [dir="rtl"] .sched td { text-align: right; }
+[dir="rtl"] .sched tr.today .n::after { margin-left: 0; margin-right: 8px; }
+[dir="rtl"] .dots { flex-direction: row; margin-right: 0; margin-left: 6px; } /* las velas, como en la janukiá: la 1.ª a la derecha */
+[dir="rtl"] .pager .next { margin-left: 0; margin-right: auto; text-align: left; }
+[dir="rtl"] .night-panel { text-align: right; }
+[dir="rtl"] .ev-media .ev-date { left: auto; right: 16px; }
+[dir="rtl"] .ev-chip { right: auto; left: 12px; }
+[dir="rtl"] .ev-credit { right: auto; left: 12px; }
+[dir="rtl"] .ev-city { right: auto; left: 12px; }
+[dir="rtl"] .modal-in h3 { padding-right: 0; padding-left: 36px; }
+[dir="rtl"] .modal-close { right: auto; left: 14px; }
+[dir="rtl"] .modal-in .eyebrow { padding-right: 0; padding-left: 46px; }
+[dir="rtl"] .bless-modal .modal-head .eyebrow { padding-left: 0; }
+[dir="rtl"] .faq summary { padding: 16px 0 16px 32px; }
+[dir="rtl"] .faq summary::after { right: auto; left: 0; }
+[dir="rtl"] .story::before { left: auto; right: 11px; }
+[dir="rtl"] .story li { padding: 0 44px 22px 0; }
+[dir="rtl"] .story li::before { left: auto; right: 4px; }
+[dir="rtl"] .blessing-list button svg { margin-left: 0; margin-right: auto; }
+[dir="rtl"] .filter-bar a.is-active::before { margin-right: 0; margin-left: 7px; }
+[dir="rtl"] .ev-org.no-logo { padding-left: 0; padding-right: 16px; }
+[dir="rtl"] .fact .ev-soon { margin-left: 0; margin-right: 6px; }
+[dir="rtl"] .agenda::before { left: auto; right: calc(var(--leaf) / 2 - 1px); }
+[dir="rtl"] .ag-time small { margin-left: 0; margin-right: 2px; }
+[dir="rtl"] .ag-art .ev-chip { left: auto; right: 12px; }
+[dir="rtl"] .ag-tag { margin-left: 0; margin-right: 4px; }
+[dir="rtl"] .nb-go { margin-left: 0; margin-right: auto; }
+[dir="rtl"] .hero-perks li + li::before { margin-right: 0; margin-left: 10px; }
+/* Flechas «adelante»: apuntan a la izquierda */
+[dir="rtl"] .tcard .go svg, [dir="rtl"] .nb-go svg, [dir="rtl"] .center-actions .btn svg, [dir="rtl"] .blessing-list button svg { transform: scaleX(-1); }
+[dir="rtl"] .tcard:hover .go svg { transform: scaleX(-1) translateX(5px); }
+[dir="rtl"] .nb-link:hover .nb-go svg { transform: scaleX(-1) translateX(2px); }
+@media (max-width: 1120px) {
+  [dir="rtl"] .head-cta { margin-left: 0; margin-right: auto; }
+  [dir="rtl"] .nav a.nav-cta { margin: 4px 0 10px; text-align: right; }
+  [dir="rtl"] .lang { margin: 12px 0 0; }
+}
+@media (max-width: 980px) { [dir="rtl"] .ag-more .ev-cal-menu { left: 0; right: auto; } }
+@media (max-width: 700px) { [dir="rtl"] .hero-perks li + li::before { margin-left: 6px; } }
+[dir="rtl"] .ag-art { border-radius: 0 23px 23px 0; }
+@media (max-width: 980px) { [dir="rtl"] .ag-art { border-radius: 0 23px 0 0; } }
+@media (max-width: 640px) {
+  [dir="rtl"] .ag-art { border-radius: 19px 19px 0 0; }
+  [dir="rtl"] .ag-actions .ev-soon { right: auto; left: 12px; }
+  [dir="rtl"] .ag-time small { margin: 2px 0 0; }
+}
+/* Teléfonos y correos: siempre de izquierda a derecha, también dentro de texto en hebreo */
+[dir="rtl"] [data-contact] a { direction: ltr; unicode-bidi: isolate; }
+/* Miniaturas de la janukiá: no se invierten (las velas encendidas, a la derecha real) */
+[dir="rtl"] .ev-mini { direction: ltr; }

@@ -22,6 +22,8 @@
   // En catalán e inglés, el yidis se transcribe «Halb» (y en inglés, «Gimel»)
   if (D.lang !== 'es') L[2].word = 'Halb';
   if (D.lang === 'en') L[1].name = 'Gimel';
+  // En hebreo: el nombre de la letra y la palabra de «נס גדול היה שם»
+  if (D.lang === 'he') [['נון', 'נס'], ['גימל', 'גדול'], ['הא', 'היה'], ['שין', 'שם']].forEach(function (x, i) { L[i].name = x[0]; L[i].word = x[1]; });
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var spinning = false, pot = 10, mine = 10;
 

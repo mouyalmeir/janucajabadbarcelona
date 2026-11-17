@@ -1,9 +1,9 @@
 /* ==========================================================================
    Janucá 5787 · Jabad Barcelona — TEXTOS DE LA WEB EN CADA IDIOMA
    Lo que escriben los scripts (agenda, janukiá interactiva, dréidel, cuenta
-   atrás…) en español, catalán e inglés. El idioma sale de <html lang="…">.
+   atrás…) en español, catalán, inglés y hebreo. El idioma sale de <html lang="…">.
    {x} se sustituye por un dato (una fecha, una hora, un número…).
-   El contenido de los eventos y las noches traducido está en data-ca.js y data-en.js.
+   El contenido de los eventos y las noches traducido está en data-ca.js, data-en.js y data-he.js.
    ========================================================================== */
 (function () {
   'use strict';
@@ -79,6 +79,7 @@
         hintOrder: 'Se enciende de <b>izquierda a derecha</b>, empezando por <b>la vela nueva de hoy</b>, la que has añadido esta noche. Toca la vela marcada.',
         blessKicker: '{ord} bendición · {when}',
         close: 'Cerrar',
+        arrPrev: '←', arrNext: '→',
         // Dréidel
         dAnte: ' El bote se vació: todos ponen una moneda.',
         dNun: 'Nada: ni pones ni coges.',
@@ -247,6 +248,85 @@
         dSpinning: 'Spinning…',
         dNew: 'New game: 10 coins for you and 10 in the pot. Spin the dreidel!',
         langLabel: 'Language'
+      }
+    },
+    he: {
+      weekdays: ['יום ראשון', 'יום שני', 'יום שלישי', 'יום רביעי', 'יום חמישי', 'יום שישי', 'שבת'],
+      wdShort: ['א׳', 'ב׳', 'ג׳', 'ד׳', 'ה׳', 'ו׳', 'ש׳'],
+      months: ['ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני', 'יולי', 'אוגוסט', 'ספטמבר', 'אוקטובר', 'נובמבר', 'דצמבר'],
+      monShort: ['ינו׳', 'פבר׳', 'מרץ', 'אפר׳', 'מאי', 'יוני', 'יולי', 'אוג׳', 'ספט׳', 'אוק׳', 'נוב׳', 'דצמ׳'],
+      ord: ['', 'ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שביעי', 'שמיני'],
+      dateLong: function (wd, d, mon) { return wd + ', ' + d + ' ב' + mon; },
+      h: '',
+      t: {
+        and: ' ו־',
+        calendar: 'ליומן',
+        org: 'מארגנים',
+        icsOrg: 'מארגנים: {org}.',
+        icsBless: 'ברכות: {list}.',
+        icsPublic: 'הדלקה ציבורית: {title} ({org}), {time}.',
+        icsNight: '🕎 חנוכה · נר {ord} ({n} + שמש)',
+        evSuffix: ' · חנוכה',
+        shareText: '{title} · {date}, {time}. חנוכה עם חב״ד ברצלונה ✨',
+        finished: 'הסתיים', today: 'היום', tomorrow: 'מחר', inDays: 'בעוד {n} ימים',
+        nextLighting: 'ההדלקה הבאה',
+        night: 'לילה {ord}',
+        bigLighting: 'ההדלקה המרכזית',
+        atTime: '{date}, בשעה {time}',
+        directions: 'איך מגיעים',
+        share: 'שיתוף: {title}',
+        place: 'מקום', date: 'תאריך', time: 'שעה', transport: 'איך מגיעים',
+        navNext: 'הבא: {date} · {time} · {place}',
+        see: 'לפרטים',
+        arrived1: 'חנוכה הגיע! מדליקים את הנר הראשון · {time}',
+        arrivedN: 'הערב: נר {ord} של חנוכה · {time}',
+        during: 'היום: לילה {ord} של חנוכה · {time}',
+        last: 'היום האחרון של חנוכה: החג מסתיים הערב',
+        post: 'חנוכה תשפ״ז הסתיים. שהאור ימשיך ללוות אותנו!',
+        ariaTool: 'חנוכייה אינטראקטיבית: געו בנרות כדי להדליק אותם',
+        ariaDeco: 'חנוכייה עם נרות הלילה',
+        shamashAria: 'שמש (הנר שבו מדליקים)',
+        tapHere: 'געו כאן',
+        publicLighting: 'הדלקה ציבורית',
+        lastTag: 'אחרון',
+        candleOf: 'נר {i} מתוך {n}',
+        nightOf: 'ליל {hebrew} תשפ״ז',
+        howPlace: 'איך מסדרים',
+        candles1: 'נר אחד', candlesN: '{n} נרות',
+        place1: 'הנר של הלילה עומד בקצה הימני של החנוכייה. מדליקים את השמש, ובו מדליקים את הנר.',
+        placeN: 'בכל לילה מוסיפים נר משמאל. בעזרת השמש מדליקים קודם <strong>את הנר החדש, של הלילה</strong> (זה שהוספתם עכשיו), וממשיכים ימינה.',
+        blessSongs: 'ברכות ושירים',
+        tapOne: 'געו באחת כדי לקרוא או לשיר.',
+        addLight: 'הוסיפו אור',
+        quote: '״{x}״',
+        sAuto: '<strong>מדליקים את לילה {ord}…</strong><span>קודם השמש, ואחר כך משמאל לימין, החל מהנר של הלילה.</span>',
+        sStep0: '<strong>שלב 1 · מדליקים את השמש</strong><span>געו בנר האמצעי: בו מדליקים את כל השאר.</span>',
+        sBless: '<strong>מברכים את הברכות {list}</strong>',
+        sBless1: 'אחר כך מדליקים <b>את הנר של הלילה</b>, בקצה הימני.',
+        sBlessN: 'אחר כך מדליקים קודם <b>את הנר החדש, של הלילה</b>: זה שהוספתם הערב, השמאלי ביותר.',
+        sCandle: '<strong>נר {k} מתוך {n}</strong><span>ממשיכים משמאל לימין.</span>',
+        sDone: 'חנוכה שמח! ✦',
+        sDone1: 'הנר הראשון דולק',
+        sDoneN: '{n} הנרות של לילה {ord} דולקים',
+        sAfter: '. עכשיו אומרים <a href="bendiciones#hanerot" data-text="hanerot">הנרות הללו</a> ו<a href="bendiciones#mizmor" data-text="mizmor">מזמור שיר</a>, ושרים <a href="bendiciones#maoz-tzur" data-text="maoz">מעוז צור</a>.',
+        sAutoHint: ' לחצו על <b>״אדליק בעצמי״</b> כדי להדליק בעצמכם, נר אחר נר.',
+        btnShamash: 'להדליק את השמש',
+        btnNext: 'להדליק את הנר הבא',
+        notYet: 'עוד לא',
+        hintShamash: 'קודם מדליקים את <b>השמש</b>, הנר האמצעי והגבוה: בו מדליקים את כל השאר.',
+        hintOrder: 'מדליקים <b>משמאל לימין</b>, החל <b>בנר החדש של הלילה</b>, זה שהוספתם הערב. געו בנר המסומן.',
+        blessKicker: 'ברכה {n} · {when}',
+        close: 'סגירה',
+        arrPrev: '→', arrNext: '←',
+        dAnte: ' הקופה התרוקנה: כל אחד שם מטבע.',
+        dNun: 'כלום: לא שמים ולא לוקחים.',
+        dGimel: 'הכול! לוקחים {x} מהקופה.', dGimel1: 'את המטבע היחיד', dGimelN: 'את כל {n} המטבעות',
+        dHei: 'חצי: לוקחים {n} {coins}.', coin: 'מטבע', coins: 'מטבעות',
+        dShin: 'שים: מוסיפים מטבע לקופה.',
+        dBroke: ' נגמרו לכם המטבעות: התחילו מחדש כדי להמשיך לשחק!',
+        dSpinning: 'מסתובב…',
+        dNew: 'משחק חדש: 10 מטבעות לכם ו־10 בקופה. סובבו את הסביבון!',
+        langLabel: 'שפה'
       }
     }
   };

@@ -5,11 +5,11 @@
        --window-size=1200,630 --virtual-time-budget=5000 --screenshot=compartir.png \
        http://localhost:8787/src/partes/compartir.html
      y después: sips -s format jpeg -s formatOptions 82 compartir.png --out assets/img/compartir.jpg
-     En catalán o inglés, añade ?lang=ca o ?lang=en a la dirección y guárdala como compartir-ca.jpg / compartir-en.jpg -->
+     En catalán, inglés o hebreo, añade ?lang=ca, ?lang=en o ?lang=he a la dirección y guárdala como compartir-ca.jpg / compartir-en.jpg / compartir-he.jpg -->
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&display=block">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Frank+Ruhl+Libre:wght@500..700&display=block">
 <style>
   html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
   body {
@@ -38,6 +38,9 @@
   h1 { margin: 0; font-family: Fraunces, Georgia, serif; font-weight: 600; font-size: 96px; line-height: .95; letter-spacing: -2px; font-variation-settings: "opsz" 144; }
   h1 em { font-style: italic; font-weight: 500; background: linear-gradient(180deg, #ffe2a3, #ffab2e); -webkit-background-clip: text; background-clip: text; color: transparent; padding-right: .12em; margin-right: -.12em; }
   .sub { margin: 10px 0 0; font-family: Fraunces, Georgia, serif; font-style: italic; font-size: 36px; color: #f2c46d; }
+  .he .copy { direction: rtl; }
+  .he h1, .he .sub { font-family: 'Frank Ruhl Libre', serif; font-style: normal; letter-spacing: 0; }
+  .he h1 em { font-style: normal; }
   .sub span { font-family: system-ui, -apple-system, sans-serif; font-style: normal; font-size: 26px; font-weight: 600; color: #f6efe0; }
 </style>
 </head>
@@ -56,9 +59,11 @@
     // textos en otros idiomas: ?lang=ca o ?lang=en
     var T = {
       ca: ['Hanukkà <em>5787</em>', 'Suma la teva llum <span>· 4 – 12 des 2026 · Barcelona</span>'],
-      en: ['Chanukah <em>5787</em>', 'Add your light <span>· 4 – 12 Dec 2026 · Barcelona</span>']
+      en: ['Chanukah <em>5787</em>', 'Add your light <span>· 4 – 12 Dec 2026 · Barcelona</span>'],
+      he: ['חנוכה <em>תשפ״ז</em>', 'הוסיפו אור <span>· 4 עד 12 בדצמבר 2026 · ברצלונה</span>']
     }[new URLSearchParams(location.search).get('lang')];
     if (T) { document.getElementById('t').innerHTML = T[0]; document.getElementById('s').innerHTML = T[1]; }
+    if (new URLSearchParams(location.search).get('lang') === 'he') document.body.classList.add('he');
     // inserta el skyline de la web
     fetch('skyline.svg').then(r => r.text()).then(t => { document.querySelector('.sky').innerHTML = t; });
   </script>
