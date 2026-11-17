@@ -355,63 +355,6 @@
     }, 1150);
   })();
 
-  // Ordenador: del botón «Eventos» baja una línea con los encendidos. En la portada se ve
-  // durante la primera vista y se recoge al llegar a «Encendidos públicos»; en cualquier
-  // página, se despliega al pasar el ratón por «Eventos».
-  (function () {
-    var cta = $('.nav .nav-cta'), wrap = $('.site-header .wrap');
-    if (!nextEv || !cta || !wrap || cta.getAttribute('aria-current') || !window.matchMedia) return;
-    var wide = matchMedia('(min-width: 1121px)');
-    var peek = document.createElement('div');
-    peek.className = 'ev-peek';
-    peek.setAttribute('role', 'region');
-    peek.setAttribute('aria-label', 'Encendidos públicos');
-    peek.innerHTML = '<p class="ep-head">Encendidos públicos · entrada libre</p><ol class="ep-line">' + D.events.map(function (ev) {
-      var f = flags[ev.id], p = D.parse(ev.date);
-      return '<li class="' + (f.past ? 'is-past' : '') + (f.next ? 'is-next' : '') + '"><a href="' + evHref(ev) + '">' +
-        '<span class="ep-txt"><small class="ep-date">' + (f.next ? '<i>Próximo</i>' : f.past ? '<i class="past">Finalizado</i>' : '') +
-          D.weekday(ev.date).slice(0, 3) + ' ' + p.d + ' dic · ' + ev.start + ' h</small>' +
-          '<b>' + esc(ev.place) + '</b><small>' + esc(ev.city) + (ev.featured ? ' · Gran encendido' : '') + '</small></span>' +
-        '<span class="ep-dot" aria-hidden="true"></span></a></li>';
-    }).join('') + '</ol><a class="ep-all" href="' + (onHome ? '#encendidos' : 'eventos') + '">Ver los ' + D.events.length + ' encendidos ' + I.arrow + '</a>';
-    peek.inert = true;
-    wrap.appendChild(peek);
-
-    var sec = $('#encendidos'), isOpen = false, firstView = false, t;
-    function place() {
-      // la línea sale del botón por la derecha, justo donde empieza a curvarse (radio = media altura)
-      var w = wrap.getBoundingClientRect(), c = cta.getBoundingClientRect();
-      peek.style.right = Math.round(w.right - (c.right - c.height / 2) - 23) + 'px';
-    }
-    function open() {
-      if (isOpen || !wide.matches) return;
-      place();
-      isOpen = true; peek.inert = false; peek.classList.add('open');
-    }
-    function close() {
-      if (!isOpen) return;
-      isOpen = false; peek.inert = true; peek.classList.remove('open');
-    }
-    function hovering() { return cta.matches(':hover') || peek.matches(':hover'); }
-    // Portada: abierto hasta que asoma la sección de encendidos (y otra vez si se vuelve arriba)
-    function inFirstView() { return firstView && (!sec || sec.getBoundingClientRect().top > window.innerHeight * .8); }
-    function sync() { if (hovering() || inFirstView()) open(); else close(); }
-    function dismiss() { firstView = false; close(); }
-
-    [cta, peek].forEach(function (el) {
-      el.addEventListener('mouseenter', function () { clearTimeout(t); t = setTimeout(open, el === cta ? 120 : 0); });
-      el.addEventListener('mouseleave', function () { clearTimeout(t); t = setTimeout(sync, 300); });
-    });
-    cta.addEventListener('focus', open);
-    peek.addEventListener('focusout', function (e) { if (!peek.contains(e.relatedTarget) && e.relatedTarget !== cta) sync(); });
-    peek.addEventListener('click', function (e) { if (e.target.closest('a')) dismiss(); });
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') dismiss(); });
-    document.addEventListener('click', function (e) { if (isOpen && !peek.contains(e.target) && !cta.contains(e.target)) dismiss(); });
-    window.addEventListener('scroll', function () { if (isOpen || firstView) sync(); }, { passive: true });
-    window.addEventListener('resize', function () { if (!wide.matches) close(); else if (isOpen) place(); });
-    // se abre cuando la janukiá ya se ha encendido, para no robarle protagonismo
-    if (onHome && !location.hash) setTimeout(function () { firstView = true; sync(); }, 4400);
-  })();
 
   /* ---------- Barra flotante: próximo encendido (todas las páginas salvo Eventos) ---------- */
   // No se cierra. En la portada sale cuando ha terminado el efecto de entrada (y ya se han
