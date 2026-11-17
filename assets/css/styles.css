@@ -1174,3 +1174,6 @@ body.nb-on .scroll-hint { visibility: hidden; }
 }
 /* La janukiá del hero es decorativa: no tapa los clics del botón que queda por encima */
 .menorah-stage.is-deco { pointer-events: none; }
+/* La escena del hero sube por detrás del texto: no debe tapar los clics del botón */
+.hero-sticky .menorah-scene { pointer-events: none; }
+.hero-sticky .hero-copy { position: relative; z-index: 2; }
