@@ -1179,72 +1179,40 @@ body.nb-on .scroll-hint { visibility: hidden; }
 .hero-sticky .hero-copy { position: relative; z-index: 2; }
 
 /* ==========================================================================
-   v6 · Entrada del hero en secuencia y botón de encendidos protagonista
+   v6 · Entrada del hero: un único fundido de arriba a abajo
    ========================================================================== */
-/* Cada pieza llega desenfocada y se enfoca, una tras otra */
-@keyframes heroIn { from { opacity: 0; transform: translateY(18px); filter: blur(10px); } to { opacity: 1; transform: none; filter: none; } }
-@keyframes heroLogo { 0% { opacity: 0; transform: scale(.72); filter: blur(12px) brightness(1.8); } 60% { opacity: 1; filter: blur(0) brightness(1.35); } 100% { opacity: 1; transform: none; filter: none; } }
-@keyframes heroSub { from { opacity: 0; letter-spacing: .18em; filter: blur(6px); } to { opacity: 1; filter: none; } }
-@keyframes cdPop { from { opacity: 0; transform: translateY(10px) scale(.8); } to { opacity: 1; transform: none; } }
-.hero-sticky .hero-copy > .rise { animation: heroIn 1.1s cubic-bezier(.2,.8,.2,1) both; }
-.hero-sticky .hero-copy > .hero-logo.rise { animation: heroLogo 1.5s cubic-bezier(.2,.8,.2,1) .05s both; }
-.hero-sticky .hero-copy > h1.rise { animation-delay: .3s; }
-.hero-sticky .hero-copy > h1 em { display: inline-block; animation: heroIn 1.1s cubic-bezier(.2,.8,.2,1) .55s both; }
-.hero-sticky .hero-copy > .hero-sub.rise { animation: heroSub 1.3s cubic-bezier(.2,.8,.2,1) .78s both; }
-.hero-sticky .hero-copy > .lede.rise { animation-delay: .95s; }
-.hero-sticky .hero-copy > .hero-meta.rise { animation-delay: 1.05s; }
-.hero-sticky .countdown > div { animation: cdPop .6s cubic-bezier(.2,.9,.3,1.3) both; }
-.hero-sticky .countdown > div:nth-child(1) { animation-delay: 1.12s; } .hero-sticky .countdown > div:nth-child(2) { animation-delay: 1.2s; }
-.hero-sticky .countdown > div:nth-child(3) { animation-delay: 1.28s; } .hero-sticky .countdown > div:nth-child(4) { animation-delay: 1.36s; }
-.hero-sticky .cd-final .countdown > div { animation: cdPulse 1s ease-in-out infinite; }
+/* Todo el texto se descubre a la vez, como una cortina de luz que baja (sin piezas sueltas) */
+@keyframes heroReveal {
+  from { -webkit-mask-image: linear-gradient(180deg, #000 40%, transparent 60%); mask-image: linear-gradient(180deg, #000 40%, transparent 60%);
+         -webkit-mask-size: 100% 300%; mask-size: 100% 300%; -webkit-mask-position: 0 100%; mask-position: 0 100%; opacity: .4; }
+  to   { -webkit-mask-image: linear-gradient(180deg, #000 40%, transparent 60%); mask-image: linear-gradient(180deg, #000 40%, transparent 60%);
+         -webkit-mask-size: 100% 300%; mask-size: 100% 300%; -webkit-mask-position: 0 0; mask-position: 0 0; opacity: 1; }
+}
+.hero-sticky .hero-copy { animation: heroReveal 1.3s cubic-bezier(.4,.1,.3,1) .1s backwards; }
+.hero-sticky .hero-copy > .rise { animation: none; }
 .hero-sticky .hero-copy > [data-countdown].cd-in { animation: cdIn .7s cubic-bezier(.2,.9,.3,1.2) both; }
-.hero-sticky .hero-copy > .hero-cta.rise { animation: none; }
-.hero-sticky .hero-perks { animation: heroIn 1s cubic-bezier(.2,.8,.2,1) 2.45s both; }
-.hero-sticky .hero-copy > .hero-events.rise { animation-delay: 2.6s; }
 
-/* Botón de los encendidos: llega el último, desde fuera hacia dentro */
+/* Botón de los encendidos: protagonista, pero tranquilo. Sus estrellitas y el brillo
+   empiezan cuando la janukiá ya se ha encendido */
 .cta-stage { position: relative; display: inline-block; }
-.hero-cta-btn { position: relative; isolation: isolate; z-index: 1; padding: 14px 26px; font-size: 1.04rem;
-  animation: ctaIn 1.05s cubic-bezier(.2,.9,.25,1.15) 1.95s backwards, ctaGlow 2.8s ease-in-out 3.2s infinite; }
-@keyframes ctaIn {
-  0% { opacity: 0; transform: scale(.3); filter: blur(8px) brightness(2.2); }
-  55% { opacity: 1; transform: scale(1.08); filter: blur(0) brightness(1.45); }
-  100% { opacity: 1; transform: none; filter: none; }
-}
-@keyframes ctaGlow { 50% { box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 0 0 6px rgba(242,196,109,.13), 0 14px 44px -8px rgba(255,171,46,1); } }
-/* brillo que recorre el botón de vez en cuando */
+.hero-cta-btn { position: relative; isolation: isolate; z-index: 1; padding: 14px 26px; font-size: 1.04rem; }
 .hero-cta-btn::after { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none;
-  background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,.6) 50%, transparent 65%) 150% 0 / 250% 100% no-repeat;
-  animation: ctaShine 5s ease-in-out 3s infinite; }
-/* onda de luz al llegar */
-.cta-stage::before { content: ""; position: absolute; inset: -3px; border-radius: 999px; border: 2px solid var(--gold-hi); opacity: 0; pointer-events: none;
-  animation: ctaRing 1.1s cubic-bezier(.2,.7,.3,1) 2.35s forwards; }
-@keyframes ctaRing { 0% { opacity: .9; transform: scale(.96); } 100% { opacity: 0; transform: scale(1.45, 1.9); } }
-/* chispas que convergen (las crea main.js) */
-.cta-spark { position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; pointer-events: none; opacity: 0;
-  background: #fff6d6; box-shadow: 0 0 8px 2px rgba(255,190,90,.95), 0 0 18px 4px rgba(255,150,40,.5);
-  animation: sparkIn .8s cubic-bezier(.55,0,.8,.35) forwards; }
-@keyframes sparkIn {
-  0% { opacity: 0; transform: translate(var(--x), var(--y)) scale(1.3); }
-  25% { opacity: 1; }
-  100% { opacity: 0; transform: translate(0, 0) scale(.3); }
-}
-/* estrellitas que titilan alrededor */
+  background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,.5) 50%, transparent 65%) 150% 0 / 250% 100% no-repeat;
+  animation: ctaShine 7s ease-in-out 5s infinite; }
 .cta-stars { position: absolute; inset: -14px -22px; pointer-events: none; }
-.cta-stars i { position: absolute; width: 12px; height: 12px; opacity: 0; background: var(--gold-hi);
+.cta-stars i { position: absolute; width: 9px; height: 9px; opacity: 0; background: var(--gold-hi);
   clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
-  filter: drop-shadow(0 0 4px rgba(255,200,110,.95)); animation: starTw 2.6s ease-in-out infinite; }
-.cta-stars i:nth-child(1) { left: 0; top: 8%; animation-delay: 3s; }
-.cta-stars i:nth-child(2) { right: 2%; top: -6%; width: 9px; height: 9px; animation-delay: 3.5s; }
-.cta-stars i:nth-child(3) { right: -2%; bottom: 12%; animation-delay: 4.1s; }
-.cta-stars i:nth-child(4) { left: 14%; bottom: -10%; width: 8px; height: 8px; animation-delay: 4.6s; }
-.cta-stars i:nth-child(5) { left: 46%; top: -18%; width: 10px; height: 10px; animation-delay: 3.8s; }
-.cta-stars i:nth-child(6) { left: 70%; bottom: -16%; width: 9px; height: 9px; animation-delay: 4.9s; }
-.cta-stars i:nth-child(7) { left: -6%; bottom: 30%; width: 7px; height: 7px; animation-delay: 5.3s; }
-@keyframes starTw { 0%, 100% { opacity: 0; transform: scale(.2) rotate(0deg); } 40% { opacity: 1; transform: scale(1) rotate(45deg); } 70% { opacity: 0; transform: scale(.4) rotate(90deg); } }
+  filter: drop-shadow(0 0 3px rgba(255,200,110,.8)); animation: starTw 4.2s ease-in-out infinite; }
+.cta-stars i:nth-child(1) { left: 0; top: 8%; animation-delay: 4.6s; }
+.cta-stars i:nth-child(2) { right: 2%; top: -6%; width: 7px; height: 7px; animation-delay: 5.6s; }
+.cta-stars i:nth-child(3) { right: -2%; bottom: 12%; animation-delay: 6.5s; }
+.cta-stars i:nth-child(4) { left: 14%; bottom: -10%; width: 6px; height: 6px; animation-delay: 7.3s; }
+.cta-stars i:nth-child(5) { left: 46%; top: -18%; width: 8px; height: 8px; animation-delay: 6s; }
+.cta-stars i:nth-child(6) { left: 70%; bottom: -16%; width: 7px; height: 7px; animation-delay: 7.9s; }
+.cta-stars i:nth-child(7) { left: -6%; bottom: 30%; width: 6px; height: 6px; animation-delay: 8.6s; }
+@keyframes starTw { 0%, 100% { opacity: 0; transform: scale(.2) rotate(0deg); } 40% { opacity: .85; transform: scale(1) rotate(45deg); } 70% { opacity: 0; transform: scale(.4) rotate(90deg); } }
 @media (max-width: 700px) { .hero-cta-btn { padding: 12px 22px; font-size: .96rem; } .cta-stars { inset: -12px -14px; } }
 @media (prefers-reduced-motion: reduce) {
-  .hero-sticky .hero-copy > .rise, .hero-sticky .hero-copy > h1 em, .hero-sticky .countdown > div, .hero-sticky .hero-perks,
-  .hero-cta-btn, .hero-cta-btn::after, .cta-stage::before, .cta-stars i { animation: none !important; }
+  .hero-sticky .hero-copy, .hero-cta-btn::after, .cta-stars i { animation: none !important; }
   .cta-stars { display: none; }
 }

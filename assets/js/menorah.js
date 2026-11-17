@@ -574,7 +574,7 @@
     window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
     window.addEventListener('resize', function () { fitHero(); measure(); update(); });
     update();
-    setTimeout(autoStart, 700); // si no se desliza, se enciende igualmente (el shamash, en ~2 s)
+    setTimeout(autoStart, 1450); // justo cuando el texto ya se ha mostrado entero (si no se desliza antes)
   } else {
     setTimeout(autoStart, 300);
   }
