@@ -37,6 +37,10 @@ Si cambias un texto en español, cámbialo también en las otras versiones. Las 
 
 El hebreo se lee de derecha a izquierda: las páginas de `/he/` llevan `dir="rtl"` y los ajustes de diseño están al final de `assets/css/styles.css` (bloque «Hebreo»). La janukiá y los esquemas no se invierten, porque izquierda y derecha son las reales.
 
+### Archivos sueltos en la raíz
+
+Lo que hay en `src/estaticos/` se publica tal cual en la raíz de la web. Ahí está el archivo de verificación de Google Search Console (`google7cdbb29aa767072c.html`): no lo borres, o Google dejará de reconocer la web como verificada.
+
 ### Otros generadores
 
 - `node src/partes/generar-ilustraciones.js` vuelve a dibujar las ilustraciones de los encendidos (`assets/img/ev-*.svg`).

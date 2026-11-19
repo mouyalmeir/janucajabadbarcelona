@@ -143,6 +143,9 @@ generadas.forEach(([lg, f]) => {
   fs.copyFileSync(path.join(RAIZ, c, f), path.join(PUB, c, f));
 });
 fs.cpSync(path.join(RAIZ, 'assets'), path.join(PUB, 'assets'), { recursive: true });
+// src/estaticos/: archivos que van tal cual en la raíz de la web (p. ej. la verificación de Google Search Console)
+const ESTATICOS = path.join(__dirname, 'estaticos');
+if (fs.existsSync(ESTATICOS)) fs.cpSync(ESTATICOS, PUB, { recursive: true });
 fs.writeFileSync(path.join(PUB, 'robots.txt'), `User-agent: *\nAllow: /\n${DOMINIO ? `Sitemap: ${DOMINIO}/sitemap.xml\n` : ''}`);
 if (DOMINIO) {
   const urls = generadas.map(([lg, f]) => `  <url><loc>${urlDe(lg, f)}</loc>` +
